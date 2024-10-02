@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class ProjectEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Projectes";
-    private const string BaseRoute = "Projectes";
+    private const string Tag = "Project Model";
+    private const string BaseRoute = "Projects";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

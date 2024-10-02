@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class PersonEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Persones";
-    private const string BaseRoute = "Persones";
+    private const string Tag = "Person Model";
+    private const string BaseRoute = "People";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

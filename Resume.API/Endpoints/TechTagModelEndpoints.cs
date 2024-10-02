@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class TechTagEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "TechTages";
-    private const string BaseRoute = "TechTages";
+    private const string Tag = "TechTag Model";
+    private const string BaseRoute = "TechTags";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

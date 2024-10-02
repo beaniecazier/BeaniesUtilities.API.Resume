@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class CertificateEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Certificatees";
-    private const string BaseRoute = "Certificatees";
+    private const string Tag = "Certificate Model";
+    private const string BaseRoute = "Certificates";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class EducationDegreeEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "EducationDegreees";
-    private const string BaseRoute = "EducationDegreees";
+    private const string Tag = "EducationDegree Model";
+    private const string BaseRoute = "EducationDegrees";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

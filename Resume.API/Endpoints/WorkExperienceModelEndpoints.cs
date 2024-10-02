@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class WorkExperienceEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "WorkExperiencees";
-    private const string BaseRoute = "WorkExperiencees";
+    private const string Tag = "WorkExperience Model";
+    private const string BaseRoute = "WorkExperiences";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

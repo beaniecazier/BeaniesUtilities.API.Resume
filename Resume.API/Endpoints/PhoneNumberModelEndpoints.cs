@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class PhoneNumberEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "PhoneNumberes";
-    private const string BaseRoute = "PhoneNumberes";
+    private const string Tag = "PhoneNumber Model";
+    private const string BaseRoute = "PhoneNumbers";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

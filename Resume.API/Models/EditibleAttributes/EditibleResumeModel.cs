@@ -1,3 +1,4 @@
+using BeaniesUtilities.Models.Enum;
 using BeaniesUtilities.Models.Resume;
 
 namespace Gay.TCazier.DatabaseParser.Models.EditibleAttributes;

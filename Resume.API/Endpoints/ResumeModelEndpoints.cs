@@ -14,8 +14,8 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class ResumeEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Resumees";
-    private const string BaseRoute = "Resumees";
+    private const string Tag = "Resume Model";
+    private const string BaseRoute = "Resumes";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {

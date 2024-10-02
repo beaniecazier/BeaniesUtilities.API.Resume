@@ -14,7 +14,7 @@ namespace Gay.TCazier.DatabaseParser.Endpoints;
 public class AddressEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Addresses";
+    private const string Tag = "Address Model";
     private const string BaseRoute = "Addresses";
 
     public static void AddServices(IServiceCollection services, IConfiguration configuration)

@@ -184,8 +184,8 @@ public class ResumeService : BaseModelService, IResumeService
     //    var entries = await ctx.People
     //        .Where(x => x.EntryIdentity == id)
     //        .Where(x => x.GetType() == typeof(ResumeModel))
-			.Select(x => x as ResumeModel)
-			.ToListAsync();
+	//		  .Select(x => x as ResumeModel)
+	//		  .ToListAsync();
     //    return entries;
     //}
 
