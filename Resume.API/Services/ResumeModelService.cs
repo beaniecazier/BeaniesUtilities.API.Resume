@@ -1,60 +1,61 @@
-﻿using BeaniesUtilities.Models.Resume;
-using Gay.TCazier.DatabaseParser.Data.Contexts;
-using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
+using BeaniesUtilities.Models.Resume;
 using Gay.TCazier.DatabaseParser.Services.Interfaces;
+using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
+using Gay.TCazier.DatabaseParser.Data.Contexts;
 using LanguageExt;
-using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using LanguageExt.Common;
+using Gay.TCazier.DatabaseParser.Models.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gay.TCazier.DatabaseParser.Services;
 
-public class ResumeModelService : BaseModelService, IResumeService
+public class ResumeService : BaseModelService, IResumeService
 {
+    #region Fields
 
     IServiceProvider _provider;
 
-    public ResumeModelService(IServiceProvider provider)
+    #endregion
+
+    #region Constructors
+
+    public ResumeService(IServiceProvider provider)
     {
         _provider = provider;
     }
 
-    public async Task<Fin<ResumeModel>> CreateAsync(EditibleResumeModel editibleAttributes)
+    #endregion
+
+    #region Create
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="editibleAttributes"></param>
+    /// <returns></returns>
+    public async Task<Fin<ResumeModel>> CreateAsync(ResumeContext ctx, EditibleResumeModel editibleAttributes)
     {
-        var ctx = _provider.GetService<ResumeContext>();
         if (ctx == null)
         {
-            return Error.New(new NullReferenceException("The provider returned a null DbContext while trying to create a new Address model"));
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
         }
 
-        var entries = await ctx.People.ToListAsync();
+        var entries = await ctx.People
+            .Where(x => x.GetType() == typeof(ResumeModel))
+			.Select(x => x as ResumeModel)
+			.ToListAsync();
 
         //check for base model parameter uniqueness
 
         //check for model uniqueness
-
-        var model = new ResumeModel()
-        {
-            HeroStatement = editibleAttributes.HeroStatement,
-            Degrees = editibleAttributes.Degrees,
-            Certificates = editibleAttributes.Certificates,
-            Projects = editibleAttributes.Projects,
-            WorkExperience = editibleAttributes.WorkExperience,
-
-            PreferedName = editibleAttributes.PreferedName,
-            Pronouns = editibleAttributes.Pronouns,
-            Emails = editibleAttributes.Emails,
-            Socials = editibleAttributes.Socials,
-            Addresses = editibleAttributes.Addresses,
-            PhoneNumbers = editibleAttributes.PhoneNumbers,
-
-            Name = editibleAttributes.Name,
-            IsHidden = editibleAttributes.IsHidden,
-
-            CommonIdentity = GetNextCommonID(entries),
-            CreatedBy = "Tiabeanie",
-            CreatedOn = DateTime.UtcNow,
-            Notes = "Entry Creation",
-        };
+        int id = GetNextCommonID(entries);
+        var model = new ResumeModel();
+        model.Create(id, editibleAttributes, "Tiabeanie");
 
         await ctx.People.AddAsync(model);
         await ctx.SaveChangesAsync();
@@ -62,90 +63,294 @@ public class ResumeModelService : BaseModelService, IResumeService
         return model;
     }
 
-    public async Task<Fin<ResumeModel>> DeleteAsync()
-    {
-        throw new NotImplementedException();
-    }
+    #endregion
 
-    public async Task<Fin<IEnumerable<ResumeModel>>> GetAllAsync()
+    #region Read
+
+    public async Task<Fin<IEnumerable<ResumeModel>>> GetAllAsync(ResumeContext ctx)
     {
-        var ctx = _provider.GetService<ResumeContext>();
-        var entries = await ctx.People.Where(p => p.GetType() == typeof(ResumeModel)).Select(r => r as ResumeModel).ToListAsync();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        var entries = await ctx.People
+            .Where(x => x.GetType() == typeof(ResumeModel))
+			.Select(x => x as ResumeModel)
+			.ToListAsync();
         return entries;
     }
 
-    public async Task<Fin<IEnumerable<ResumeModel>>> GetAllWithinEntryIDRangeAsync(int start, int end)
+    public async Task<Fin<IEnumerable<ResumeModel>>> GetAllWithinEntryIDRangeAsync(ResumeContext ctx, int start, int end)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        var entries = await ctx.People
+            .Where(x => x.EntryIdentity >= start &&
+                        x.EntryIdentity <= end)
+            .Where(x => x.GetType() == typeof(ResumeModel))
+			.Select(x => x as ResumeModel)
+			.ToListAsync();
+        return entries;
+    }
+
+    public async Task<Fin<IEnumerable<ResumeModel>>> GetAllWithinIDRangeAsync(ResumeContext ctx, int start, int end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        var entries = await ctx.People
+            .Where(x => x.CommonIdentity >= start &&
+                        x.CommonIdentity <= end &&
+                        !x.IsHidden)
+            .Where(x => x.GetType() == typeof(ResumeModel))
+			.Select(x => x as ResumeModel)
+			.ToListAsync();
+        return entries;
+    }
+
+    public async Task<Fin<ResumeModel>> GetByEntryIDAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        try
+        {
+            var entry = await ctx.People
+                .Where(x => x.EntryIdentity == id)
+                .Select(x => x as ResumeModel)
+			.SingleOrDefaultAsync();
+            return entry;
+        }
+        catch (Exception ex)
+        {
+            return Error.New(ex);
+        }
+    }
+
+    public async Task<Fin<ResumeModel>> GetByIDAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        try
+        {
+            var entry = await ctx.People
+                .Where(x => x.CommonIdentity == id)
+                .Select(x => x as ResumeModel)
+			.SingleOrDefaultAsync();
+            return entry;
+        }
+        catch (Exception ex)
+        {
+            return Error.New(ex);
+        }
+    }
+
+    //public async Task<Fin<IEnumerable<ResumeModel>>> GetHistroyOfIDAsync(ResumeContext ctx, int id)
+    //{
+    //    if (ctx == null)
+    //    {
+    //        return Error.New(
+    //            new NullReferenceException(
+    //                "The provider returned a null DbContext while trying to create a new Resume model"
+    //                ));
+    //    }
+
+    //    var entries = await ctx.People
+    //        .Where(x => x.EntryIdentity == id)
+    //        .Where(x => x.GetType() == typeof(ResumeModel))
+			.Select(x => x as ResumeModel)
+			.ToListAsync();
+    //    return entries;
+    //}
+
+    #endregion
+
+    #region Query
+
+    public async Task<Fin<IEnumerable<ResumeModel>>> SearchBetweenModificationDatesAsync(ResumeContext ctx, DateTime start, DateTime end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<IEnumerable<ResumeModel>>> GetAllWithinIDRangeAsync(int start, int end)
+    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByIsDeletedAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<ResumeModel>> GetByEntryIDAsync(int id)
+    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByIsHiddenAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<ResumeModel>> GetByIDAsync(int id)
+    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByNameAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<ResumeModel>> GetHistroyOfIDAsync(int id)
+    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByNotesAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchBetweenModificationDatesAsync(DateTime start, DateTime end)
+    #endregion
+
+    #region Update
+
+    public async Task<Fin<ResumeModel>> UpdateAsync(ResumeContext ctx, int id, EditibleResumeModel editibleAttributes)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        var existingEntry = await ctx.People
+            .Where(x => x.CommonIdentity == id &&
+                !x.IsHidden)
+            .Select(x => x as ResumeModel)
+			.SingleOrDefaultAsync();
+
+        if (existingEntry is null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "There is no entry in the database with that id"
+                    ));
+        }
+
+        var updatedEntry = existingEntry.Update(editibleAttributes, "Tiabeanie");
+
+        await ctx.People.AddAsync(updatedEntry);
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByEmailAsync(string searchTerm)
+    #endregion
+
+    #region Delete
+
+    public async Task<Fin<IEnumerable<ResumeModel>>> DeleteAsync(ResumeContext ctx, int id)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        var existingEntry = await ctx.People
+            .Where(x => x.CommonIdentity == id)
+            .Where(x => x.GetType() == typeof(ResumeModel))
+			.Select(x => x as ResumeModel)
+			.ToListAsync();
+
+        if (existingEntry.IsNullOrEmpty()) return Error.New($"404 - No entries with id {id}");
+            
+        existingEntry = existingEntry.Where(x => !x.IsDeleted).ToList();
+
+        if (existingEntry.IsNullOrEmpty()) return Error.New("204 - Nothing to delete");
+
+        foreach (var entry in existingEntry) entry.IsDeleted = true;
+
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByIsDeletedAsync(string searchTerm)
+    public async Task<Fin<ResumeModel>> DeleteEntryAsync(ResumeContext ctx, int id)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Resume model"
+                    ));
+        }
+
+        var existingEntry = await ctx.People
+            .Where(x => x.CommonIdentity == id &&
+                (!x.IsDeleted))
+            .Select(x => x as ResumeModel)
+			.SingleOrDefaultAsync();
+
+        if (existingEntry is null) return existingEntry;
+
+        existingEntry.IsDeleted = true;
+
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByIsHiddenAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByNameAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByNotesAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByPhoneNumberAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchByPreferedNameAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ResumeModel>>> SearchBySocialsAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<ResumeModel>> UpdateAsync(EditibleResumeModel editibleAttributes)
-    {
-        throw new NotImplementedException();
-    }
+    #endregion
 }

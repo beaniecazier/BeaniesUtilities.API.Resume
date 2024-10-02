@@ -371,3 +371,13 @@ FodyWeavers.xsd
 /DummyAPITest/Controllers/ResumeController.cs
 /DummyAPITest/Controllers/TechTagController.cs
 /DummyAPITest/Controllers/WorkExperienceController.cs
+/Resume.API/Controllers/AddressController.cs
+/Resume.API/Controllers/CertificateController.cs
+/Resume.API/Controllers/EducationalInstitutionController.cs
+/Resume.API/Controllers/EducationDegreeController.cs
+/Resume.API/Controllers/PersonModelController.cs
+/Resume.API/Controllers/PhoneNumberController.cs
+/Resume.API/Controllers/ProjectController.cs
+/Resume.API/Controllers/ResumeController.cs
+/Resume.API/Controllers/TechTagController.cs
+/Resume.API/Controllers/WorkExperienceController.cs

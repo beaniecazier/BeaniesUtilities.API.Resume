@@ -1,54 +1,59 @@
-﻿using BeaniesUtilities.Models.Resume;
-using Gay.TCazier.DatabaseParser.Data.Contexts;
-using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
+using BeaniesUtilities.Models.Resume;
 using Gay.TCazier.DatabaseParser.Services.Interfaces;
+using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
+using Gay.TCazier.DatabaseParser.Data.Contexts;
 using LanguageExt;
-using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using LanguageExt.Common;
+using Gay.TCazier.DatabaseParser.Models.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gay.TCazier.DatabaseParser.Services;
 
-public class PersonModelService : BaseModelService, IPersonService
+public class PersonService : BaseModelService, IPersonService
 {
+    #region Fields
 
     IServiceProvider _provider;
 
-    public PersonModelService(IServiceProvider provider)
+    #endregion
+
+    #region Constructors
+
+    public PersonService(IServiceProvider provider)
     {
         _provider = provider;
     }
 
-    public async Task<Fin<PersonModel>> CreateAsync(EditiblePersonModel editibleAttributes)
+    #endregion
+
+    #region Create
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="editibleAttributes"></param>
+    /// <returns></returns>
+    public async Task<Fin<PersonModel>> CreateAsync(ResumeContext ctx, EditiblePersonModel editibleAttributes)
     {
-        var ctx = _provider.GetService<ResumeContext>();
         if (ctx == null)
         {
-            return Error.New(new NullReferenceException("The provider returned a null DbContext while trying to create a new Address model"));
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
         }
 
-        var entries = await ctx.People.ToListAsync();
+        var entries = await ctx.People
+            .ToListAsync();
 
         //check for base model parameter uniqueness
 
         //check for model uniqueness
-
-        var model = new PersonModel()
-        {
-            PreferedName = editibleAttributes.PreferedName,
-            Pronouns = editibleAttributes.Pronouns,
-            Emails = editibleAttributes.Emails,
-            Socials = editibleAttributes.Socials,
-            Addresses = editibleAttributes.Addresses,
-            PhoneNumbers = editibleAttributes.PhoneNumbers,
-
-            Name = editibleAttributes.Name,
-            IsHidden = editibleAttributes.IsHidden,
-
-            CommonIdentity = GetNextCommonID(entries),
-            CreatedBy = "Tiabeanie",
-            CreatedOn = DateTime.UtcNow,
-            Notes = "Entry Creation"
-        };
+        int id = GetNextCommonID(entries);
+        var model = new PersonModel();
+        model.Create(id, editibleAttributes, "Tiabeanie");
 
         await ctx.People.AddAsync(model);
         await ctx.SaveChangesAsync();
@@ -56,90 +61,280 @@ public class PersonModelService : BaseModelService, IPersonService
         return model;
     }
 
-    public async Task<Fin<PersonModel>> DeleteAsync()
-    {
-        throw new NotImplementedException();
-    }
+    #endregion
 
-    public async Task<Fin<IEnumerable<PersonModel>>> GetAllAsync()
+    #region Read
+
+    public async Task<Fin<IEnumerable<PersonModel>>> GetAllAsync(ResumeContext ctx)
     {
-        var ctx = _provider.GetService<ResumeContext>();
-        var entries = await ctx.People.ToListAsync();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        var entries = await ctx.People
+            .ToListAsync();
         return entries;
     }
 
-    public async Task<Fin<IEnumerable<PersonModel>>> GetAllWithinEntryIDRangeAsync(int start, int end)
+    public async Task<Fin<IEnumerable<PersonModel>>> GetAllWithinEntryIDRangeAsync(ResumeContext ctx, int start, int end)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        var entries = await ctx.People
+            .Where(x => x.EntryIdentity >= start &&
+                        x.EntryIdentity <= end)
+            .ToListAsync();
+        return entries;
+    }
+
+    public async Task<Fin<IEnumerable<PersonModel>>> GetAllWithinIDRangeAsync(ResumeContext ctx, int start, int end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        var entries = await ctx.People
+            .Where(x => x.CommonIdentity >= start &&
+                        x.CommonIdentity <= end &&
+                        !x.IsHidden)
+            .ToListAsync();
+        return entries;
+    }
+
+    public async Task<Fin<PersonModel>> GetByEntryIDAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        try
+        {
+            var entry = await ctx.People
+                .Where(x => x.EntryIdentity == id)
+                .SingleOrDefaultAsync();
+            return entry;
+        }
+        catch (Exception ex)
+        {
+            return Error.New(ex);
+        }
+    }
+
+    public async Task<Fin<PersonModel>> GetByIDAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        try
+        {
+            var entry = await ctx.People
+                .Where(x => x.CommonIdentity == id)
+                .SingleOrDefaultAsync();
+            return entry;
+        }
+        catch (Exception ex)
+        {
+            return Error.New(ex);
+        }
+    }
+
+    //public async Task<Fin<IEnumerable<PersonModel>>> GetHistroyOfIDAsync(ResumeContext ctx, int id)
+    //{
+    //    if (ctx == null)
+    //    {
+    //        return Error.New(
+    //            new NullReferenceException(
+    //                "The provider returned a null DbContext while trying to create a new Person model"
+    //                ));
+    //    }
+
+    //    var entries = await ctx.People
+    //        .Where(x => x.EntryIdentity == id)
+    //        .ToListAsync();
+    //    return entries;
+    //}
+
+    #endregion
+
+    #region Query
+
+    public async Task<Fin<IEnumerable<PersonModel>>> SearchBetweenModificationDatesAsync(ResumeContext ctx, DateTime start, DateTime end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<IEnumerable<PersonModel>>> GetAllWithinIDRangeAsync(int start, int end)
+    public async Task<Fin<IEnumerable<PersonModel>>> SearchByIsDeletedAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<PersonModel>> GetByEntryIDAsync(int id)
+    public async Task<Fin<IEnumerable<PersonModel>>> SearchByIsHiddenAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<PersonModel>> GetByIDAsync(int id)
+    public async Task<Fin<IEnumerable<PersonModel>>> SearchByNameAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<PersonModel>> GetHistroyOfIDAsync(int id)
+    public async Task<Fin<IEnumerable<PersonModel>>> SearchByNotesAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchBetweenModificationDatesAsync(DateTime start, DateTime end)
+    #endregion
+
+    #region Update
+
+    public async Task<Fin<PersonModel>> UpdateAsync(ResumeContext ctx, int id, EditiblePersonModel editibleAttributes)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        var existingEntry = await ctx.People
+            .Where(x => x.CommonIdentity == id &&
+                !x.IsHidden)
+            .SingleOrDefaultAsync();
+
+        if (existingEntry is null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "There is no entry in the database with that id"
+                    ));
+        }
+
+        var updatedEntry = existingEntry.Update(editibleAttributes, "Tiabeanie");
+
+        await ctx.People.AddAsync(updatedEntry);
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchByEmailAsync(string searchTerm)
+    #endregion
+
+    #region Delete
+
+    public async Task<Fin<IEnumerable<PersonModel>>> DeleteAsync(ResumeContext ctx, int id)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        var existingEntry = await ctx.People
+            .Where(x => x.CommonIdentity == id)
+            .ToListAsync();
+
+        if (existingEntry.IsNullOrEmpty()) return Error.New($"404 - No entries with id {id}");
+            
+        existingEntry = existingEntry.Where(x => !x.IsDeleted).ToList();
+
+        if (existingEntry.IsNullOrEmpty()) return Error.New("204 - Nothing to delete");
+
+        foreach (var entry in existingEntry) entry.IsDeleted = true;
+
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchByIsDeletedAsync(string searchTerm)
+    public async Task<Fin<PersonModel>> DeleteEntryAsync(ResumeContext ctx, int id)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Person model"
+                    ));
+        }
+
+        var existingEntry = await ctx.People
+            .Where(x => x.CommonIdentity == id &&
+                (!x.IsDeleted))
+            .SingleOrDefaultAsync();
+
+        if (existingEntry is null) return existingEntry;
+
+        existingEntry.IsDeleted = true;
+
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchByIsHiddenAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchByNameAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchByNotesAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchByPhoneNumberAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchByPreferedNameAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<PersonModel>>> SearchBySocialsAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<PersonModel>> UpdateAsync(EditiblePersonModel editibleAttributes)
-    {
-        throw new NotImplementedException();
-    }
+    #endregion
 }

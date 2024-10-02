@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="APIUtilities" Version="0.1.1-alpha" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="LanguageExt.Core" Version="5.0.0-beta-22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.1.24451.1" />

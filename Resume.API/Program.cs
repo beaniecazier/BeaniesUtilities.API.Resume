@@ -3,6 +3,8 @@ using Gay.TCazier.DatabaseParser.Data.Contexts;
 using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,53 +12,33 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-//    option =>
-//{
-//    option.SwaggerDoc("ResumeV1", new OpenApiInfo()
-//    {
-//        Title = "Resume SQL DB Operations For Version 1 Of The Schema",
-//        Version = "v1",
-//        Description = "",
-//        //Contact = ,
-//        //Extensions = { },
-//        //License = ,
-//        //TermsOfService = ,
-//    });
-//    //option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-//    //{
-//    //    In = ParameterLocation.Header,
-//    //    Description = "Please enter a valid token",
-//    //    Name = "Authorization",
-//    //    Type = SecuritySchemeType.Http,
-//    //    BearerFormat = "JWT",
-//    //    Scheme = "Bearer",
-//    //    //Extensions = new[] { },
-//    //    //Flows = new[] { },
-//    //    //OpenIdConnectUrl = ,
-//    //    //Reference = new OpenApiReference(),
-//    //    //UnresolvedReference = ,
-//    //});
-//    //option.AddSecurityRequirement(new OpenApiSecurityRequirement
-//    //{
-//    //    {
-//    //        new OpenApiSecurityScheme
-//    //        {
-//    //            Reference = new OpenApiReference
-//    //            {
-//    //                Type=ReferenceType.SecurityScheme,
-//    //                Id="Bearer",
-//    //            }
-//    //        },
-//    //        new string[]{}
-//    //    }
-//    //});
-//}
-);
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo()
+    {
+        Title = "Resume SQL DB Operations For Version 1 Of The Schema",
+        Version = "v1",
+        Description = "Describing things here",
+        Contact = new OpenApiContact
+        {
+            Name = "Name",
+            Url = new Uri("https://example.com/contact")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Eaxmple License",
+            Url = new Uri("https://example.com/license")
+        },
+        TermsOfService = new Uri("https://example.com/terms"),
+    });
+    //var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 // Add a DbContext here
 var connStr = builder.Configuration.GetConnectionString("Dev");
@@ -83,12 +65,16 @@ context.Database.EnsureCreated();
 //if (pendingMigrations.Any())
 //    throw new Exception("Database is not fully migrated for MoviesContext.");
 
-app.UseSwagger();
-app.UseSwaggerUI(
-//    c =>
-//{
-//    c.SwaggerEndpoint("./swagger/v1/swagger.json", "ResumeV1");
-//}
+app.UseSwagger(options =>
+{
+    options.RouteTemplate = "resume/swagger/{documentname}/swagger.json";
+});
+
+app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("v1/swagger.json", "v1");
+        c.RoutePrefix = "resume/swagger";
+    }
 );
 
 app.UseEndpoints<Program>();

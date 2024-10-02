@@ -1,54 +1,59 @@
-﻿using BeaniesUtilities.Models.Resume;
-using Gay.TCazier.DatabaseParser.Data.Contexts;
-using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
+using BeaniesUtilities.Models.Resume;
 using Gay.TCazier.DatabaseParser.Services.Interfaces;
+using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
+using Gay.TCazier.DatabaseParser.Data.Contexts;
 using LanguageExt;
-using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using LanguageExt.Common;
+using Gay.TCazier.DatabaseParser.Models.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Gay.TCazier.DatabaseParser.Services;
 
-public class ProjectModelService : BaseModelService, IProjectService
+public class ProjectService : BaseModelService, IProjectService
 {
+    #region Fields
 
     IServiceProvider _provider;
 
-    public ProjectModelService(IServiceProvider provider)
+    #endregion
+
+    #region Constructors
+
+    public ProjectService(IServiceProvider provider)
     {
         _provider = provider;
     }
 
-    public async Task<Fin<ProjectModel>> CreateAsync(EditibleProjectModel editibleAttributes)
+    #endregion
+
+    #region Create
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="editibleAttributes"></param>
+    /// <returns></returns>
+    public async Task<Fin<ProjectModel>> CreateAsync(ResumeContext ctx, EditibleProjectModel editibleAttributes)
     {
-        var ctx = _provider.GetService<ResumeContext>();
         if (ctx == null)
         {
-            return Error.New(new NullReferenceException("The provider returned a null DbContext while trying to create a new Address model"));
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
         }
 
-        var entries = await ctx.Projects.ToListAsync();
+        var entries = await ctx.Projects
+            .ToListAsync();
 
         //check for base model parameter uniqueness
 
         //check for model uniqueness
-
-        var model = new ProjectModel()
-        {
-            Description = editibleAttributes.Description,
-            Version = editibleAttributes.Version,
-            ProjectUrl = editibleAttributes.ProjectUrl,
-            StartDate = editibleAttributes.StartDate,
-            CompletionDate = editibleAttributes.CompletionDate,
-            TechTags = editibleAttributes.TechTags,
-
-            Name = editibleAttributes.Name,
-            IsHidden = editibleAttributes.IsHidden,
-
-            CommonIdentity = GetNextCommonID(entries),
-            CreatedBy = "Tiabeanie",
-            CreatedOn = DateTime.UtcNow,
-            Notes = "Entry Creation",
-        };
+        int id = GetNextCommonID(entries);
+        var model = new ProjectModel();
+        model.Create(id, editibleAttributes, "Tiabeanie");
 
         await ctx.Projects.AddAsync(model);
         await ctx.SaveChangesAsync();
@@ -56,85 +61,280 @@ public class ProjectModelService : BaseModelService, IProjectService
         return model;
     }
 
-    public async Task<Fin<ProjectModel>> DeleteAsync()
-    {
-        throw new NotImplementedException();
-    }
+    #endregion
 
-    public async Task<Fin<IEnumerable<ProjectModel>>> GetAllAsync()
+    #region Read
+
+    public async Task<Fin<IEnumerable<ProjectModel>>> GetAllAsync(ResumeContext ctx)
     {
-        var ctx = _provider.GetService<ResumeContext>();
-        var entries = await ctx.Projects.ToListAsync();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        var entries = await ctx.Projects
+            .ToListAsync();
         return entries;
     }
 
-    public async Task<Fin<IEnumerable<ProjectModel>>> GetAllWithinEntryIDRangeAsync(int start, int end)
+    public async Task<Fin<IEnumerable<ProjectModel>>> GetAllWithinEntryIDRangeAsync(ResumeContext ctx, int start, int end)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        var entries = await ctx.Projects
+            .Where(x => x.EntryIdentity >= start &&
+                        x.EntryIdentity <= end)
+            .ToListAsync();
+        return entries;
+    }
+
+    public async Task<Fin<IEnumerable<ProjectModel>>> GetAllWithinIDRangeAsync(ResumeContext ctx, int start, int end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        var entries = await ctx.Projects
+            .Where(x => x.CommonIdentity >= start &&
+                        x.CommonIdentity <= end &&
+                        !x.IsHidden)
+            .ToListAsync();
+        return entries;
+    }
+
+    public async Task<Fin<ProjectModel>> GetByEntryIDAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        try
+        {
+            var entry = await ctx.Projects
+                .Where(x => x.EntryIdentity == id)
+                .SingleOrDefaultAsync();
+            return entry;
+        }
+        catch (Exception ex)
+        {
+            return Error.New(ex);
+        }
+    }
+
+    public async Task<Fin<ProjectModel>> GetByIDAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        try
+        {
+            var entry = await ctx.Projects
+                .Where(x => x.CommonIdentity == id)
+                .SingleOrDefaultAsync();
+            return entry;
+        }
+        catch (Exception ex)
+        {
+            return Error.New(ex);
+        }
+    }
+
+    //public async Task<Fin<IEnumerable<ProjectModel>>> GetHistroyOfIDAsync(ResumeContext ctx, int id)
+    //{
+    //    if (ctx == null)
+    //    {
+    //        return Error.New(
+    //            new NullReferenceException(
+    //                "The provider returned a null DbContext while trying to create a new Project model"
+    //                ));
+    //    }
+
+    //    var entries = await ctx.Projects
+    //        .Where(x => x.EntryIdentity == id)
+    //        .ToListAsync();
+    //    return entries;
+    //}
+
+    #endregion
+
+    #region Query
+
+    public async Task<Fin<IEnumerable<ProjectModel>>> SearchBetweenModificationDatesAsync(ResumeContext ctx, DateTime start, DateTime end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<IEnumerable<ProjectModel>>> GetAllWithinIDRangeAsync(int start, int end)
+    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByIsDeletedAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<ProjectModel>> GetByEntryIDAsync(int id)
+    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByIsHiddenAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<ProjectModel>> GetByIDAsync(int id)
+    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByNameAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<ProjectModel>> GetHistroyOfIDAsync(int id)
+    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByNotesAsync(ResumeContext ctx, string searchTerm)
     {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
         throw new NotImplementedException();
     }
 
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchBetweenDates(DateTime start, DateTime end)
+    #endregion
+
+    #region Update
+
+    public async Task<Fin<ProjectModel>> UpdateAsync(ResumeContext ctx, int id, EditibleProjectModel editibleAttributes)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        var existingEntry = await ctx.Projects
+            .Where(x => x.CommonIdentity == id &&
+                !x.IsHidden)
+            .SingleOrDefaultAsync();
+
+        if (existingEntry is null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "There is no entry in the database with that id"
+                    ));
+        }
+
+        var updatedEntry = existingEntry.Update(editibleAttributes, "Tiabeanie");
+
+        await ctx.Projects.AddAsync(updatedEntry);
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchBetweenModificationDatesAsync(DateTime start, DateTime end)
+    #endregion
+
+    #region Delete
+
+    public async Task<Fin<IEnumerable<ProjectModel>>> DeleteAsync(ResumeContext ctx, int id)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        var existingEntry = await ctx.Projects
+            .Where(x => x.CommonIdentity == id)
+            .ToListAsync();
+
+        if (existingEntry.IsNullOrEmpty()) return Error.New($"404 - No entries with id {id}");
+            
+        existingEntry = existingEntry.Where(x => !x.IsDeleted).ToList();
+
+        if (existingEntry.IsNullOrEmpty()) return Error.New("204 - Nothing to delete");
+
+        foreach (var entry in existingEntry) entry.IsDeleted = true;
+
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByDescriptionAsync(string searchTerm)
+    public async Task<Fin<ProjectModel>> DeleteEntryAsync(ResumeContext ctx, int id)
     {
-        throw new NotImplementedException();
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Project model"
+                    ));
+        }
+
+        var existingEntry = await ctx.Projects
+            .Where(x => x.CommonIdentity == id &&
+                (!x.IsDeleted))
+            .SingleOrDefaultAsync();
+
+        if (existingEntry is null) return existingEntry;
+
+        existingEntry.IsDeleted = true;
+
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
     }
 
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByIsDeletedAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByIsHiddenAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByNameAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByNotesAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<ProjectModel>>> SearchByTechAsync(string searchTerm)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<ProjectModel>> UpdateAsync(EditibleProjectModel editibleAttributes)
-    {
-        throw new NotImplementedException();
-    }
+    #endregion
 }

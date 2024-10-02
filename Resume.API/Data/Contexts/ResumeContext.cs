@@ -9,8 +9,8 @@ public class ResumeContext : DbContext
     public DbSet<TechTagModel> TechTags => Set<TechTagModel>();
     public DbSet<AddressModel> Addresses => Set<AddressModel>();
     public DbSet<PhoneNumberModel> PhoneNumbers => Set<PhoneNumberModel>();
-    public DbSet<EducationInstitutionModel> Institutions => Set<EducationInstitutionModel>();
-    public DbSet<EducationDegreeModel> Degrees => Set<EducationDegreeModel>();
+    public DbSet<EducationInstitutionModel> EducationInstitutions => Set<EducationInstitutionModel>();
+    public DbSet<EducationDegreeModel> EducationDegrees => Set<EducationDegreeModel>();
     public DbSet<CertificateModel> Certificates => Set<CertificateModel>();
     public DbSet<ProjectModel> Projects => Set<ProjectModel>();
     public DbSet<WorkExperienceModel> WorkExperiences => Set<WorkExperienceModel>();
