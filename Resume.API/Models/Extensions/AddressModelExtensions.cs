@@ -3,8 +3,18 @@ using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
 
 namespace Gay.TCazier.DatabaseParser.Models.Extensions;
 
+/// <summary>
+/// A collection of extension methods for the Address Model
+/// </summary>
 public static class AddressExtensions
 {
+	/// <summary>
+	/// "Create" a new Address Model, by applying a set of properties based on the permissions of the user
+	/// </summary>
+	/// <param name="model">The model that is getting created</param>
+	/// <param name="id">The model's id that it will use</param>
+	/// <param name="props">The properties to be used in the model</param>
+	/// <param name="user">The user adding the model</param>
     public static void Create(this AddressModel model, int id, EditibleAddressModel props, string user)
     {
 		model.HouseNumber = props.HouseNumber;
@@ -32,6 +42,13 @@ public static class AddressExtensions
         
     }
 
+    /// <summary>
+    /// Update Address Model of id by applying a set of properties based on the permissions of the user
+    /// </summary>
+    /// <param name="model">Model to update</param>
+    /// <param name="updates">New parameters of model</param>
+    /// <param name="user">User doing the update</param>
+    /// <returns></returns>
     public static AddressModel Update(this AddressModel model, EditibleAddressModel updates, string user)
     {
         bool previousHiddenState = model.IsHidden;

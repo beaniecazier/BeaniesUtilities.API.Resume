@@ -11,30 +11,29 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Gay.TCazier.DatabaseParser.Services;
 
+/// <summary>
+/// Service class for Address Model to handle CRUD operations with database
+/// </summary>
 public class AddressService : BaseModelService, IAddressService
 {
     #region Fields
 
-    IServiceProvider _provider;
 
     #endregion
 
     #region Constructors
 
-    public AddressService(IServiceProvider provider)
-    {
-        _provider = provider;
-    }
 
     #endregion
 
     #region Create
 
     /// <summary>
-    /// 
+    /// Create and insert model into database
     /// </summary>
-    /// <param name="editibleAttributes"></param>
-    /// <returns></returns>
+    /// <param name="ctx">The database context</param>
+    /// <param name="editibleAttributes">New model parameters</param>
+    /// <returns>Created model or the conditions that caused failure</returns>
     public async Task<Fin<AddressModel>> CreateAsync(ResumeContext ctx, EditibleAddressModel editibleAttributes)
     {
         if (ctx == null)
@@ -65,6 +64,11 @@ public class AddressService : BaseModelService, IAddressService
 
     #region Read
 
+    /// <summary>
+    /// Retrieve all models from database
+    /// </summary>
+    /// <param name="ctx">The database context</param>
+    /// <returns>A list of all Address Models or the fail conditions</returns>
     public async Task<Fin<IEnumerable<AddressModel>>> GetAllAsync(ResumeContext ctx)
     {
         if (ctx == null)
@@ -80,64 +84,12 @@ public class AddressService : BaseModelService, IAddressService
         return entries;
     }
 
-    public async Task<Fin<IEnumerable<AddressModel>>> GetAllWithinEntryIDRangeAsync(ResumeContext ctx, int start, int end)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        var entries = await ctx.Addresses
-            .Where(x => x.EntryIdentity >= start &&
-                        x.EntryIdentity <= end)
-            .ToListAsync();
-        return entries;
-    }
-
-    public async Task<Fin<IEnumerable<AddressModel>>> GetAllWithinIDRangeAsync(ResumeContext ctx, int start, int end)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        var entries = await ctx.Addresses
-            .Where(x => x.CommonIdentity >= start &&
-                        x.CommonIdentity <= end &&
-                        !x.IsHidden)
-            .ToListAsync();
-        return entries;
-    }
-
-    public async Task<Fin<AddressModel>> GetByEntryIDAsync(ResumeContext ctx, int id)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        try
-        {
-            var entry = await ctx.Addresses
-                .Where(x => x.EntryIdentity == id)
-                .SingleOrDefaultAsync();
-            return entry;
-        }
-        catch (Exception ex)
-        {
-            return Error.New(ex);
-        }
-    }
-
+    /// <summary>
+    /// Retrieve specific model by id from database
+    /// </summary>
+    /// <param name="ctx">The database context</param>
+    /// <param name="id">Id of model to retrieve</param>
+    /// <returns>Found model or the fail condition</returns>
     public async Task<Fin<AddressModel>> GetByIDAsync(ResumeContext ctx, int id)
     {
         if (ctx == null)
@@ -160,96 +112,19 @@ public class AddressService : BaseModelService, IAddressService
             return Error.New(ex);
         }
     }
-
-    //public async Task<Fin<IEnumerable<AddressModel>>> GetHistroyOfIDAsync(ResumeContext ctx, int id)
-    //{
-    //    if (ctx == null)
-    //    {
-    //        return Error.New(
-    //            new NullReferenceException(
-    //                "The provider returned a null DbContext while trying to create a new Address model"
-    //                ));
-    //    }
-
-    //    var entries = await ctx.Addresses
-    //        .Where(x => x.EntryIdentity == id)
-    //        .ToListAsync();
-    //    return entries;
     //}
-
-    #endregion
-
-    #region Query
-
-    public async Task<Fin<IEnumerable<AddressModel>>> SearchBetweenModificationDatesAsync(ResumeContext ctx, DateTime start, DateTime end)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<AddressModel>>> SearchByIsDeletedAsync(ResumeContext ctx, string searchTerm)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<AddressModel>>> SearchByIsHiddenAsync(ResumeContext ctx, string searchTerm)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<AddressModel>>> SearchByNameAsync(ResumeContext ctx, string searchTerm)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        throw new NotImplementedException();
-    }
-
-    public async Task<Fin<IEnumerable<AddressModel>>> SearchByNotesAsync(ResumeContext ctx, string searchTerm)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        throw new NotImplementedException();
-    }
 
     #endregion
 
     #region Update
 
+    /// <summary>
+    /// Update model of id in the database
+    /// </summary>
+    /// <param name="ctx">The database context</param>
+    /// <param name="id">Id of model to update</param>
+    /// <param name="editibleAttributes">Model's new parameters</param>
+    /// <returns>The updated model or the fail condition</returns>
     public async Task<Fin<AddressModel>> UpdateAsync(ResumeContext ctx, int id, EditibleAddressModel editibleAttributes)
     {
         if (ctx == null)
@@ -285,7 +160,13 @@ public class AddressService : BaseModelService, IAddressService
 
     #region Delete
 
-    public async Task<Fin<IEnumerable<AddressModel>>> DeleteAsync(ResumeContext ctx, int id)
+    /// <summary>
+    /// Delete model from database
+    /// </summary>
+    /// <param name="ctx">The database context</param>
+    /// <param name="id">Id of model to delete</param>
+    /// <returns>The last copy of the model of the fail condition</returns>
+    public async Task<Fin<AddressModel>> DeleteAsync(ResumeContext ctx, int id)
     {
         if (ctx == null)
         {
@@ -308,32 +189,8 @@ public class AddressService : BaseModelService, IAddressService
         foreach (var entry in existingEntry) entry.IsDeleted = true;
 
         await ctx.SaveChangesAsync();
-
-        return existingEntry;
-    }
-
-    public async Task<Fin<AddressModel>> DeleteEntryAsync(ResumeContext ctx, int id)
-    {
-        if (ctx == null)
-        {
-            return Error.New(
-                new NullReferenceException(
-                    "The provider returned a null DbContext while trying to create a new Address model"
-                    ));
-        }
-
-        var existingEntry = await ctx.Addresses
-            .Where(x => x.CommonIdentity == id &&
-                (!x.IsDeleted))
-            .SingleOrDefaultAsync();
-
-        if (existingEntry is null) return existingEntry;
-
-        existingEntry.IsDeleted = true;
-
-        await ctx.SaveChangesAsync();
-
-        return existingEntry;
+        var lastEntryId = existingEntry.Max(x => x.EntryIdentity);
+        return existingEntry.Find(x => x.EntryIdentity == lastEntryId);
     }
 
     #endregion

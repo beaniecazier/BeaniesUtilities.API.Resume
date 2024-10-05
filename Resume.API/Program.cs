@@ -19,6 +19,7 @@ builder.Services.Configure<JsonOptions>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.EnableAnnotations();
     options.SwaggerDoc("v1", new OpenApiInfo()
     {
         Title = "Resume SQL DB Operations For Version 1 Of The Schema",
@@ -36,8 +37,8 @@ builder.Services.AddSwaggerGen(options =>
         },
         TermsOfService = new Uri("https://example.com/terms"),
     });
-    //var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 // Add a DbContext here
