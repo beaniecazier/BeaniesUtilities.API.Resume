@@ -1,26 +1,33 @@
 ﻿# Done
 *move secret info to secret places - moves to user secrets, dont know if issues will arise from this using for now
+create the update extension method for each model type
 
 # TODO
 
-check each of the main/common service functions for AddressModel
 logging
-DI
-dbcontext factory?
-swagger versioning stuff
-add testing
 version
 license
 read me
 release notes
 git
-custom json bindings?
 cmd arg parsing
+
+DI
+dbcontext factory?
+swagger versioning stuff
+custom json bindings?
+
+validation
+add testing
+check each of the main/common service functions for AddressModel
 determine how to implement query stuff
+
 create tool for auto gen templated files for each model type
-create the update extension method for each model type
+
 authorization/authentication
 bring in v1.0 of all my nuget dependencies
+
+Release V1.0
 
 CORS?? maybe this is waht is needed to have a login page that gens an auth token that can then be shared with each API
 finish adding the fluent stuff to each of the endpoints based on correct web codes

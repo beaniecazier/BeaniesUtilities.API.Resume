@@ -8,6 +8,7 @@ using Gay.TCazier.DatabaseParser.Services.Interfaces;
 using Gay.TCazier.DatabaseParser.Data.Contexts;
 using LanguageExt;
 using LanguageExt.Traits;
+using Serilog;
 
 namespace Gay.TCazier.DatabaseParser.Endpoints;
 
@@ -18,7 +19,6 @@ public class AddressEndpoints : IEndpoints
 {
     private const string ContentType = "application/json";
     private const string Tag = "Addresses";
-    private const string BaseRoute = "Addresses";
 
     /// <summary>
     /// Address Model API base route
@@ -32,6 +32,7 @@ public class AddressEndpoints : IEndpoints
     /// <param name="configuration"></param>
     public static void AddServices(IServiceCollection services, IConfiguration configuration)
     {
+        Log.Information("Adding Address Model Service to the DI Container");
         services.AddSingleton<IAddressService, AddressService>();
     }
 
@@ -42,6 +43,7 @@ public class AddressEndpoints : IEndpoints
     public static void DefineEndpoints(IEndpointRouteBuilder app)
     {
         // Create Endpoints
+        Log.Information("Now adding Address Model post endpoints");
         app.MapPost(BaseRoute, CreateAddressModelAsync)
             .WithName("CreateAddress")
             .Accepts<EditibleAddressModel>(ContentType)
@@ -50,6 +52,7 @@ public class AddressEndpoints : IEndpoints
             .WithTags(Tag);
 
         // Read Endpoints
+        Log.Information("Now adding Address Model get endpoints");
         app.MapGet(BaseRoute, GetAllAddressModelsAsync)
             .WithName("GetAllAddressModels")
             .Produces(200)
@@ -63,6 +66,7 @@ public class AddressEndpoints : IEndpoints
             .WithTags(Tag);
 
         // Update Endpoints
+        Log.Information("Now adding Address Model put endpoints");
         app.MapPut($"{BaseRoute}/{{id}}", UpdateAddressModelAsync)
             .WithName("UpdateAddressModel")
             .Accepts<EditibleAddressModel>(ContentType)
@@ -72,6 +76,7 @@ public class AddressEndpoints : IEndpoints
             .WithTags(Tag);
 
         // Delete Endpoints
+        Log.Information("Now adding Address Model delete endpoints");
         app.MapDelete($"{BaseRoute}/{{id}}", DeleteAsync)
             .WithName("DeleteAddressModel")
             .Produces(200)
@@ -91,6 +96,7 @@ public class AddressEndpoints : IEndpoints
     /// <param name="linker">The web linker</param>
     /// <param name="http">the http context</param>
     /// <param name="ctx">The database context</param>
+    /// <param name="log">The logger</param>
     /// <returns>The newly created model</returns>
     /// <response code="201">Model was successfully created and added to the database</response>
     /// <response code="400">Something went wrong or the database does not exist</response>
@@ -98,19 +104,18 @@ public class AddressEndpoints : IEndpoints
         IAddressService service, IValidator<EditibleAddressModel> vaildator,
         LinkGenerator linker, HttpContext http, ResumeContext ctx)
     {
+        Log.Information("Create Address Model endpoint called");
+
         var validationResult = await vaildator.ValidateAsync(newEntry);
 
         if (!validationResult.IsValid) return Results.BadRequest(validationResult.Errors);
 
         var created = await service.CreateAsync(ctx, newEntry);
 
-        //return Results.BadRequest(new List<ValidationFailure>
-        //{
-        //    new ("ID", "This Address already exists in the database." ),
-        //});
         return created.Match(
             succ =>
             {
+                //Log.Information("Address Model Created {@succ}");
                 var locationUri = linker.GetUriByName(http, "GetAddressModel", new { id = succ.CommonIdentity });
                 return Results.Created(locationUri, succ.CommonIdentity);
             },
@@ -126,6 +131,7 @@ public class AddressEndpoints : IEndpoints
     /// </summary>
     /// <param name="service">The service class the serves this endpoint for database operations</param>
     /// <param name="ctx">The database context</param>
+    /// <param name="log">The logger</param>
     /// <param name="nameSearchTerm">REGEX used to query for models with matching name field</param>
     /// <param name="notesSearchTerm">REGEX to query for models across all notes</param>
     /// <param name="start">Date and time for start range of query. If left empty, all model that were last modified or created before end will be returned</param>
@@ -141,6 +147,8 @@ public class AddressEndpoints : IEndpoints
         string? notesSearchTerm, DateTime? start, DateTime? end, bool? allowHidden, bool? allowDeleted,
         int? idLowerBound, int? idUpperBound)
     {
+        Log.Information("Get All Address Models endpoint called");
+
         var entries = await service.GetAllAsync(ctx);
         return entries.Match(
             Succ => Results.Ok(entries),
@@ -153,12 +161,15 @@ public class AddressEndpoints : IEndpoints
     /// <param name="id">The model id used to query the database</param>
     /// <param name="service">The service class the serves this endpoint for database operations</param>
     /// <param name="ctx">The database context</param>
+    /// <param name="log">The logger</param>
     /// <returns>The searched model</returns>
     /// <response code="200">Get successful</response>
     /// <response code="400">Something went wrong or the database does not exist</response>
     /// <response code="404">Id was not found in the database</response>
     private static async Task<IResult> GetAddressModelByIDAsync(int id, IAddressService service, ResumeContext ctx)
     {
+        Log.Information("Get Address Model endpoint called with id");
+
         var entry = await service.GetByIDAsync(ctx, id);
         return entry.Match(
             Succ => Succ is null ? Results.NotFound() : Results.Ok(Succ),
@@ -177,6 +188,7 @@ public class AddressEndpoints : IEndpoints
     /// <param name="service">The service class the serves this endpoint for database operations</param>
     /// <param name="vaildator">Address Model value validator</param>
     /// <param name="ctx">The database context</param>
+    /// <param name="log">The logger</param>
     /// <returns>The updated copy of the Address Model</returns>
     /// <response code="200">Update successful</response>
     /// <response code="400">Something went wrong or the database does not exist</response>
@@ -184,6 +196,8 @@ public class AddressEndpoints : IEndpoints
     private static async Task<IResult> UpdateAddressModelAsync(int id, EditibleAddressModel changes,
         IAddressService service, IValidator<EditibleAddressModel> vaildator, ResumeContext ctx)
     {
+        Log.Information("Update Address Model endpoint called");
+
         var validationResult = await vaildator.ValidateAsync(changes);
 
         if (!validationResult.IsValid)
@@ -207,6 +221,7 @@ public class AddressEndpoints : IEndpoints
     /// <param name="id">The id of the Address Model to delete form the database</param>
     /// <param name="service">The service class the serves this endpoint for database operations</param>
     /// <param name="ctx">The database context</param>
+    /// <param name="log">The logger</param>
     /// <returns>Returns no content on a successful delete</returns>
     /// <response code="200">Delete worked, returns the last surviving copy</response>
     /// <response code="204">Nothing was found that need deleted</response>
@@ -214,6 +229,8 @@ public class AddressEndpoints : IEndpoints
     /// <response code="404">Id was not found in the database</response>
     private static async Task<IResult> DeleteAsync(int id, IAddressService service, ResumeContext ctx)
     {
+        Log.Information("Delete Address Model endpoint called");
+
         var entry = await service.DeleteAsync(ctx, id);
         return entry.Match(
             Succ => Results.Ok(Succ),

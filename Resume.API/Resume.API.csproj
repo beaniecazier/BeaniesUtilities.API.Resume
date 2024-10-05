@@ -8,7 +8,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="APIUtilities" Version="0.1.1-alpha" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="LanguageExt.Core" Version="5.0.0-beta-22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-rc.1.24451.1" />
@@ -16,8 +15,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Resume.SQL" Version="0.1.3-alpha-test" />
+    <PackageReference Include="Serilog" Version="4.1.0-dev-02238" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Process" Version="3.0.0" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BeaniesUtilities\APIUtilities\APIUtilities.csproj" />
+    <ProjectReference Include="..\..\..\BeaniesUtilities\SQLDataOperations\Resume\Resume.SQL.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <EnableDefaultCompileItems>true</EnableDefaultCompileItems>

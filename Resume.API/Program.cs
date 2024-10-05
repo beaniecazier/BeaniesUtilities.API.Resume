@@ -1,13 +1,27 @@
+using BeaniesUtilities.Models.Resume;
 using FluentValidation;
 using Gay.TCazier.DatabaseParser.Data.Contexts;
 using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
+using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Serilog.ILogger logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    //.WriteTo.File("log.txt", rollingInterval:RollingInterval.Day, rollOnFileSizeLimit:true)
+    //.Destructure.ByTransforming<AddressModel> (x => new EditibleAddressModel(x, x.CommonIdentity))
+    .CreateLogger();
+
+Log.Logger = logger;
+
+builder.Host.UseSerilog();
 
 builder.Services.Configure<JsonOptions>(options =>
 {
@@ -81,3 +95,5 @@ app.UseSwaggerUI(c =>
 app.UseEndpoints<Program>();
 
 app.Run();
+
+await Log.CloseAndFlushAsync();
