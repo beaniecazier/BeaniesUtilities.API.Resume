@@ -2,9 +2,6 @@
 *move secret info to secret places - moves to user secrets, dont know if issues will arise from this using for now
 
 # TODO
-figure out what the correct/expected web codes are for each of the CRUD functions
-finish adding the fluent stuff to each of the endpoints based on correct web codes
-remove all controllers
 
 check each of the main/common service functions for AddressModel
 logging
@@ -17,20 +14,26 @@ license
 read me
 release notes
 git
-custom josn bindings?
+custom json bindings?
 cmd arg parsing
 determine how to implement query stuff
 create tool for auto gen templated files for each model type
 create the update extension method for each model type
 authorization/authentication
+bring in v1.0 of all my nuget dependencies
+
 CORS?? maybe this is waht is needed to have a login page that gens an auth token that can then be shared with each API
+finish adding the fluent stuff to each of the endpoints based on correct web codes
 seeing nick videos Customizing Results to see a server status page example
 exclude status page from swagger
 implement get history of id
+implement various queries
 different pages for different tags?
+change endpoint prefix for degrees and institutions
+clean warnings
 
 
-
+SECURITY
 
 
     //options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -61,3 +64,329 @@ different pages for different tags?
     //        new string[]{}
     //    }
     //});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ENDPOINT Stuff add history and entry querying not just id
+
+
+        app.MapGet($"{BaseRoute}/entry{{entryId}}", GetAddressModelByEntryIDAsync)
+            .WithName("GetAddressModelByEntryID")
+            .Produces(200)
+            .Produces<IEnumerable<ValidationFailure>>(400)      // you gave bad info
+            .Produces(404)                                      // could not find entry to update
+            .WithTags(Tag);
+
+        //app.MapGet($"{BaseRoute}/history{{id}}", GetHistroyOfAddressModelByIDAsync)
+        //    .WithName("GetHistroyOfAddressModelByID")
+        //    .WithTags(Tag);
+
+        app.MapDelete($"{BaseRoute}/entry{{entryId}}", DeleteEntryAsync)
+            .WithName("DeleteAddressModelEntry")
+            .Produces(200)
+            .Produces(204)
+            .Produces(404)                                      // could not find entry to update
+            .WithTags(Tag);
+
+
+
+    /// <summary>
+    /// Retrieve all Address Models from the database
+    /// </summary>
+    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="ctx">The database context</param>
+    /// <param name="nameSearchTerm">REGEX used to query for models with matching name field</param>
+    /// <param name="notesSearchTerm">REGEX to query for models across all notes</param>
+    /// <param name="start">Date and time for start range of query. If left empty, all model that were last modified or created before end will be returned</param>
+    /// <param name="end">Date and time for the end of the search range. If left empty, all model that were last modified or created after start will be returned</param>
+    /// <param name="allowHidden">Allow query to include hidden entries</param>
+    /// <param name="allowDeleted">Allow query to include deleted entries</param>
+    /// <param name="idLowerBound">Id search range lower bound. If left empty, all model that with an id before end will be returned</param>
+    /// <param name="idUpperBound">Id search range upper bound. If left empty, all model that with an id before end will be returned</param>
+    /// <param name="entryLowerBound">TODO</param>
+    /// <param name="entryUpperBound">TODO</param>
+    /// <returns>A list of all Address Models in the database</returns>
+    /// <response code="200">Update successful</response>
+    /// <response code="204">Nothing was found that need deleted</response>
+    /// <response code="400">Something went wrong or the database does not exist</response>
+    /// <response code="404">If the id is not found in the database</response>
+    private static async Task<IResult> GetAllAddressModelsAsync(IAddressService service, ResumeContext ctx, string? nameSearchTerm,
+        string? notesSearchTerm, DateTime? start, DateTime? end, bool? allowHidden, bool? allowDeleted,
+        int? idLowerBound, int? idUpperBound, int? entryLowerBound, int? entryUpperBound)
+    {
+        var entries = await service.GetAllAsync(ctx);
+        return entries.Match(
+            Succ => Results.Ok(entries),
+            Fail => Results.BadRequest(Fail.ToException()));
+    }
+
+    /// <summary>
+    /// Query the database by id for a specific entry
+    /// </summary>
+    /// <param name="entryId">The id of the specific database entry to lookup</param>
+    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="ctx">The database context</param>
+    /// <returns>The searched entry</returns>
+    /// <response code="200">Update successful</response>
+    /// <response code="204">Nothing was found that need deleted</response>
+    /// <response code="400">Something went wrong or the database does not exist</response>
+    /// <response code="404">If the id is not found in the database</response>
+    private static async Task<IResult> GetAddressModelByEntryIDAsync(int entryId,IAddressService service, ResumeContext ctx)
+    {
+        var entry = await service.GetByEntryIDAsync(ctx, entryId);
+        return entry.Match(
+            Succ => Succ is null ? Results.NotFound() : Results.Ok(Succ),
+            Fail => Results.BadRequest(Fail.ToException()));
+    }
+
+    //private static async Task<IResult> GetHistroyOfAddressModelByIDAsync(int id, IAddressService service, ResumeContext ctx)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    /// <summary>
+    /// Delete an Address Model by its id along with all of its history
+    /// </summary>
+    /// <param name="id">The id of the Address Model to delete form the database</param>
+    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="ctx">The database context</param>
+    /// <returns>Returns no content on a successful delete</returns>
+    /// <response code="200">Delete worked, returns the last surviving copy</response>
+    /// <response code="204">Nothing was found that need deleted</response>
+    /// <response code="400">Something went wrong or the database does not exist</response>
+    /// <response code="404">If the id is not found in the database</response>
+    private static async Task<IResult> DeleteEntryAsync(int id, IAddressService service, ResumeContext ctx)
+    {
+        var entry = await service.DeleteEntryAsync(ctx, id);
+        return entry.Match(
+            Succ => Results.Ok(Succ),
+            Fail =>
+            {
+                var ex = Fail.ToException();
+                if (ex.Message == "204 - Nothing to delete") return Results.NotFound();
+                if (ex.Message == $"404 - No entries with id {id}") return Results.NotFound();
+                return Results.BadRequest(ex);
+            });
+    }
+
+
+SERVICE INTERFACE
+
+    public Task<Fin<IEnumerable<AddressModel>>> GetAllWithinEntryIDRangeAsync(ResumeContext ctx, int start, int end);
+    public Task<Fin<AddressModel>> GetByEntryIDAsync(ResumeContext ctx, int id);
+    //public Task<Fin<AddressModel>> GetHistroyOfIDAsync(ResumeContext ctx, int id);
+    public Task<Fin<AddressModel>> DeleteEntryAsync(ResumeContext ctx, int id);
+
+SERVICE Functions
+
+
+    public async Task<Fin<IEnumerable<AddressModel>>> GetAllWithinEntryIDRangeAsync(ResumeContext ctx, int start, int end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        var entries = await ctx.Addresses
+            .Where(x => x.EntryIdentity >= start &&
+                        x.EntryIdentity <= end)
+            .ToListAsync();
+        return entries;
+    }
+
+    public async Task<Fin<AddressModel>> GetByEntryIDAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        try
+        {
+            var entry = await ctx.Addresses
+                .Where(x => x.EntryIdentity == id)
+                .SingleOrDefaultAsync();
+            return entry;
+        }
+        catch (Exception ex)
+        {
+            return Error.New(ex);
+        }
+    }
+
+    //public async Task<Fin<IEnumerable<AddressModel>>> GetHistroyOfIDAsync(ResumeContext ctx, int id)
+    //{
+    //    if (ctx == null)
+    //    {
+    //        return Error.New(
+    //            new NullReferenceException(
+    //                "The provider returned a null DbContext while trying to create a new Address model"
+    //                ));
+    //    }
+
+    //    var entries = await ctx.Addresses
+    //        .Where(x => x.EntryIdentity == id)
+    //        .ToListAsync();
+    //    return entries;
+
+    public async Task<Fin<AddressModel>> DeleteEntryAsync(ResumeContext ctx, int id)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        var existingEntry = await ctx.Addresses
+            .Where(x => x.CommonIdentity == id &&
+                (!x.IsDeleted))
+            .SingleOrDefaultAsync();
+
+        if (existingEntry is null) return existingEntry;
+
+        existingEntry.IsDeleted = true;
+
+        await ctx.SaveChangesAsync();
+
+        return existingEntry;
+    }
+
+
+
+
+
+
+
+
+
+    QUERY SUFF FOR SERVICE
+    
+
+    public Task<Fin<IEnumerable<AddressModel>>> GetAllWithinIDRangeAsync(ResumeContext ctx, int start, int end);
+    public Task<Fin<IEnumerable<AddressModel>>> SearchByNameAsync(ResumeContext ctx, string searchTerm);
+    public Task<Fin<IEnumerable<AddressModel>>> SearchByNotesAsync(ResumeContext ctx, string searchTerm);
+    public Task<Fin<IEnumerable<AddressModel>>> SearchBetweenModificationDatesAsync(ResumeContext ctx, DateTime start, DateTime end);
+    public Task<Fin<IEnumerable<AddressModel>>> SearchByIsHiddenAsync(ResumeContext ctx, string searchTerm);
+    public Task<Fin<IEnumerable<AddressModel>>> SearchByIsDeletedAsync(ResumeContext ctx, string searchTerm);
+
+
+
+
+    
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="ctx"></param>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    /// <returns></returns>
+    public async Task<Fin<IEnumerable<AddressModel>>> GetAllWithinIDRangeAsync(ResumeContext ctx, int start, int end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        var entries = await ctx.Addresses
+            .Where(x => x.CommonIdentity >= start &&
+                        x.CommonIdentity <= end &&
+                        !x.IsHidden)
+            .ToListAsync();
+        return entries;
+    }
+    
+    #region Query
+
+    public async Task<Fin<IEnumerable<AddressModel>>> SearchBetweenModificationDatesAsync(ResumeContext ctx, DateTime start, DateTime end)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        throw new NotImplementedException();
+    }
+
+    public async Task<Fin<IEnumerable<AddressModel>>> SearchByIsDeletedAsync(ResumeContext ctx, string searchTerm)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        throw new NotImplementedException();
+    }
+
+    public async Task<Fin<IEnumerable<AddressModel>>> SearchByIsHiddenAsync(ResumeContext ctx, string searchTerm)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        throw new NotImplementedException();
+    }
+
+    public async Task<Fin<IEnumerable<AddressModel>>> SearchByNameAsync(ResumeContext ctx, string searchTerm)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        throw new NotImplementedException();
+    }
+
+    public async Task<Fin<IEnumerable<AddressModel>>> SearchByNotesAsync(ResumeContext ctx, string searchTerm)
+    {
+        if (ctx == null)
+        {
+            return Error.New(
+                new NullReferenceException(
+                    "The provider returned a null DbContext while trying to create a new Address model"
+                    ));
+        }
+
+        throw new NotImplementedException();
+    }
+
+    #endregion

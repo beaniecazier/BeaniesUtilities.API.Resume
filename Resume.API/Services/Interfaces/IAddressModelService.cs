@@ -6,20 +6,12 @@ using LanguageExt.Common;
 
 namespace Gay.TCazier.DatabaseParser.Services.Interfaces;
 
+#pragma warning disable CS1591
+
 public interface IAddressService
 {
     public Task<Fin<IEnumerable<AddressModel>>> GetAllAsync(ResumeContext ctx);
-    public Task<Fin<IEnumerable<AddressModel>>> GetAllWithinIDRangeAsync(ResumeContext ctx, int start, int end);
-    public Task<Fin<IEnumerable<AddressModel>>> GetAllWithinEntryIDRangeAsync(ResumeContext ctx, int start, int end);
     public Task<Fin<AddressModel>> GetByIDAsync(ResumeContext ctx, int id);
-    public Task<Fin<AddressModel>> GetByEntryIDAsync(ResumeContext ctx, int id);
-    //public Task<Fin<AddressModel>> GetHistroyOfIDAsync(ResumeContext ctx, int id);
-
-    public Task<Fin<IEnumerable<AddressModel>>> SearchByNameAsync(ResumeContext ctx, string searchTerm);
-    public Task<Fin<IEnumerable<AddressModel>>> SearchByNotesAsync(ResumeContext ctx, string searchTerm);
-    public Task<Fin<IEnumerable<AddressModel>>> SearchBetweenModificationDatesAsync(ResumeContext ctx, DateTime start, DateTime end);
-    public Task<Fin<IEnumerable<AddressModel>>> SearchByIsHiddenAsync(ResumeContext ctx, string searchTerm);
-    public Task<Fin<IEnumerable<AddressModel>>> SearchByIsDeletedAsync(ResumeContext ctx, string searchTerm);
 
     //ADD YOUR MODEL SPECIFIC QUERY SERVICE FUNCTIONS HERE
 
@@ -27,6 +19,7 @@ public interface IAddressService
 
     public Task<Fin<AddressModel>> UpdateAsync(ResumeContext ctx, int id, EditibleAddressModel editibleAttributes);
 
-    public Task<Fin<IEnumerable<AddressModel>>> DeleteAsync(ResumeContext ctx, int id);
-    public Task<Fin<AddressModel>> DeleteEntryAsync(ResumeContext ctx, int id);
+    public Task<Fin<AddressModel>> DeleteAsync(ResumeContext ctx, int id);
 }
+
+#pragma warning restore CS1591
