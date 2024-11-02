@@ -1,13 +1,13 @@
+using BeaniesUtilities.Models.Resume;
 using FluentValidation;
-using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
 
-namespace Gay.TCazier.DatabaseParser.Validators;
+namespace Gay.TCazier.Resume.BLL.Validators;
 
 #pragma warning disable CS1591
 
-public class AddressModelVaildator : AbstractValidator<EditibleAddressModel>
+public class AddressModelValidator : AbstractValidator<AddressModel>
 {
-    public AddressModelVaildator()
+    public AddressModelValidator()
     {
         //RuleFor(entry => entry.StreetName)
         //    .Matches(@".*")

@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.Models", "..\..\Bean
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "..\..\BeaniesUtilities\Models\Models\Models.csproj", "{8DD82C3D-7241-4B63-A152-98D585B855E5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.Contracts", "Resume.Contracts\Resume.Contracts.csproj", "{7293A194-0BAA-4574-AC4F-96DBE1EF6E7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resume.BLL", "Resume.BLL\Resume.BLL.csproj", "{840223FF-ACAB-408D-B6C9-048339D2B48A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{8DD82C3D-7241-4B63-A152-98D585B855E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DD82C3D-7241-4B63-A152-98D585B855E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DD82C3D-7241-4B63-A152-98D585B855E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7293A194-0BAA-4574-AC4F-96DBE1EF6E7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7293A194-0BAA-4574-AC4F-96DBE1EF6E7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7293A194-0BAA-4574-AC4F-96DBE1EF6E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7293A194-0BAA-4574-AC4F-96DBE1EF6E7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{840223FF-ACAB-408D-B6C9-048339D2B48A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{840223FF-ACAB-408D-B6C9-048339D2B48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{840223FF-ACAB-408D-B6C9-048339D2B48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{840223FF-ACAB-408D-B6C9-048339D2B48A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

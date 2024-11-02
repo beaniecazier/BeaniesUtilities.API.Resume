@@ -1,8 +1,8 @@
 ﻿using BeaniesUtilities.Models.Resume;
-using BeaniesUtilities.SQLDataOperations.Resume.EntityMapping;
+using BeaniesUtilities.SQLDataOperations.Resume.SQL.EntityMapping;
 using Microsoft.EntityFrameworkCore;
 
-namespace Gay.TCazier.DatabaseParser.Data.Contexts;
+namespace Gay.TCazier.Resume.BLL.Contexts;
 
 public class ResumeContext : DbContext
 {

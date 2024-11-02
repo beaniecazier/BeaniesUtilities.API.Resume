@@ -1,36 +1,45 @@
-using BeaniesUtilities.Models.Resume;
-using FluentValidation;
-using Gay.TCazier.DatabaseParser.Data.Contexts;
-using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
-using Gay.TCazier.DatabaseParser.Models.EditibleAttributes;
-using Microsoft.AspNetCore.Mvc;
+﻿using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
+using Gay.TCazier.Resume.BLL;
+using Gay.TCazier.Resume.BLL.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
 using System.Reflection;
-using System.Text.Json.Serialization;
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 Serilog.ILogger logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     //.WriteTo.File("log.txt", rollingInterval:RollingInterval.Day, rollOnFileSizeLimit:true)
     //.Destructure.ByTransforming<AddressModel> (x => new EditibleAddressModel(x, x.CommonIdentity))
     .CreateLogger();
-
 Log.Logger = logger;
-
 builder.Host.UseSerilog();
 
-builder.Services.Configure<JsonOptions>(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-});
+builder.Services.AddJsonConfigurationOptions();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddSecurity();
+
+//builder.Services.AddScoped<ApiKeyAuthFilter>();
+
+//builder.Services.AddApiVersioning(x =>
+//{
+//    x.DefaultApiVersion = new ApiVersion(1.0);
+//    x.AssumeDefaultVersionWhenUnspecified = true;
+//    x.ReportApiVersions = true;
+//    x.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+//}).AddApiExplorer();
+
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddOutputCacheing();
+
+//builder.Services.AddHealthChecks()
+//    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.EnableAnnotations();
@@ -55,16 +64,17 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-// Add a DbContext here
+builder.Services.AddApplication();
+
 var connStr = builder.Configuration.GetConnectionString("Dev");
-builder.Services.AddDbContext<ResumeContext>(options =>
+if (string.IsNullOrWhiteSpace(connStr))
 {
-    options.UseSqlServer(connStr);
-});
+    Log.Fatal("");
+    return;
+}
+builder.Services.AddDatabase(connStr);
 
 builder.Services.AddEndpoints<Program>(builder.Configuration);
-
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
 
@@ -86,11 +96,10 @@ app.UseSwagger(options =>
 });
 
 app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("v1/swagger.json", "v1");
-        c.RoutePrefix = "resume/swagger";
-    }
-);
+{
+    c.SwaggerEndpoint("v1/swagger.json", "v1");
+    c.RoutePrefix = "resume/swagger";
+});
 
 app.UseEndpoints<Program>();
 
