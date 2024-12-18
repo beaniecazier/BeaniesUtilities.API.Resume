@@ -1,20 +1,21 @@
-﻿using BeaniesUtilities.Models.Resume;
+using BeaniesUtilities.Models.Resume;
 using Gay.TCazier.Resume.BLL.Contexts;
 using Gay.TCazier.Resume.BLL.Database;
+using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.Resume.BLL.Repositories.Interfaces;
 using LanguageExt;
 using LanguageExt.Common;
 
 namespace Gay.TCazier.Resume.BLL.Repositories;
 
-public class AddressModelInMemRepository : IRepository<AddressModel>
+public class AddressModelInMemRepository : IAddressModelRepository
 {
     List<AddressModel> _addresses = new();
 
     public Task<int> GetNextAvailableId()
     {
         int lastId = -1;
-        if(_addresses.Count > 0)
+        if (_addresses.Count > 0)
         {
             lastId = _addresses.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
@@ -30,19 +31,28 @@ public class AddressModelInMemRepository : IRepository<AddressModel>
     public Task<int> CreateAsync(AddressModel model, ResumeContext ctx, CancellationToken token = default)
     {
         int nextSpot = _addresses.Count == 0 ? 0 : _addresses.Count;
-        _addresses.Add(new AddressModel(model, "Tiabeanie", entryId:nextSpot));
+        _addresses.Add(new AddressModel(model, "Tiabeanie", entryId: nextSpot));
         return Task.FromResult(1);
     }
 
-    public async Task<Fin<IEnumerable<AddressModel>>> TryGetAllAsync(CancellationToken token = default)
+    public async Task<Fin<IEnumerable<AddressModel>>> TryGetAllAsync(GetAllAddressModelsOptions options, CancellationToken token = default)
     {
-        try { return (await GetAllAsync(null, token)).ToList(); }
+        try { return (await GetAllAsync(options, null, token)).ToList(); }
         catch (Exception ex) { return Error.New(ex); }
     }
 
-    public Task<IEnumerable<AddressModel>> GetAllAsync(ResumeContext ctx, CancellationToken token = default)
+    public Task<IEnumerable<AddressModel>> GetAllAsync(GetAllAddressModelsOptions options, ResumeContext ctx, CancellationToken token = default)
     {
-        return Task.FromResult(_addresses.GroupByAndFindLatest());
+        var models = _addresses.GroupByAndFindLatest(options.AllowHidden??false, options.AllowDeleted??false);
+
+        if(!options.HasFilters) return Task.FromResult(models);
+
+        models = models.FilterByIdRange(options.GreaterThanOrEqualToID, options.LessThanOrEqualToID)
+                        .FilterByModifiedDate(options.BeforeDate, options.AfterDate)
+                        .FilterName(options.NameSearchTerm!)
+                        .FilterNotes(options.NotesSearchTerm!);
+
+        return Task.FromResult(models);
     }
 
     public async Task<Fin<AddressModel>> TryGetByIdAsync(int id, CancellationToken token = default)
@@ -54,7 +64,7 @@ public class AddressModelInMemRepository : IRepository<AddressModel>
     public Task<AddressModel> GetByIdAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
         var model = _addresses.GroupByAndFindLatest()
-            .Where(x=>x.CommonIdentity==id)
+            .Where(x => x.CommonIdentity == id && !x.IsHidden && !x.IsDeleted)
             .SingleOrDefault();
         return Task.FromResult(model);
     }
@@ -93,7 +103,7 @@ public class AddressModelInMemRepository : IRepository<AddressModel>
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _addresses.Where(x=>x.CommonIdentity == id).Select(x=>new AddressModel(x, "Tiabeanie", isDeleted:true));
+        var deletions = _addresses.Where(x => x.CommonIdentity == id).Select(x => new AddressModel(x, "Tiabeanie", isDeleted: true));
         _addresses = _addresses.Replace(deletions).ToList();
         return Task.FromResult(1);
     }

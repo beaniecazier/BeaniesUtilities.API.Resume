@@ -1,108 +1,84 @@
-﻿using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
+﻿using Asp.Versioning;
+using BeaniesUtilities.APIUtilities.Endpoints;
+using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
+using Gay.TCazier.Resume.API.Swagger;
+using Gay.TCazier.Resume.API.Versioning;
 using Gay.TCazier.Resume.BLL;
-using Gay.TCazier.Resume.BLL.Contexts;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Gay.TCazier.Resume.BLL.CommandLine;
 using Serilog;
-using System.Reflection;
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
-
-Serilog.ILogger logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    //.WriteTo.File("log.txt", rollingInterval:RollingInterval.Day, rollOnFileSizeLimit:true)
-    //.Destructure.ByTransforming<AddressModel> (x => new EditibleAddressModel(x, x.CommonIdentity))
-    .CreateLogger();
-Log.Logger = logger;
-builder.Host.UseSerilog();
-
-builder.Services.AddJsonConfigurationOptions();
-
-builder.Services.AddSecurity();
-
-//builder.Services.AddScoped<ApiKeyAuthFilter>();
-
-//builder.Services.AddApiVersioning(x =>
-//{
-//    x.DefaultApiVersion = new ApiVersion(1.0);
-//    x.AssumeDefaultVersionWhenUnspecified = true;
-//    x.ReportApiVersions = true;
-//    x.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
-//}).AddApiExplorer();
-
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddOutputCacheing();
-
-//builder.Services.AddHealthChecks()
-//    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
-
-builder.Services.AddSwaggerGen(options =>
+internal class Program
 {
-    options.EnableAnnotations();
-    options.SwaggerDoc("v1", new OpenApiInfo()
+    private static async Task Main(string[] args)
     {
-        Title = "Resume SQL DB Operations For Version 1 Of The Schema",
-        Version = "v1",
-        Description = "Describing things here",
-        Contact = new OpenApiContact
-        {
-            Name = "Name",
-            Url = new Uri("https://example.com/contact")
-        },
-        License = new OpenApiLicense
-        {
-            Name = "Eaxmple License",
-            Url = new Uri("https://example.com/license")
-        },
-        TermsOfService = new Uri("https://example.com/terms"),
-    });
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
+        CommandLineApplicationExtension.ParseCommandLine(args);
 
-builder.Services.AddApplication();
+        var defaultApiVersion = new ApiVersion(1, 0);
+        List<ApiVersion> versions = new List<ApiVersion>()
+        {
+            defaultApiVersion,
+        };
 
-var connStr = builder.Configuration.GetConnectionString("Dev");
-if (string.IsNullOrWhiteSpace(connStr))
-{
-    Log.Fatal("");
-    return;
+        var builder = WebApplication.CreateBuilder(args);
+        var app = builder.AddApplicationServices(defaultApiVersion);
+
+        app.CreateApiVersionSet(versions);
+
+        app.UseSwagger(options =>
+        {
+            options.RouteTemplate = "resume/swagger/{documentname}/swagger.json";
+        });
+
+        app.UseSwaggerUI(c =>
+        {
+            foreach (var description in app.DescribeApiVersions())
+            {
+                c.SwaggerEndpoint($"/resume/swagger/{description.GroupName}/swagger.json", description.GroupName);
+            }
+            c.RoutePrefix = "resume/swagger";
+        });
+
+        //app.UseAuthentication();
+        //app.UseAuthorization();
+
+        app.UseEndpoints<Program>();
+
+        app.Run();
+
+        await Log.CloseAndFlushAsync();
+    }
 }
-builder.Services.AddDatabase(connStr);
 
-builder.Services.AddEndpoints<Program>(builder.Configuration);
-
-var app = builder.Build();
-
-// Check if the DB was migrated
-var scope = app.Services.CreateScope();
-var context = scope.ServiceProvider.GetRequiredService<ResumeContext>();
-
-//dirty hack time to nail down the db schema
-context.Database.EnsureDeleted();
-context.Database.EnsureCreated();
-
-//var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
-//if (pendingMigrations.Any())
-//    throw new Exception("Database is not fully migrated for MoviesContext.");
-
-app.UseSwagger(options =>
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+public static class ProgramExtensions
 {
-    options.RouteTemplate = "resume/swagger/{documentname}/swagger.json";
-});
+    internal static WebApplication? AddApplicationServices(this WebApplicationBuilder? builder, ApiVersion defaultApiVersion)
+    {
+        var config = builder!.Configuration;
 
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("v1/swagger.json", "v1");
-    c.RoutePrefix = "resume/swagger";
-});
+        builder.AddLoggingWithSerilog(config);
 
-app.UseEndpoints<Program>();
+        builder.Services.AddJsonConfigurationOptions();
 
-app.Run();
+        //builder.Services.AddSecurity(config);
 
-await Log.CloseAndFlushAsync();
+        builder.Services.AddApiVersioningSettings(defaultApiVersion);
+
+        //builder.Services.AddOutputAndResponseCacheing();
+
+        //builder.Services.AddHealthCheckServices();
+
+        builder.Services.ConfigureAndAddSwagger(config);
+
+        builder.Services.AddApplication();
+
+        builder.Services.AddDatabase(config);
+
+        builder.Services.AddEndpoints<Program>(config);
+
+        return builder.Build();
+    }
+}
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

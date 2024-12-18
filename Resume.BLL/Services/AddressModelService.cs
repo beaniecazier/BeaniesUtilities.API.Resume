@@ -1,32 +1,37 @@
-﻿using BeaniesUtilities.Models.Resume;
+using BeaniesUtilities.Models.Resume;
 using LanguageExt;
 using LanguageExt.Common;
 using FluentValidation;
 using FluentValidation.Results;
 using Gay.TCazier.Resume.BLL.Repositories.Interfaces;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
+using Gay.TCazier.Resume.BLL.Options.V1;
 
 namespace Gay.TCazier.Resume.BLL.Services;
 
 /// <summary>
 /// Service class for Address Model to handle CRUD operations with database
 /// </summary>
-//public class AddressService : BaseModelService, IAddressService
-public class AddressService : IAddressService
+public class AddressModelService : IAddressModelService
 {
     #region Fields
 
     private readonly IValidator<AddressModel> _validator;
-    private readonly IRepository<AddressModel> _repository;
+    private readonly IValidator<GetAllAddressModelsOptions> _optionsValidator;
+    private readonly IAddressModelRepository _repository;
 
     #endregion
 
     #region Constructors
 
-    public AddressService(IValidator<AddressModel> validator, IRepository<AddressModel> repository)
+    public AddressModelService(
+        IAddressModelRepository repository,
+        IValidator<AddressModel> validator,
+        IValidator<GetAllAddressModelsOptions> optionsValidator)
     {
         _validator = validator;
         _repository = repository;
+        _optionsValidator = optionsValidator;
     }
 
     #endregion
@@ -44,6 +49,13 @@ public class AddressService : IAddressService
 
     }
 
+    public async Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllAddressModelsOptions options)
+    {
+        var optionsValidationResult = await _optionsValidator.ValidateAsync(options);
+        if (!optionsValidationResult.IsValid) return optionsValidationResult.Errors;
+        return Enumerable.Empty<ValidationFailure>();
+    }
+
     public async Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(AddressModel model)
     {
         var modelValidationResult = await _validator.ValidateAsync(model);
@@ -58,10 +70,10 @@ public class AddressService : IAddressService
     #region Create
 
     /// <summary>
-    /// Create and insert newModel into database
+    /// Create and insert a new model into database
     /// </summary>
-    /// <param name="model">New newModel parameters</param>
-    /// <returns>Created newModel or the conditions that caused failure</returns>
+    /// <param name="model">New model parameters</param>
+    /// <returns>Created model or the conditions that caused failure</returns>
     public async Task<Fin<int>> CreateAsync(AddressModel model, CancellationToken token = default)
     {
         return await _repository.TryCreateAsync(model, token);
@@ -75,9 +87,9 @@ public class AddressService : IAddressService
     /// Retrieve all models from database
     /// </summary>
     /// <returns>A list of all Address Models or the fail conditions</returns>
-    public async Task<Fin<IEnumerable<AddressModel>>> GetAllAsync(CancellationToken token = default)
+    public async Task<Fin<IEnumerable<AddressModel>>> GetAllAsync(GetAllAddressModelsOptions options, CancellationToken token = default)
     {
-        return await _repository.TryGetAllAsync(token);
+        return await _repository.TryGetAllAsync(options, token);
     }
 
     /// <summary>

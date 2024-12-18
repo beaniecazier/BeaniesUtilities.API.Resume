@@ -3,7 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Gay.TCazier.$(MSBuildProjectName.Replace(" ", "_")</RootNamespace>
+    <RootNamespace>Gay.TCazier.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <VersionPrefix>0.2.0</VersionPrefix>
     <VersionSuffix>alpha</VersionSuffix>
     <UserSecretsId>f0422392-2b8e-430f-a3e9-d18b867a2bae</UserSecretsId>
@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="LanguageExt.Core" Version="5.0.0-beta-22" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Serilog" Version="4.1.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
@@ -22,7 +23,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\BeaniesUtilities\APIUtilities\APIUtilities.csproj" />
     <ProjectReference Include="..\Resume.BLL\Resume.BLL.csproj" />
     <ProjectReference Include="..\Resume.Contracts\Resume.Contracts.csproj" />
   </ItemGroup>

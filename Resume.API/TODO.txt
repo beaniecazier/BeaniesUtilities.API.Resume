@@ -1,12 +1,13 @@
 ﻿# Done
 *move secret info to secret places - moves to user secrets, dont know if issues will arise from this using for now
 create the update extension method for each model type
+license
+version - basic, everything grouped together
+create tool for auto gen templated files for each model type
 
 # TODO
 
 logging
-version
-license
 read me
 release notes
 git
@@ -24,7 +25,6 @@ validation
 add testing
 check each of the main/common service functions for AddressModel
 
-create tool for auto gen templated files for each model type
 
 authorization/authentication
 
@@ -44,6 +44,9 @@ seeing nick videos Customizing Results to see a server status page example
 exclude status page from swagger
 
 different pages for different tags?
+
+on requests change list of models to list of ints
+pass in search strings and query options with requests to allow better linking between models
 
 
 SECURITY

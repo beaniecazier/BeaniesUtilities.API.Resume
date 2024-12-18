@@ -8,3 +8,7 @@
 - [ ] Add in the remaining models and endpoints
 - [ ] Searching filtering and querying
 - [ ] ReadMe
+- [ ] Database Migration && SQL Server
+- [ ] Output and Response Cacheing
+- [ ] Health Checks
+- [ ] Paging And Pagination
