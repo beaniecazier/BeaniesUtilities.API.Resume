@@ -6,10 +6,12 @@ using Asp.Versioning;
 using BeaniesUtilities.Models.Resume;
 using BeaniesUtilities.APIUtilities.Endpoints;
 using Gay.TCazier.Resume.API.Mappings.V1;
-using Gay.TCazier.Resume.Contracts.Requests.V1;
+using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
+using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
+using Gay.TCazier.Resume.Contracts.Requests.V1;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Put;
 
@@ -97,7 +99,7 @@ public class UpdateCertificateModelEndpoint : IEndpoints
             Log.Error(((Error)oldModel).ToException(), "Server issue encountered while trying to get all Certificate Models from the database");
             return Results.Problem(detail: ((Error)oldModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
-
+        
         var requestedEducationInstitutionModel = await educationInstitutionService.GetByIDAsync(changes.Issuer.Value, token);
         if (requestedEducationInstitutionModel.IsFail)
         {

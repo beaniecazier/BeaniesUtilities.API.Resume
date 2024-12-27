@@ -1,6 +1,9 @@
 using BeaniesUtilities.Models.Resume;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1;
+using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
+using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
+using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
 
 namespace Gay.TCazier.Resume.API.Mappings.V1;
@@ -67,6 +70,8 @@ public static class CertificateModelContractMapping
 			Link = model.Link,
 			PdfFileName = model.PdfFileName,
 			Issuer = model.Issuer,
+            CertificateID = model.CertificateID,
+            ExpirationDate = model.ExpirationDate,
         };
     }
 }

@@ -6,7 +6,8 @@ using Asp.Versioning;
 using BeaniesUtilities.Models.Resume;
 using BeaniesUtilities.APIUtilities.Endpoints;
 using Gay.TCazier.Resume.API.Mappings.V1;
-using Gay.TCazier.Resume.Contracts.Requests.V1;
+using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
+using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
@@ -97,7 +98,7 @@ public class UpdateEducationDegreeModelEndpoint : IEndpoints
             Log.Error(((Error)oldModel).ToException(), "Server issue encountered while trying to get all EducationDegree Models from the database");
             return Results.Problem(detail: ((Error)oldModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
-
+        
         var requestedEducationInstitutionModel = await educationInstitutionService.GetByIDAsync(changes.Institution.Value, token);
         if (requestedEducationInstitutionModel.IsFail)
         {

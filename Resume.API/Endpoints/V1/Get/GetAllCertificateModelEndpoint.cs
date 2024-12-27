@@ -4,6 +4,7 @@ using Serilog;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
+using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Get;

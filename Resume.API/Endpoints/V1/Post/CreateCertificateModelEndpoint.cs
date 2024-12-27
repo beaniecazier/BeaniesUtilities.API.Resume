@@ -9,8 +9,9 @@ using Asp.Versioning;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
 using Gay.TCazier.Resume.API.Mappings.V1;
-using Gay.TCazier.Resume.Contracts.Requests.V1;
 using Gay.TCazier.Resume.BLL.Options.V1;
+using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
+using Gay.TCazier.Resume.Contracts.Requests.V1;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Create;
 
