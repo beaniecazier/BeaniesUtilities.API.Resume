@@ -19,4 +19,10 @@ public class CertificateModelResponse : BaseModelResponse
 	[SwaggerSchema(Description = "hi", Format = "7")]
 	public required EducationInstitutionModel Issuer { get; init; }
 
+	[SwaggerSchema(Description = "hi", Format = "7")]
+	public required string CertificateID { get; init; }
+
+	[SwaggerSchema(Description = "hi", Format = "7")]
+	public required DateTime ExpirationDate { get; init; }
+
 }
