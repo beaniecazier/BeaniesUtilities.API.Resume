@@ -1,8 +1,8 @@
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Gay.TCazier.Resume.Contracts.Requests.V1;
+namespace Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 
-public class GetAllPersonModelsRequest
+public class GetAllAddressModelsRequest
 {
     /// <param name="nameSearchTerm">REGEX used to query for models with matching name field</param>
     public required string? NameSearchTerm { get; init; }

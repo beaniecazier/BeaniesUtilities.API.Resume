@@ -3,26 +3,26 @@ using Swashbuckle.AspNetCore.Annotations;
 using BeaniesUtilities.Models.Resume;
 using BeaniesUtilities.Models.Enum;
 
-namespace Gay.TCazier.Resume.Contracts.Requests.V1;
+namespace Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 
-public class UpdatePersonModelRequest : UpdateBaseModelRequest
+public class CreateCertificateModelRequest : CreateBaseModelRequest
 {
 	[SwaggerSchema(Description = "hi", Format = "7")]
-	public required string? PreferedName { get; init; }
+	public required DateTime IssueDate { get; init; }
 
 	[SwaggerSchema(Description = "hi", Format = "7")]
-	public required List<ePronoun> Pronouns { get; init; }
+	public required string Link { get; init; }
 
 	[SwaggerSchema(Description = "hi", Format = "7")]
-	public required List<string> Emails { get; init; }
+	public required string PdfFileName { get; init; }
 
 	[SwaggerSchema(Description = "hi", Format = "7")]
-	public required List<string> Socials { get; init; }
+	public required int Issuer { get; init; }
 
 	[SwaggerSchema(Description = "hi", Format = "7")]
-	public required int[] Addresses { get; init; }
+	public required string CertificateID { get; init; }
 
 	[SwaggerSchema(Description = "hi", Format = "7")]
-	public required int[] PhoneNumbers { get; init; }
+	public required DateTime ExpirationDate { get; init; }
 
 }

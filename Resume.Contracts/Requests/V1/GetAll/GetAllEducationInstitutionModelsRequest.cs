@@ -1,6 +1,6 @@
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Gay.TCazier.Resume.Contracts.Requests.V1;
+namespace Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 
 public class GetAllEducationInstitutionModelsRequest
 {

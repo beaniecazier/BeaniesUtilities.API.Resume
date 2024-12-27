@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using BeaniesUtilities.Models.Resume;
 using BeaniesUtilities.Models.Enum;
 
-namespace Gay.TCazier.Resume.Contracts.Requests.V1;
+namespace Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 
 public class UpdateCertificateModelRequest : UpdateBaseModelRequest
 {
@@ -18,5 +18,11 @@ public class UpdateCertificateModelRequest : UpdateBaseModelRequest
 
 	[SwaggerSchema(Description = "hi", Format = "7")]
 	public required int? Issuer { get; init; }
+
+	[SwaggerSchema(Description = "hi", Format = "7")]
+	public required string? CertificateID { get; init; }
+
+	[SwaggerSchema(Description = "hi", Format = "7")]
+	public required DateTime? ExpirationDate { get; init; }
 
 }
