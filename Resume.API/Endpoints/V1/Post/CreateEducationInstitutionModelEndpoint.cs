@@ -91,21 +91,7 @@ public class CreateEducationInstitutionModelEndpoint : IEndpoints
             return Results.Problem(detail: ((Error)requestedAddressModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        var requestedCertificateModels = await certificateService.GetAllAsync(new GetAllCertificateModelsOptions {SpecificIds = request.CertificatesIssued}, token);
-        if (requestedCertificateModels.IsFail)
-        {
-            Log.Error(((Error)requestedCertificateModels).ToException(), "Server issue encountered while trying to query for the list of requested ***PLURALIZE***");
-            return Results.Problem(detail: ((Error)requestedCertificateModels).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
-        }
-
-        var requestedEducationDegreeModels = await educationDegreeService.GetAllAsync(new GetAllEducationDegreeModelsOptions {SpecificIds = request.DegreesGiven}, token);
-        if (requestedEducationDegreeModels.IsFail)
-        {
-            Log.Error(((Error)requestedEducationDegreeModels).ToException(), "Server issue encountered while trying to query for the list of requested ***PLURALIZE***");
-            return Results.Problem(detail: ((Error)requestedEducationDegreeModels).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
-        }
-
-        var model = request.MapToModelFromCreateRequest(id, username, (AddressModel)requestedAddressModel, (List<CertificateModel>)requestedCertificateModels, (List<EducationDegreeModel>)requestedEducationDegreeModels);
+        var model = request.MapToModelFromCreateRequest(id, username, (AddressModel)requestedAddressModel);
         var validationResult = await service.ValidateModelForCreation(model);
         if (validationResult.Count() > 0)
         {

@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class PhoneNumberModelInMemRepository : IPhoneNumberModelRepository
 {
+    private readonly object _lock = new object();
     List<PhoneNumberModel> _phoneNumbers = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_phoneNumbers.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_phoneNumbers.Count > 0)
+
+        lock (_lock)
         {
             lastId = _phoneNumbers.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(PhoneNumberModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class PhoneNumberModelInMemRepository : IPhoneNumberModelRepository
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _phoneNumbers.Where(x => x.CommonIdentity == id).Select(x => new PhoneNumberModel(x, "Tiabeanie", isDeleted: true));
-        _phoneNumbers = _phoneNumbers.Replace(deletions).ToList();
+        _phoneNumbers = _phoneNumbers.Select(x => (x.CommonIdentity == id ? new PhoneNumberModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _phoneNumbers.Where(x => x.CommonIdentity == id).Select(x => new PhoneNumberModel(x, "Tiabeanie", isDeleted: true));
+        //_phoneNumbers = _phoneNumbers.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

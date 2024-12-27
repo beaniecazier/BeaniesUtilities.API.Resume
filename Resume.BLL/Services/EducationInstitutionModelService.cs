@@ -99,7 +99,9 @@ public class EducationInstitutionModelService : IEducationInstitutionModelServic
     /// <returns>Found newModel or the fail condition</returns>
     public async Task<Fin<EducationInstitutionModel>> GetByIDAsync(int id, CancellationToken token = default)
     {
-        return await _repository.TryGetByIdAsync(id, token);
+        var model = await _repository.TryGetByIdAsync(id, token);
+        if(((EducationInstitutionModel)model).IsNull()) return Error.New(new NullReferenceException());
+        return model;
     }
 
     #endregion
@@ -130,6 +132,7 @@ public class EducationInstitutionModelService : IEducationInstitutionModelServic
     public async Task<Fin<EducationInstitutionModel>> DeleteAsync(int id, CancellationToken token = default)
     {
         var lastCopy = await _repository.TryGetByIdAsync(id, token);
+        if (((EducationInstitutionModel)lastCopy).IsNull()) return Error.New(new NullReferenceException());
         if (lastCopy.IsFail) return (Error)lastCopy;
 
         var result = await _repository.TryDeleteAsync(id, token);

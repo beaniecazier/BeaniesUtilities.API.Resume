@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class ResumeModelInMemRepository : IResumeModelRepository
 {
+    private readonly object _lock = new object();
     List<ResumeModel> _resumes = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_resumes.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_resumes.Count > 0)
+
+        lock (_lock)
         {
             lastId = _resumes.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(ResumeModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class ResumeModelInMemRepository : IResumeModelRepository
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _resumes.Where(x => x.CommonIdentity == id).Select(x => new ResumeModel(x, "Tiabeanie", isDeleted: true));
-        _resumes = _resumes.Replace(deletions).ToList();
+        _resumes = _resumes.Select(x => (x.CommonIdentity == id ? new ResumeModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _resumes.Where(x => x.CommonIdentity == id).Select(x => new ResumeModel(x, "Tiabeanie", isDeleted: true));
+        //_resumes = _resumes.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

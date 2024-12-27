@@ -99,7 +99,9 @@ public class PhoneNumberModelService : IPhoneNumberModelService
     /// <returns>Found newModel or the fail condition</returns>
     public async Task<Fin<PhoneNumberModel>> GetByIDAsync(int id, CancellationToken token = default)
     {
-        return await _repository.TryGetByIdAsync(id, token);
+        var model = await _repository.TryGetByIdAsync(id, token);
+        if(((PhoneNumberModel)model).IsNull()) return Error.New(new NullReferenceException());
+        return model;
     }
 
     #endregion
@@ -130,6 +132,7 @@ public class PhoneNumberModelService : IPhoneNumberModelService
     public async Task<Fin<PhoneNumberModel>> DeleteAsync(int id, CancellationToken token = default)
     {
         var lastCopy = await _repository.TryGetByIdAsync(id, token);
+        if (((PhoneNumberModel)lastCopy).IsNull()) return Error.New(new NullReferenceException());
         if (lastCopy.IsFail) return (Error)lastCopy;
 
         var result = await _repository.TryDeleteAsync(id, token);

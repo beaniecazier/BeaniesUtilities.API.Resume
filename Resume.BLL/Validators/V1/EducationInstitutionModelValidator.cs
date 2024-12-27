@@ -9,8 +9,8 @@ public class EducationInstitutionModelValidator : AbstractValidator<EducationIns
 {
     public EducationInstitutionModelValidator()
     {
-		RuleFor(x => x.CertificatesIssued).NotEmpty().WithMessage("The CertificatesIssued Property of EducationInstitutionModel cannot be empty");
-		RuleFor(x => x.DegreesGiven).NotEmpty().WithMessage("The DegreesGiven Property of EducationInstitutionModel cannot be empty");
+		//RuleFor(x => x.CertificatesIssued).NotEmpty().WithMessage("The CertificatesIssued Property of EducationInstitutionModel cannot be empty");
+		//RuleFor(x => x.DegreesGiven).NotEmpty().WithMessage("The DegreesGiven Property of EducationInstitutionModel cannot be empty");
     }
 }
 

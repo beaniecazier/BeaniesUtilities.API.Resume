@@ -99,7 +99,9 @@ public class PersonModelService : IPersonModelService
     /// <returns>Found newModel or the fail condition</returns>
     public async Task<Fin<PersonModel>> GetByIDAsync(int id, CancellationToken token = default)
     {
-        return await _repository.TryGetByIdAsync(id, token);
+        var model = await _repository.TryGetByIdAsync(id, token);
+        if(((PersonModel)model).IsNull()) return Error.New(new NullReferenceException());
+        return model;
     }
 
     #endregion
@@ -130,6 +132,7 @@ public class PersonModelService : IPersonModelService
     public async Task<Fin<PersonModel>> DeleteAsync(int id, CancellationToken token = default)
     {
         var lastCopy = await _repository.TryGetByIdAsync(id, token);
+        if (((PersonModel)lastCopy).IsNull()) return Error.New(new NullReferenceException());
         if (lastCopy.IsFail) return (Error)lastCopy;
 
         var result = await _repository.TryDeleteAsync(id, token);

@@ -54,14 +54,12 @@ public class UpdateEducationInstitutionModelEndpoint : IEndpoints
             .Produces<IEnumerable<ValidationFailure>>(StatusCodes.Status400BadRequest)                                  // you gave bad info
             .Produces(StatusCodes.Status404NotFound)                                        // could not find result to update
             .Produces(StatusCodes.Status500InternalServerError)
-            //.RequireAuthorization(AuthConstants.TrustedMemberPolicyName)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
             .WithTags(Tag);
 
         var multipleEndpoint = app.MapPut(EndpointPrefix, PutModelCollectionAsync)
             .Produces(StatusCodes.Status405MethodNotAllowed)
-            //.RequireAuthorization(AuthConstants.AdminUserPolicyName)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
             .WithTags(Tag);
@@ -89,18 +87,17 @@ public class UpdateEducationInstitutionModelEndpoint : IEndpoints
         Log.Information("Update EducationInstitution Model endpoint called by {username}", @username);
 
         var oldModel = await service.GetByIDAsync(changes.Id, token);
+        if (oldModel.IsFail && ((Exception)((Error)oldModel).Exception).GetType() == typeof(NullReferenceException))
+        {
+            Log.Error("Address Model with ID:{id} does not exist", @changes.Id);
+            return Results.NotFound();
+        }
         if (oldModel.IsFail)
         {
             Log.Error(((Error)oldModel).ToException(), "Server issue encountered while trying to get all EducationInstitution Models from the database");
             return Results.Problem(detail: ((Error)oldModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        if (oldModel.Head().IsNull())
-        {
-            Log.Error("EducationInstitution Model with ID:{id} does not exist", @changes.Id);
-            return Results.NotFound();
-        }
-        
         var requestedAddressModel = await addressService.GetByIDAsync(changes.Address.Value, token);
         if (requestedAddressModel.IsFail)
         {
@@ -108,21 +105,7 @@ public class UpdateEducationInstitutionModelEndpoint : IEndpoints
             return Results.Problem(detail: ((Error)requestedAddressModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        var requestedCertificateModels = await certificateService.GetAllAsync(new GetAllCertificateModelsOptions {SpecificIds = changes.CertificatesIssued}, token);
-        if (requestedCertificateModels.IsFail)
-        {
-            Log.Error(((Error)requestedCertificateModels).ToException(), "Server issue encountered while trying to query for the list of requested ***PLURALIZE***");
-            return Results.Problem(detail: ((Error)requestedCertificateModels).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
-        }
-
-        var requestedEducationDegreeModels = await educationDegreeService.GetAllAsync(new GetAllEducationDegreeModelsOptions {SpecificIds = changes.DegreesGiven}, token);
-        if (requestedEducationDegreeModels.IsFail)
-        {
-            Log.Error(((Error)requestedEducationDegreeModels).ToException(), "Server issue encountered while trying to query for the list of requested ***PLURALIZE***");
-            return Results.Problem(detail: ((Error)requestedEducationDegreeModels).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
-        }
-
-        var newModel = changes.MapToModelFromUpdateRequest((EducationInstitutionModel)oldModel!, username, (AddressModel)requestedAddressModel, (List<CertificateModel>)requestedCertificateModels, (List<EducationDegreeModel>)requestedEducationDegreeModels);
+        var newModel = changes.MapToModelFromUpdateRequest((EducationInstitutionModel)oldModel!, username, (AddressModel)requestedAddressModel);
 
         var validationResult = await service.ValidateModelForUpdate(newModel);
         if (validationResult.Count() > 0)

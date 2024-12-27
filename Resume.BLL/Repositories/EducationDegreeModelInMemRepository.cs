@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class EducationDegreeModelInMemRepository : IEducationDegreeModelRepository
 {
+    private readonly object _lock = new object();
     List<EducationDegreeModel> _educationDegrees = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_educationDegrees.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_educationDegrees.Count > 0)
+
+        lock (_lock)
         {
             lastId = _educationDegrees.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(EducationDegreeModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class EducationDegreeModelInMemRepository : IEducationDegreeModelReposito
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _educationDegrees.Where(x => x.CommonIdentity == id).Select(x => new EducationDegreeModel(x, "Tiabeanie", isDeleted: true));
-        _educationDegrees = _educationDegrees.Replace(deletions).ToList();
+        _educationDegrees = _educationDegrees.Select(x => (x.CommonIdentity == id ? new EducationDegreeModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _educationDegrees.Where(x => x.CommonIdentity == id).Select(x => new EducationDegreeModel(x, "Tiabeanie", isDeleted: true));
+        //_educationDegrees = _educationDegrees.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

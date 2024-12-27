@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class EducationInstitutionModelInMemRepository : IEducationInstitutionModelRepository
 {
+    private readonly object _lock = new object();
     List<EducationInstitutionModel> _educationInstitutions = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_educationInstitutions.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_educationInstitutions.Count > 0)
+
+        lock (_lock)
         {
             lastId = _educationInstitutions.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(EducationInstitutionModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class EducationInstitutionModelInMemRepository : IEducationInstitutionMod
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _educationInstitutions.Where(x => x.CommonIdentity == id).Select(x => new EducationInstitutionModel(x, "Tiabeanie", isDeleted: true));
-        _educationInstitutions = _educationInstitutions.Replace(deletions).ToList();
+        _educationInstitutions = _educationInstitutions.Select(x => (x.CommonIdentity == id ? new EducationInstitutionModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _educationInstitutions.Where(x => x.CommonIdentity == id).Select(x => new EducationInstitutionModel(x, "Tiabeanie", isDeleted: true));
+        //_educationInstitutions = _educationInstitutions.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

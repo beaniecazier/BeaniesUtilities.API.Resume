@@ -99,7 +99,9 @@ public class WorkExperienceModelService : IWorkExperienceModelService
     /// <returns>Found newModel or the fail condition</returns>
     public async Task<Fin<WorkExperienceModel>> GetByIDAsync(int id, CancellationToken token = default)
     {
-        return await _repository.TryGetByIdAsync(id, token);
+        var model = await _repository.TryGetByIdAsync(id, token);
+        if(((WorkExperienceModel)model).IsNull()) return Error.New(new NullReferenceException());
+        return model;
     }
 
     #endregion
@@ -130,6 +132,7 @@ public class WorkExperienceModelService : IWorkExperienceModelService
     public async Task<Fin<WorkExperienceModel>> DeleteAsync(int id, CancellationToken token = default)
     {
         var lastCopy = await _repository.TryGetByIdAsync(id, token);
+        if (((WorkExperienceModel)lastCopy).IsNull()) return Error.New(new NullReferenceException());
         if (lastCopy.IsFail) return (Error)lastCopy;
 
         var result = await _repository.TryDeleteAsync(id, token);

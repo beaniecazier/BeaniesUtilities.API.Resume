@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class AddressModelInMemRepository : IAddressModelRepository
 {
+    private readonly object _lock = new object();
     List<AddressModel> _addresses = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_addresses.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_addresses.Count > 0)
+
+        lock (_lock)
         {
             lastId = _addresses.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(AddressModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class AddressModelInMemRepository : IAddressModelRepository
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _addresses.Where(x => x.CommonIdentity == id).Select(x => new AddressModel(x, "Tiabeanie", isDeleted: true));
-        _addresses = _addresses.Replace(deletions).ToList();
+        _addresses = _addresses.Select(x => (x.CommonIdentity == id ? new AddressModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _addresses.Where(x => x.CommonIdentity == id).Select(x => new AddressModel(x, "Tiabeanie", isDeleted: true));
+        //_addresses = _addresses.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

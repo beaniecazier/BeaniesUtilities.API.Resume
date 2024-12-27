@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class CertificateModelInMemRepository : ICertificateModelRepository
 {
+    private readonly object _lock = new object();
     List<CertificateModel> _certificates = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_certificates.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_certificates.Count > 0)
+
+        lock (_lock)
         {
             lastId = _certificates.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(CertificateModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class CertificateModelInMemRepository : ICertificateModelRepository
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _certificates.Where(x => x.CommonIdentity == id).Select(x => new CertificateModel(x, "Tiabeanie", isDeleted: true));
-        _certificates = _certificates.Replace(deletions).ToList();
+        _certificates = _certificates.Select(x => (x.CommonIdentity == id ? new CertificateModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _certificates.Where(x => x.CommonIdentity == id).Select(x => new CertificateModel(x, "Tiabeanie", isDeleted: true));
+        //_certificates = _certificates.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

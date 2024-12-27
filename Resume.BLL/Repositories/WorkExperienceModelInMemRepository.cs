@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class WorkExperienceModelInMemRepository : IWorkExperienceModelRepository
 {
+    private readonly object _lock = new object();
     List<WorkExperienceModel> _workExperiences = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_workExperiences.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_workExperiences.Count > 0)
+
+        lock (_lock)
         {
             lastId = _workExperiences.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(WorkExperienceModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class WorkExperienceModelInMemRepository : IWorkExperienceModelRepository
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _workExperiences.Where(x => x.CommonIdentity == id).Select(x => new WorkExperienceModel(x, "Tiabeanie", isDeleted: true));
-        _workExperiences = _workExperiences.Replace(deletions).ToList();
+        _workExperiences = _workExperiences.Select(x => (x.CommonIdentity == id ? new WorkExperienceModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _workExperiences.Where(x => x.CommonIdentity == id).Select(x => new WorkExperienceModel(x, "Tiabeanie", isDeleted: true));
+        //_workExperiences = _workExperiences.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

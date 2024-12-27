@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class TechTagModelInMemRepository : ITechTagModelRepository
 {
+    private readonly object _lock = new object();
     List<TechTagModel> _techTags = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_techTags.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_techTags.Count > 0)
+
+        lock (_lock)
         {
             lastId = _techTags.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(TechTagModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class TechTagModelInMemRepository : ITechTagModelRepository
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _techTags.Where(x => x.CommonIdentity == id).Select(x => new TechTagModel(x, "Tiabeanie", isDeleted: true));
-        _techTags = _techTags.Replace(deletions).ToList();
+        _techTags = _techTags.Select(x => (x.CommonIdentity == id ? new TechTagModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _techTags.Where(x => x.CommonIdentity == id).Select(x => new TechTagModel(x, "Tiabeanie", isDeleted: true));
+        //_techTags = _techTags.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }

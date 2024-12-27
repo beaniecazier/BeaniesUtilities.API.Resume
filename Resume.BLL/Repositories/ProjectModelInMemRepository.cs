@@ -10,16 +10,19 @@ namespace Gay.TCazier.Resume.BLL.Repositories;
 
 public class ProjectModelInMemRepository : IProjectModelRepository
 {
+    private readonly object _lock = new object();
     List<ProjectModel> _projects = new();
 
     public Task<int> GetNextAvailableId()
     {
+        if (_projects.Count <= 0) return Task.FromResult(0);
         int lastId = -1;
-        if (_projects.Count > 0)
+
+        lock (_lock)
         {
             lastId = _projects.GroupByAndFindLatest().Max(x => x.CommonIdentity);
         }
-        return Task.FromResult(lastId + 1);
+        return Task.FromResult(lastId+1);
     }
 
     public async Task<Fin<int>> TryCreateAsync(ProjectModel model, CancellationToken token = default)
@@ -103,8 +106,9 @@ public class ProjectModelInMemRepository : IProjectModelRepository
 
     public Task<int> DeleteAsync(int id, ResumeContext ctx, CancellationToken token = default)
     {
-        var deletions = _projects.Where(x => x.CommonIdentity == id).Select(x => new ProjectModel(x, "Tiabeanie", isDeleted: true));
-        _projects = _projects.Replace(deletions).ToList();
+        _projects = _projects.Select(x => (x.CommonIdentity == id ? new ProjectModel(x, "Tiabeanie", isDeleted: true) : x)).ToList();
+        //var deletions = _projects.Where(x => x.CommonIdentity == id).Select(x => new ProjectModel(x, "Tiabeanie", isDeleted: true));
+        //_projects = _projects.Replace(deletions).ToList();
         return Task.FromResult(1);
     }
 }
