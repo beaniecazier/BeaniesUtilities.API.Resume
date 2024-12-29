@@ -11,6 +11,8 @@ public interface IWorkExperienceModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllWorkExperienceModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(WorkExperienceModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(WorkExperienceModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllWorkExperienceModelsOptions options);

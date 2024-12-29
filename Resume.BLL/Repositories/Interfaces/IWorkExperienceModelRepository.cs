@@ -11,6 +11,8 @@ public interface IWorkExperienceModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllWorkExperienceModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(WorkExperienceModel model, CancellationToken token = default);
     Task<int> CreateAsync(WorkExperienceModel model, ResumeContext ctx, CancellationToken token = default);
 

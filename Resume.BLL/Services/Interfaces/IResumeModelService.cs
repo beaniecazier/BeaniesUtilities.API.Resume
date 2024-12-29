@@ -11,6 +11,8 @@ public interface IResumeModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllResumeModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(ResumeModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(ResumeModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllResumeModelsOptions options);

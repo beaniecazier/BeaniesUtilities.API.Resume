@@ -1,6 +1,5 @@
 using BeaniesUtilities.Models.Resume;
 using Gay.TCazier.Resume.BLL.Options.V1;
-using Gay.TCazier.Resume.Contracts.Requests.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
@@ -21,6 +20,8 @@ public static class CertificateModelContractMapping
 			Link = request.Link,
 			PdfFileName = request.PdfFileName,
 			Issuer = issuer,
+			CertificateID = request.CertificateID,
+			ExpirationDate = request.ExpirationDate,
         };
     }
 
@@ -34,6 +35,8 @@ public static class CertificateModelContractMapping
 			Link = string.IsNullOrWhiteSpace(request.Link) ? model.Link : request.Link,
 			PdfFileName = string.IsNullOrWhiteSpace(request.PdfFileName) ? model.PdfFileName : request.PdfFileName,
 			Issuer = request.Issuer is null ? model.Issuer : issuer,
+			CertificateID = string.IsNullOrWhiteSpace(request.CertificateID) ? model.CertificateID : request.CertificateID,
+			ExpirationDate = request.ExpirationDate is null ? model.ExpirationDate : request.ExpirationDate.Value,
         };
     }
 
@@ -50,6 +53,8 @@ public static class CertificateModelContractMapping
             GreaterThanOrEqualToID = options.GreaterThanOrEqualToID,
             LessThanOrEqualToID = options.LessThanOrEqualToID,
             SpecificIds = options.SpecificIds,
+            PageIndex = options.PageIndex,
+            PageSize = options.PageSize,
         };
     }
 
@@ -70,8 +75,8 @@ public static class CertificateModelContractMapping
 			Link = model.Link,
 			PdfFileName = model.PdfFileName,
 			Issuer = model.Issuer,
-            CertificateID = model.CertificateID,
-            ExpirationDate = model.ExpirationDate,
+			CertificateID = model.CertificateID,
+			ExpirationDate = model.ExpirationDate,
         };
     }
 }

@@ -38,6 +38,8 @@ public class ResumeModelService : IResumeModelService
 
     public async Task<int> GetNextAvailableId() => await _repository.GetNextAvailableId();
 
+    public async Task<int> GetQueryTotal(GetAllResumeModelsOptions options) => await _repository.GetQueryTotal(options);
+
     public async Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(ResumeModel model)
     {
         var modelValidationResult = await _validator.ValidateAsync(model);

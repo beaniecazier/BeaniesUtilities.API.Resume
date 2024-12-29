@@ -71,6 +71,8 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
     [Fact]
     public async Task GetAllAddressModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
             _createdAddressModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new AddressModelsResponse() { Items = list };
+        var control = new AddressModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllAddressModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<AddressModelResponse>>();
-        var check = new AddressModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllAddressModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllAddressModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<AddressModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

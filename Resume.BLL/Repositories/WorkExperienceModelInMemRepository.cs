@@ -1,6 +1,6 @@
+using BeaniesUtilities.Models;
 using BeaniesUtilities.Models.Resume;
 using Gay.TCazier.Resume.BLL.Contexts;
-using Gay.TCazier.Resume.BLL.Database;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.Resume.BLL.Repositories.Interfaces;
 using LanguageExt;
@@ -25,6 +25,13 @@ public class WorkExperienceModelInMemRepository : IWorkExperienceModelRepository
         return Task.FromResult(lastId+1);
     }
 
+    public async Task<int> GetQueryTotal(GetAllWorkExperienceModelsOptions options)
+    {
+        if ( _workExperiences.Count <= 0) return 0;
+        int count = _workExperiences.GroupBy(x => x.CommonIdentity).Count();
+        return count;
+    }
+
     public async Task<Fin<int>> TryCreateAsync(WorkExperienceModel model, CancellationToken token = default)
     {
         try { return await CreateAsync(model, null, token); }
@@ -46,14 +53,15 @@ public class WorkExperienceModelInMemRepository : IWorkExperienceModelRepository
 
     public Task<IEnumerable<WorkExperienceModel>> GetAllAsync(GetAllWorkExperienceModelsOptions options, ResumeContext ctx, CancellationToken token = default)
     {
-        var models = _workExperiences.GroupByAndFindLatest(options.AllowHidden??false, options.AllowDeleted??false);
+        if(!options.HasFilters) return Task.FromResult(_workExperiences.GroupByAndFindLatest(options.AllowHidden??false, options.AllowDeleted??false));
 
-        if(!options.HasFilters) return Task.FromResult(models);
+        var models = _workExperiences.GroupByAndFindLatest(options.AllowHidden??false, options.AllowDeleted??false);
 
         models = models.FilterByIdRange(options.GreaterThanOrEqualToID, options.LessThanOrEqualToID)
                         .FilterByModifiedDate(options.BeforeDate, options.AfterDate)
                         .FilterName(options.NameSearchTerm!)
-                        .FilterNotes(options.NotesSearchTerm!);
+                        .FilterNotes(options.NotesSearchTerm!)
+                        .Paginate(options.PageIndex,options.PageSize);
 
         return Task.FromResult(models);
     }

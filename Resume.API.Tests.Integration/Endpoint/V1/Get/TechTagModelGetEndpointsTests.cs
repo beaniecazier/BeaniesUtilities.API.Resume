@@ -71,6 +71,8 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
     [Fact]
     public async Task GetAllTechTagModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
             _createdTechTagModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new TechTagModelsResponse() { Items = list };
+        var control = new TechTagModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllTechTagModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<TechTagModelResponse>>();
-        var check = new TechTagModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

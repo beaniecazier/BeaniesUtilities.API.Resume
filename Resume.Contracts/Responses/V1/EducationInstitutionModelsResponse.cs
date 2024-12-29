@@ -1,6 +1,5 @@
 namespace Gay.TCazier.Resume.Contracts.Responses.V1;
 
-public class EducationInstitutionModelsResponse
+public class EducationInstitutionModelsResponse : PagedResponse<EducationInstitutionModelResponse>
 {
-    public required IEnumerable<EducationInstitutionModelResponse> Items { get; init; } = Enumerable.Empty<EducationInstitutionModelResponse>();
 }

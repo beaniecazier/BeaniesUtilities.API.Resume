@@ -2,7 +2,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 
-public class GetAllEducationDegreeModelsRequest
+public class GetAllEducationDegreeModelsRequest : PagedRequest
 {
     /// <param name="nameSearchTerm">REGEX used to query for models with matching name field</param>
     public required string? NameSearchTerm { get; init; }
@@ -30,4 +30,7 @@ public class GetAllEducationDegreeModelsRequest
 
     /// <param name="specificIds">A collection of Ids to include in search</param>
     public required int[] SpecificIds { get; init; }
+
+    public required int PageIndex { get; init; } = 0;
+    public required int PageSize { get; init; } = 10;
 }

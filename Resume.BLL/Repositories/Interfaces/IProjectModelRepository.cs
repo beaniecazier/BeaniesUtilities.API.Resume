@@ -11,6 +11,8 @@ public interface IProjectModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllProjectModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(ProjectModel model, CancellationToken token = default);
     Task<int> CreateAsync(ProjectModel model, ResumeContext ctx, CancellationToken token = default);
 

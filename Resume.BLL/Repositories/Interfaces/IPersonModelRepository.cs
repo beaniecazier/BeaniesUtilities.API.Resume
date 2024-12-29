@@ -11,6 +11,8 @@ public interface IPersonModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllPersonModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(PersonModel model, CancellationToken token = default);
     Task<int> CreateAsync(PersonModel model, ResumeContext ctx, CancellationToken token = default);
 

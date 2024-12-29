@@ -71,6 +71,8 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
     [Fact]
     public async Task GetAllPersonModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
             _createdPersonModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new PersonModelsResponse() { Items = list };
+        var control = new PersonModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllPersonModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<PersonModelResponse>>();
-        var check = new PersonModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

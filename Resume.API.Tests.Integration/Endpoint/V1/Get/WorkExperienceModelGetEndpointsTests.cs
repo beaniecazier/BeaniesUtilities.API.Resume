@@ -71,6 +71,8 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
     [Fact]
     public async Task GetAllWorkExperienceModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
             _createdWorkExperienceModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new WorkExperienceModelsResponse() { Items = list };
+        var control = new WorkExperienceModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllWorkExperienceModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<WorkExperienceModelResponse>>();
-        var check = new WorkExperienceModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

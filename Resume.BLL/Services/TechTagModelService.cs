@@ -38,6 +38,8 @@ public class TechTagModelService : ITechTagModelService
 
     public async Task<int> GetNextAvailableId() => await _repository.GetNextAvailableId();
 
+    public async Task<int> GetQueryTotal(GetAllTechTagModelsOptions options) => await _repository.GetQueryTotal(options);
+
     public async Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(TechTagModel model)
     {
         var modelValidationResult = await _validator.ValidateAsync(model);

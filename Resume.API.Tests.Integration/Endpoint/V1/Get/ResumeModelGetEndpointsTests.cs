@@ -71,6 +71,8 @@ public class ResumeModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
     [Fact]
     public async Task GetAllResumeModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class ResumeModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
             _createdResumeModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new ResumeModelsResponse() { Items = list };
+        var control = new ResumeModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllResumeModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<ResumeModelResponse>>();
-        var check = new ResumeModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllResumeModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<ResumeModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

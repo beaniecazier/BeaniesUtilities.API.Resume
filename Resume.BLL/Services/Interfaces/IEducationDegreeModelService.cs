@@ -11,6 +11,8 @@ public interface IEducationDegreeModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllEducationDegreeModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(EducationDegreeModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(EducationDegreeModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllEducationDegreeModelsOptions options);

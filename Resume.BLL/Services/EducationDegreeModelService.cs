@@ -38,6 +38,8 @@ public class EducationDegreeModelService : IEducationDegreeModelService
 
     public async Task<int> GetNextAvailableId() => await _repository.GetNextAvailableId();
 
+    public async Task<int> GetQueryTotal(GetAllEducationDegreeModelsOptions options) => await _repository.GetQueryTotal(options);
+
     public async Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(EducationDegreeModel model)
     {
         var modelValidationResult = await _validator.ValidateAsync(model);

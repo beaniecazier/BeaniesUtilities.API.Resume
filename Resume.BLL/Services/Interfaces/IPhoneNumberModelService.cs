@@ -11,6 +11,8 @@ public interface IPhoneNumberModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllPhoneNumberModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(PhoneNumberModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(PhoneNumberModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllPhoneNumberModelsOptions options);

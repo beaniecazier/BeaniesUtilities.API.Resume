@@ -38,6 +38,8 @@ public class AddressModelService : IAddressModelService
 
     public async Task<int> GetNextAvailableId() => await _repository.GetNextAvailableId();
 
+    public async Task<int> GetQueryTotal(GetAllAddressModelsOptions options) => await _repository.GetQueryTotal(options);
+
     public async Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(AddressModel model)
     {
         var modelValidationResult = await _validator.ValidateAsync(model);

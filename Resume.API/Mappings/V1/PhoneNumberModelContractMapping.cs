@@ -49,6 +49,8 @@ public static class PhoneNumberModelContractMapping
             GreaterThanOrEqualToID = options.GreaterThanOrEqualToID,
             LessThanOrEqualToID = options.LessThanOrEqualToID,
             SpecificIds = options.SpecificIds,
+            PageIndex = options.PageIndex,
+            PageSize = options.PageSize,
         };
     }
 

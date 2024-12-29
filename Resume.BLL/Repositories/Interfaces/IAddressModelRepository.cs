@@ -11,6 +11,8 @@ public interface IAddressModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllAddressModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(AddressModel model, CancellationToken token = default);
     Task<int> CreateAsync(AddressModel model, ResumeContext ctx, CancellationToken token = default);
 

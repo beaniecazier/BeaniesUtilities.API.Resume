@@ -11,6 +11,8 @@ public interface ITechTagModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllTechTagModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(TechTagModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(TechTagModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllTechTagModelsOptions options);

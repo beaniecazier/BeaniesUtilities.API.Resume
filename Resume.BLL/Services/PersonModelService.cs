@@ -38,6 +38,8 @@ public class PersonModelService : IPersonModelService
 
     public async Task<int> GetNextAvailableId() => await _repository.GetNextAvailableId();
 
+    public async Task<int> GetQueryTotal(GetAllPersonModelsOptions options) => await _repository.GetQueryTotal(options);
+
     public async Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(PersonModel model)
     {
         var modelValidationResult = await _validator.ValidateAsync(model);

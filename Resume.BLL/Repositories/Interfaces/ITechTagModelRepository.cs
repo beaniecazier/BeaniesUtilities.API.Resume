@@ -11,6 +11,8 @@ public interface ITechTagModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllTechTagModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(TechTagModel model, CancellationToken token = default);
     Task<int> CreateAsync(TechTagModel model, ResumeContext ctx, CancellationToken token = default);
 

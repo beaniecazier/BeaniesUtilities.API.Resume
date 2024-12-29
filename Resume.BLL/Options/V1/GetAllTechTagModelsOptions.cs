@@ -2,7 +2,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Gay.TCazier.Resume.BLL.Options.V1;
 
-public class GetAllTechTagModelsOptions
+public class GetAllTechTagModelsOptions : IPageOptions
 {
     [SwaggerSchema(Description = "hi", Format = "7")]
     public int? ID { get; set; }
@@ -35,4 +35,9 @@ public class GetAllTechTagModelsOptions
     public int? LessThanOrEqualToID { get; set; }
     [SwaggerSchema(Description = "hi", Format = "7")]
     public required int[] SpecificIds { get; init; }
+
+    [SwaggerSchema(Description = "hi", Format = "7")]
+    public int PageIndex { get; set; } = 0;
+    [SwaggerSchema(Description = "hi", Format = "7")]
+    public int PageSize { get; set; } = 10;
 }

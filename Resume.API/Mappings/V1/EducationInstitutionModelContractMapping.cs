@@ -18,8 +18,6 @@ public static class EducationInstitutionModelContractMapping
         {
 			Website = request.Website,
 			Address = address,
-			//CertificatesIssued = certificatesIssuedes,
-			//DegreesGiven = degreesGivens,
         };
     }
 
@@ -31,8 +29,6 @@ public static class EducationInstitutionModelContractMapping
         {
 			Website = string.IsNullOrWhiteSpace(request.Website) ? model.Website : request.Website,
 			Address = request.Address is null ? model.Address : address,
-			//CertificatesIssued = request.CertificatesIssued.Count() <= 0 ? model.CertificatesIssued : certificatesIssuedes,
-			//DegreesGiven = request.DegreesGiven.Count() <= 0 ? model.DegreesGiven : degreesGivens,
         };
     }
 
@@ -49,6 +45,8 @@ public static class EducationInstitutionModelContractMapping
             GreaterThanOrEqualToID = options.GreaterThanOrEqualToID,
             LessThanOrEqualToID = options.LessThanOrEqualToID,
             SpecificIds = options.SpecificIds,
+            PageIndex = options.PageIndex,
+            PageSize = options.PageSize,
         };
     }
 
@@ -67,8 +65,6 @@ public static class EducationInstitutionModelContractMapping
             
 			Website = model.Website,
 			Address = model.Address,
-			//CertificatesIssued = model.CertificatesIssued,
-			//DegreesGiven = model.DegreesGiven,
         };
     }
 }

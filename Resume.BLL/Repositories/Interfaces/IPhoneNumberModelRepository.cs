@@ -11,6 +11,8 @@ public interface IPhoneNumberModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllPhoneNumberModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(PhoneNumberModel model, CancellationToken token = default);
     Task<int> CreateAsync(PhoneNumberModel model, ResumeContext ctx, CancellationToken token = default);
 

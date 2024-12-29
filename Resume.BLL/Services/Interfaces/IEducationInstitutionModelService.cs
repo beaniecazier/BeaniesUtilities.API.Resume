@@ -11,6 +11,8 @@ public interface IEducationInstitutionModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllEducationInstitutionModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(EducationInstitutionModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(EducationInstitutionModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllEducationInstitutionModelsOptions options);

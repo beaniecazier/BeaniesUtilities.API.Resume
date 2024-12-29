@@ -71,6 +71,8 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
     [Fact]
     public async Task GetAllEducationInstitutionModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
             _createdEducationInstitutionModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new EducationInstitutionModelsResponse() { Items = list };
+        var control = new EducationInstitutionModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllEducationInstitutionModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<EducationInstitutionModelResponse>>();
-        var check = new EducationInstitutionModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

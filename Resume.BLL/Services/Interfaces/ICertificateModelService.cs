@@ -11,6 +11,8 @@ public interface ICertificateModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllCertificateModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(CertificateModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(CertificateModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllCertificateModelsOptions options);

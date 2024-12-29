@@ -71,6 +71,8 @@ public class ProjectModelGetEndpointsTests : IClassFixture<WebApplicationFactory
     [Fact]
     public async Task GetAllProjectModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class ProjectModelGetEndpointsTests : IClassFixture<WebApplicationFactory
             _createdProjectModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new ProjectModelsResponse() { Items = list };
+        var control = new ProjectModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllProjectModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<ProjectModelResponse>>();
-        var check = new ProjectModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllProjectModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllProjectModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<ProjectModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

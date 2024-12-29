@@ -71,6 +71,8 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
     [Fact]
     public async Task GetAllEducationDegreeModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
             _createdEducationDegreeModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new EducationDegreeModelsResponse() { Items = list };
+        var control = new EducationDegreeModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllEducationDegreeModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<EducationDegreeModelResponse>>();
-        var check = new EducationDegreeModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

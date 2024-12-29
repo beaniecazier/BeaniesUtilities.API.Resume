@@ -49,6 +49,8 @@ public static class EducationDegreeModelContractMapping
             GreaterThanOrEqualToID = options.GreaterThanOrEqualToID,
             LessThanOrEqualToID = options.LessThanOrEqualToID,
             SpecificIds = options.SpecificIds,
+            PageIndex = options.PageIndex,
+            PageSize = options.PageSize,
         };
     }
 

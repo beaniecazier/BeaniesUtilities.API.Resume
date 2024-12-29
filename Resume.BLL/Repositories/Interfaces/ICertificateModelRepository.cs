@@ -11,6 +11,8 @@ public interface ICertificateModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllCertificateModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(CertificateModel model, CancellationToken token = default);
     Task<int> CreateAsync(CertificateModel model, ResumeContext ctx, CancellationToken token = default);
 

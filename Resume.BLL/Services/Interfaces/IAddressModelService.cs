@@ -11,6 +11,8 @@ public interface IAddressModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllAddressModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(AddressModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(AddressModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllAddressModelsOptions options);

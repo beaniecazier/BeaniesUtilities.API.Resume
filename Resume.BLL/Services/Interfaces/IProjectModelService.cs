@@ -11,6 +11,8 @@ public interface IProjectModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllProjectModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(ProjectModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(ProjectModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllProjectModelsOptions options);

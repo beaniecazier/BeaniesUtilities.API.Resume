@@ -4,6 +4,7 @@ using Bogus.DataSets;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
 using Gay.TCazier.Resume.Contracts.Requests.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
+using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
 using Resume.API.Tests.Integration.Records.V1;
@@ -178,6 +179,190 @@ public class ModelGenerator
             Description = ModelPropertyGenerator.CreateValidString(),
             Responsibilities = ModelPropertyGenerator.CreateValidListOfStrings(),
             TechUsed = modelRecord.TechUsed,
+        };
+    }
+
+    #endregion
+
+    #region GetAll Request Generators
+
+    public static GetAllAddressModelsRequest GenerateNewGetAllAddressModelRequest()
+    {
+        return new GetAllAddressModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllCertificateModelsRequest GenerateNewGetAllCertificateModelRequest()
+    {
+        return new GetAllCertificateModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllEducationDegreeModelsRequest GenerateNewGetAllEducationDegreeModelRequest()
+    {
+        return new GetAllEducationDegreeModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllEducationInstitutionModelsRequest GenerateNewGetAllEducationInstitutionModelRequest()
+    {
+        return new GetAllEducationInstitutionModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllPersonModelsRequest GenerateNewGetAllPersonModelRequest()
+    {
+        return new GetAllPersonModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllPhoneNumberModelsRequest GenerateNewGetAllPhoneNumberModelRequest()
+    {
+        return new GetAllPhoneNumberModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllProjectModelsRequest GenerateNewGetAllProjectModelRequest()
+    {
+        return new GetAllProjectModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllResumeModelsRequest GenerateNewGetAllResumeModelRequest()
+    {
+        return new GetAllResumeModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllTechTagModelsRequest GenerateNewGetAllTechTagModelRequest()
+    {
+        return new GetAllTechTagModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
+        };
+    }
+
+    public static GetAllWorkExperienceModelsRequest GenerateNewGetAllWorkExperienceModelRequest()
+    {
+        return new GetAllWorkExperienceModelsRequest()
+        {
+            NameSearchTerm = string.Empty,
+            NotesSearchTerm = string.Empty,
+            AfterDate = null,
+            BeforeDate = null,
+            GreaterThanOrEqualToID = null,
+            LessThanOrEqualToID = null,
+            AllowHidden = null,             //doe these need to be nullable or can they default to false
+            AllowDeleted = null,            //doe these need to be nullable or can they default to false
+            SpecificIds = new int[] { },
+            PageIndex = 0,
+            PageSize = 10,
         };
     }
 

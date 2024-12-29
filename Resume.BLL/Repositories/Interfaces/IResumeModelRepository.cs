@@ -11,6 +11,8 @@ public interface IResumeModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllResumeModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(ResumeModel model, CancellationToken token = default);
     Task<int> CreateAsync(ResumeModel model, ResumeContext ctx, CancellationToken token = default);
 

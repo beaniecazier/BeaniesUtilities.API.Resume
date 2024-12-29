@@ -71,6 +71,8 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
     [Fact]
     public async Task GetAllPhoneNumberModels_ReturnsAllModels_WhenModelsExist()
     {
+        int numberOfModelsToMake = 5;
+
         // ARRANGE
         var httpClient = _factory.CreateClient();
         
@@ -86,16 +88,16 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
             _createdPhoneNumberModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new PhoneNumberModelsResponse() { Items = list };
+        var control = new PhoneNumberModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllPhoneNumberModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<PhoneNumberModelResponse>>();
-        var check = new PhoneNumberModelsResponse() { Items = returnedModels };
+        var getAllRequest = ModelGenerator.GenerateNewGetAllPhoneNumberModelRequest();
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEquivalentTo(list);
         check.Should().BeEquivalentTo(control);
     }
 

@@ -11,6 +11,8 @@ public interface IEducationInstitutionModelRepository
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllEducationInstitutionModelsOptions options);
+
     Task<Fin<int>> TryCreateAsync(EducationInstitutionModel model, CancellationToken token = default);
     Task<int> CreateAsync(EducationInstitutionModel model, ResumeContext ctx, CancellationToken token = default);
 

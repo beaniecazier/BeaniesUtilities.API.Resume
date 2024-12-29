@@ -5,6 +5,8 @@ using Gay.TCazier.Resume.API.Mappings.V1;
 using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
 using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
+//using Gay.TCazier.Resume.API.Auth;
+using Gay.TCazier.Resume.Contracts.Responses.V1;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Get;
 
@@ -45,7 +47,17 @@ public class GetAllWorkExperienceModelEndpoint : IEndpoints
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
+            .CacheOutput(Tag)
             .WithTags(Tag);
+            
+        //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        //{
+        //    singleEndpoint.AllowAnonymous();
+        //}
+        //else
+        //{
+        //    singleEndpoint.RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
+        //}
     }
 
     /// <summary>
@@ -79,8 +91,19 @@ public class GetAllWorkExperienceModelEndpoint : IEndpoints
         }
 
         var entries = await service.GetAllAsync(options, token);
+        var total = await service.GetQueryTotal(options);
         return entries.Match(
-            Succ => Results.Ok(Succ.Select(x => x.MapToResponseFromModel())),
+            Succ =>
+            {
+                var responsesCollection = new WorkExperienceModelsResponse()
+                {
+                    Items = Succ.Select(x => x.MapToResponseFromModel()),
+                    PageIndex = searchParams.PageIndex,
+                    PageSize = searchParams.PageSize,
+                    TotalNumberOfAvailableResponses = total,
+                };
+                return Results.Ok(responsesCollection);
+            },
             Fail =>
             {
                 Log.Error(Fail.ToException(), "Server issue encountered while trying to get all WorkExperience Models from the database");

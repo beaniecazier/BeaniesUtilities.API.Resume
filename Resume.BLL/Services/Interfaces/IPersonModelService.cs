@@ -11,6 +11,8 @@ public interface IPersonModelService
 {
     Task<int> GetNextAvailableId();
 
+    Task<int> GetQueryTotal(GetAllPersonModelsOptions options);
+
     Task<IEnumerable<ValidationFailure>> ValidateModelForCreation(PersonModel model);
     Task<IEnumerable<ValidationFailure>> ValidateModelForUpdate(PersonModel model);
     Task<IEnumerable<ValidationFailure>> ValidateGetAllModelOptions(GetAllPersonModelsOptions options);

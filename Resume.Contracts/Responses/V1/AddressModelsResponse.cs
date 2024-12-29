@@ -1,6 +1,5 @@
 namespace Gay.TCazier.Resume.Contracts.Responses.V1;
 
-public class AddressModelsResponse
+public class AddressModelsResponse : PagedResponse<AddressModelResponse>
 {
-    public required IEnumerable<AddressModelResponse> Items { get; init; } =Enumerable.Empty<AddressModelResponse>();
 }
