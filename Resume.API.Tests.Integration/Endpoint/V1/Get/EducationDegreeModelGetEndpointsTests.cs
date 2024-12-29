@@ -69,9 +69,11 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
     }
 
     [Fact]
-    public async Task GetAllEducationDegreeModels_ReturnsAllModels_WhenModelsExist()
+    public async Task GetAllEducationDegreeModels_ReturnsAllModelsUnsorted_WhenModelsExist()
     {
         int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
 
         // ARRANGE
         var httpClient = _factory.CreateClient();
@@ -88,10 +90,84 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
             _createdEducationDegreeModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new EducationDegreeModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+        var control = new EducationDegreeModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest();
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest(pageNumberForTest, pageSize);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllEducationDegreeModels_ReturnsAllModelsAscending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "+Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForEducationDegreeModelTest(httpClient);
+        var list = new List<EducationDegreeModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateEducationDegreeModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateEducationDegreeModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<EducationDegreeModelResponse>();
+            _createdEducationDegreeModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderBy( x=> x.Name ).ToList();
+        var control = new EducationDegreeModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllEducationDegreeModels_ReturnsAllModelsDescending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "-Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForEducationDegreeModelTest(httpClient);
+        var list = new List<EducationDegreeModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateEducationDegreeModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateEducationDegreeModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<EducationDegreeModelResponse>();
+            _createdEducationDegreeModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderByDescending(x => x.Name).ToList();
+        var control = new EducationDegreeModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
         var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
@@ -108,12 +184,13 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllEducationDegreeModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<EducationDegreeModel>>();
+        string searchTerms = "PageIndex=0&PageSize=10";
+        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var returnedModels = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEmpty();
+        returnedModels.Items.Should().BeEmpty();
     }
 
     //[Fact]

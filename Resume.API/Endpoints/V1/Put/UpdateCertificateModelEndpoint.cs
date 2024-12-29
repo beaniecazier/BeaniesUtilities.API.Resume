@@ -10,8 +10,8 @@ using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
+//using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
-using Gay.TCazier.Resume.Contracts.Requests.V1;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Put;
 
@@ -65,6 +65,17 @@ public class UpdateCertificateModelEndpoint : IEndpoints
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
             .WithTags(Tag);
+            
+        //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        //{
+        //    singleEndpoint.AllowAnonymous();
+        //    multipleEndpoint.AllowAnonymous();
+        //}
+        //else
+        //{
+        //    singleEndpoint.RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
+        //    multipleEndpoint.RequireAuthorization(AuthConstants.AdminUserPolicyName);
+        //}
     }
 
     /// <summary>

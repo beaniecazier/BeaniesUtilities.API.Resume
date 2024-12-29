@@ -186,183 +186,243 @@ public class ModelGenerator
 
     #region GetAll Request Generators
 
-    public static GetAllAddressModelsRequest GenerateNewGetAllAddressModelRequest()
+    public static GetAllAddressModelsRequest GenerateNewGetAllAddressModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllAddressModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllCertificateModelsRequest GenerateNewGetAllCertificateModelRequest()
+    public static GetAllCertificateModelsRequest GenerateNewGetAllCertificateModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllCertificateModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllEducationDegreeModelsRequest GenerateNewGetAllEducationDegreeModelRequest()
+    public static GetAllEducationDegreeModelsRequest GenerateNewGetAllEducationDegreeModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllEducationDegreeModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllEducationInstitutionModelsRequest GenerateNewGetAllEducationInstitutionModelRequest()
+    public static GetAllEducationInstitutionModelsRequest GenerateNewGetAllEducationInstitutionModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllEducationInstitutionModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllPersonModelsRequest GenerateNewGetAllPersonModelRequest()
+    public static GetAllPersonModelsRequest GenerateNewGetAllPersonModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllPersonModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllPhoneNumberModelsRequest GenerateNewGetAllPhoneNumberModelRequest()
+    public static GetAllPhoneNumberModelsRequest GenerateNewGetAllPhoneNumberModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllPhoneNumberModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllProjectModelsRequest GenerateNewGetAllProjectModelRequest()
+    public static GetAllProjectModelsRequest GenerateNewGetAllProjectModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllProjectModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllResumeModelsRequest GenerateNewGetAllResumeModelRequest()
+    public static GetAllResumeModelsRequest GenerateNewGetAllResumeModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllResumeModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllTechTagModelsRequest GenerateNewGetAllTechTagModelRequest()
+    public static GetAllTechTagModelsRequest GenerateNewGetAllTechTagModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllTechTagModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 
-    public static GetAllWorkExperienceModelsRequest GenerateNewGetAllWorkExperienceModelRequest()
+    public static GetAllWorkExperienceModelsRequest GenerateNewGetAllWorkExperienceModelRequest(int pageIndex, int pageSize,
+        string name = "", string note = "",
+        DateTime? after = null, DateTime? before = null,
+        int? idLowerBound = null, int? idUpperBound = null,
+        bool allowHidden = false, bool allowDeleted = false,
+        int[] ids = null, string sortBy = "")
     {
         return new GetAllWorkExperienceModelsRequest()
         {
-            NameSearchTerm = string.Empty,
-            NotesSearchTerm = string.Empty,
-            AfterDate = null,
-            BeforeDate = null,
-            GreaterThanOrEqualToID = null,
-            LessThanOrEqualToID = null,
-            AllowHidden = null,             //doe these need to be nullable or can they default to false
-            AllowDeleted = null,            //doe these need to be nullable or can they default to false
-            SpecificIds = new int[] { },
-            PageIndex = 0,
-            PageSize = 10,
+            NameSearchTerm = name,
+            NotesSearchTerm = note,
+            AfterDate = after,
+            BeforeDate = before,
+            GreaterThanOrEqualToID = idLowerBound,
+            LessThanOrEqualToID = idUpperBound,
+            AllowHidden = allowHidden,             //doe these need to be nullable or can they default to false
+            AllowDeleted = allowDeleted,            //doe these need to be nullable or can they default to false
+            SpecificIds = ids is null ? new int[] { } : ids,
+            PageIndex = pageIndex,
+            PageSize = pageSize,
+            SortBy = sortBy,
         };
     }
 

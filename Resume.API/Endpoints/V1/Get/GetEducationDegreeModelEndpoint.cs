@@ -4,6 +4,7 @@ using Serilog;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
+//using Gay.TCazier.Resume.API.Auth;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Get;
 
@@ -46,7 +47,17 @@ public class GetEducationDegreeModelEndpoint : IEndpoints
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
+            .CacheOutput(Tag)
             .WithTags(Tag);
+            
+        //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        //{
+        //    singleEndpoint.AllowAnonymous();
+        //}
+        //else
+        //{
+        //    singleEndpoint.RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
+        //}
     }
 
     /// <summary>

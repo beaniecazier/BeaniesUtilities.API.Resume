@@ -69,9 +69,11 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
     }
 
     [Fact]
-    public async Task GetAllTechTagModels_ReturnsAllModels_WhenModelsExist()
+    public async Task GetAllTechTagModels_ReturnsAllModelsUnsorted_WhenModelsExist()
     {
         int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
 
         // ARRANGE
         var httpClient = _factory.CreateClient();
@@ -88,10 +90,84 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
             _createdTechTagModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new TechTagModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+        var control = new TechTagModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest();
+        var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest(pageNumberForTest, pageSize);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllTechTagModels_ReturnsAllModelsAscending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "+Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForTechTagModelTest(httpClient);
+        var list = new List<TechTagModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateTechTagModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateTechTagModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<TechTagModelResponse>();
+            _createdTechTagModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderBy( x=> x.Name ).ToList();
+        var control = new TechTagModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllTechTagModels_ReturnsAllModelsDescending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "-Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForTechTagModelTest(httpClient);
+        var list = new List<TechTagModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateTechTagModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateTechTagModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<TechTagModelResponse>();
+            _createdTechTagModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderByDescending(x => x.Name).ToList();
+        var control = new TechTagModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
         var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
@@ -108,12 +184,13 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllTechTagModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<TechTagModel>>();
+        string searchTerms = "PageIndex=0&PageSize=10";
+        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var returnedModels = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEmpty();
+        returnedModels.Items.Should().BeEmpty();
     }
 
     //[Fact]

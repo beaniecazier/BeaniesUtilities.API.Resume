@@ -5,10 +5,12 @@
 - [ ] Validation
 - [ ] Auhterization and Authentication
 - [ ] Testing
-- [ ] Add in the remaining models and endpoints
-- [ ] Searching filtering and querying
+- [x] Add in the remaining models and endpoints
+- [x] Searching,filtering and querying
+- [ ] Sorting
 - [ ] ReadMe
 - [ ] Database Migration && SQL Server
 - [ ] Output and Response Cacheing
 - [ ] Health Checks
-- [ ] Paging And Pagination
+- [x] Paging And Pagination
+- [ ] adding string data should trim white space

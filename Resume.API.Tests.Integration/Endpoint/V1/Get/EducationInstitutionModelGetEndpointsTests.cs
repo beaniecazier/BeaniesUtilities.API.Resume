@@ -69,9 +69,11 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
     }
 
     [Fact]
-    public async Task GetAllEducationInstitutionModels_ReturnsAllModels_WhenModelsExist()
+    public async Task GetAllEducationInstitutionModels_ReturnsAllModelsUnsorted_WhenModelsExist()
     {
         int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
 
         // ARRANGE
         var httpClient = _factory.CreateClient();
@@ -88,10 +90,84 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
             _createdEducationInstitutionModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new EducationInstitutionModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+        var control = new EducationInstitutionModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest();
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest(pageNumberForTest, pageSize);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllEducationInstitutionModels_ReturnsAllModelsAscending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "+Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForEducationInstitutionModelTest(httpClient);
+        var list = new List<EducationInstitutionModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateEducationInstitutionModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateEducationInstitutionModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
+            _createdEducationInstitutionModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderBy( x=> x.Name ).ToList();
+        var control = new EducationInstitutionModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllEducationInstitutionModels_ReturnsAllModelsDescending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "-Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForEducationInstitutionModelTest(httpClient);
+        var list = new List<EducationInstitutionModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateEducationInstitutionModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateEducationInstitutionModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
+            _createdEducationInstitutionModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderByDescending(x => x.Name).ToList();
+        var control = new EducationInstitutionModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
         var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
@@ -108,12 +184,13 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllEducationInstitutionModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<EducationInstitutionModel>>();
+        string searchTerms = "PageIndex=0&PageSize=10";
+        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var returnedModels = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEmpty();
+        returnedModels.Items.Should().BeEmpty();
     }
 
     //[Fact]

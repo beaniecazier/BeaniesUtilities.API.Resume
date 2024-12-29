@@ -69,9 +69,11 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
     }
 
     [Fact]
-    public async Task GetAllPersonModels_ReturnsAllModels_WhenModelsExist()
+    public async Task GetAllPersonModels_ReturnsAllModelsUnsorted_WhenModelsExist()
     {
         int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
 
         // ARRANGE
         var httpClient = _factory.CreateClient();
@@ -88,10 +90,84 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
             _createdPersonModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new PersonModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+        var control = new PersonModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest();
+        var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest(pageNumberForTest, pageSize);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllPersonModels_ReturnsAllModelsAscending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "+Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForPersonModelTest(httpClient);
+        var list = new List<PersonModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreatePersonModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreatePersonModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<PersonModelResponse>();
+            _createdPersonModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderBy( x=> x.Name ).ToList();
+        var control = new PersonModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllPersonModels_ReturnsAllModelsDescending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "-Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForPersonModelTest(httpClient);
+        var list = new List<PersonModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreatePersonModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreatePersonModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<PersonModelResponse>();
+            _createdPersonModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderByDescending(x => x.Name).ToList();
+        var control = new PersonModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
         var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
@@ -108,12 +184,13 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllPersonModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<PersonModel>>();
+        string searchTerms = "PageIndex=0&PageSize=10";
+        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var returnedModels = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEmpty();
+        returnedModels.Items.Should().BeEmpty();
     }
 
     //[Fact]

@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Gay.TCazier.Resume.BLL.Options.V1;
@@ -35,9 +36,14 @@ public class GetAllWorkExperienceModelsOptions : IPageOptions
     public int? LessThanOrEqualToID { get; set; }
     [SwaggerSchema(Description = "hi", Format = "7")]
     public required int[] SpecificIds { get; init; }
-
+    
+    //Pagination Properties
     [SwaggerSchema(Description = "hi", Format = "7")]
     public int PageIndex { get; set; } = 0;
     [SwaggerSchema(Description = "hi", Format = "7")]
     public int PageSize { get; set; } = 10;
+
+    //Sorting Properties
+    public string? SortField { get; set; }
+    public SortOrder? SortOrder { get; set; }
 }

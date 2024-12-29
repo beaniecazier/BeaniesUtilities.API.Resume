@@ -69,9 +69,11 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
     }
 
     [Fact]
-    public async Task GetAllWorkExperienceModels_ReturnsAllModels_WhenModelsExist()
+    public async Task GetAllWorkExperienceModels_ReturnsAllModelsUnsorted_WhenModelsExist()
     {
         int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
 
         // ARRANGE
         var httpClient = _factory.CreateClient();
@@ -88,10 +90,84 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
             _createdWorkExperienceModels.Add(createdModel.Id);
             list.Add(createdModel);
         }
-        var control = new WorkExperienceModelsResponse() { Items = list, PageIndex = 0, PageSize = 10, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+        var control = new WorkExperienceModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest();
+        var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllWorkExperienceModels_ReturnsAllModelsAscending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "+Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForWorkExperienceModelTest(httpClient);
+        var list = new List<WorkExperienceModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
+            _createdWorkExperienceModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderBy( x=> x.Name ).ToList();
+        var control = new WorkExperienceModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
+        string searchTerms = getAllRequest.ToSearchTermsString();
+        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
+
+        // ASSERT
+        result.StatusCode.Should().Be(HttpStatusCode.OK);
+        check.Should().BeEquivalentTo(control);
+    }
+
+    [Fact]
+    public async Task GetAllWorkExperienceModels_ReturnsAllModelsDescending_WhenModelsExist()
+    {
+        int numberOfModelsToMake = 5;
+        int pageNumberForTest = 0;
+        int pageSize = 10;
+        string sortTerm = "-Name";
+
+        // ARRANGE
+        var httpClient = _factory.CreateClient();
+
+        var modelRecord = await ModelGenerator.PopulateDatabaseForWorkExperienceModelTest(httpClient);
+        var list = new List<WorkExperienceModelResponse>();
+        for (int i = 0; i < 5; i++)
+        {
+            var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(modelRecord);
+
+            var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+            var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
+            var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
+            _createdWorkExperienceModels.Add(createdModel.Id);
+            list.Add(createdModel);
+        }
+        list = list.OrderByDescending(x => x.Name).ToList();
+        var control = new WorkExperienceModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
+
+        // ACT
+        var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
         var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
@@ -108,12 +184,13 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync(GetAllWorkExperienceModelEndpoint.EndpointPrefix);
-        var returnedModels = await result.Content.ReadFromJsonAsync<List<WorkExperienceModel>>();
+        string searchTerms = "PageIndex=0&PageSize=10";
+        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var returnedModels = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
-        returnedModels.Should().BeEmpty();
+        returnedModels.Items.Should().BeEmpty();
     }
 
     //[Fact]

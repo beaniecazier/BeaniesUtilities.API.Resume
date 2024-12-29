@@ -30,7 +30,11 @@ public class GetAllCertificateModelsRequest : PagedRequest
 
     /// <param name="specificIds">A collection of Ids to include in search</param>
     public required int[] SpecificIds { get; init; }
-
+    
+    //Pagination Properties
     public required int PageIndex { get; init; } = 0;
     public required int PageSize { get; init; } = 10;
+
+    //Sorting Properties
+    public required string? SortBy { get; init; }
 }

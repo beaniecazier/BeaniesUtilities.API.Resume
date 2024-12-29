@@ -4,6 +4,7 @@ using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Microsoft.Data.SqlClient;
 
 namespace Gay.TCazier.Resume.API.Mappings.V1;
 
@@ -36,21 +37,24 @@ public static class EducationDegreeModelContractMapping
         };
     }
 
-    public static GetAllEducationDegreeModelsOptions MapToOptions(this GetAllEducationDegreeModelsRequest options)
+    public static GetAllEducationDegreeModelsOptions MapToOptions(this GetAllEducationDegreeModelsRequest request)
     {
         return new GetAllEducationDegreeModelsOptions()
         {
-            NameSearchTerm = options.NameSearchTerm,
-            NotesSearchTerm = options.NotesSearchTerm,
-            AfterDate = options.AfterDate,
-            BeforeDate = options.BeforeDate,
-            AllowHidden = options.AllowHidden,
-            AllowDeleted = options.AllowDeleted,
-            GreaterThanOrEqualToID = options.GreaterThanOrEqualToID,
-            LessThanOrEqualToID = options.LessThanOrEqualToID,
-            SpecificIds = options.SpecificIds,
-            PageIndex = options.PageIndex,
-            PageSize = options.PageSize,
+            NameSearchTerm = request.NameSearchTerm,
+            NotesSearchTerm = request.NotesSearchTerm,
+            AfterDate = request.AfterDate,
+            BeforeDate = request.BeforeDate,
+            AllowHidden = request.AllowHidden,
+            AllowDeleted = request.AllowDeleted,
+            GreaterThanOrEqualToID = request.GreaterThanOrEqualToID,
+            LessThanOrEqualToID = request.LessThanOrEqualToID,
+            SpecificIds = request.SpecificIds,
+            PageIndex = request.PageIndex,
+            PageSize = request.PageSize,
+            SortField = request.SortBy?.Trim('+', '-'),
+            SortOrder = request.SortBy is null ? SortOrder.Unspecified : 
+                request.SortBy.StartsWith('-') ? SortOrder.Descending : SortOrder.Ascending,
         };
     }
 

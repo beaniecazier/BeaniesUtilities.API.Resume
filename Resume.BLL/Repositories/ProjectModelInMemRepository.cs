@@ -5,6 +5,7 @@ using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.Resume.BLL.Repositories.Interfaces;
 using LanguageExt;
 using LanguageExt.Common;
+using Microsoft.Data.SqlClient;
 
 namespace Gay.TCazier.Resume.BLL.Repositories;
 
@@ -53,9 +54,18 @@ public class ProjectModelInMemRepository : IProjectModelRepository
 
     public Task<IEnumerable<ProjectModel>> GetAllAsync(GetAllProjectModelsOptions options, ResumeContext ctx, CancellationToken token = default)
     {
-        if(!options.HasFilters) return Task.FromResult(_projects.GroupByAndFindLatest(options.AllowHidden??false, options.AllowDeleted??false));
-
         var models = _projects.GroupByAndFindLatest(options.AllowHidden??false, options.AllowDeleted??false);
+
+        if(options.SortOrder == SortOrder.Ascending)
+        {
+            models = models.OrderBy(x=>options.SortField);
+        }
+        else if(options.SortOrder == SortOrder.Descending)
+        {
+            models = models.OrderByDescending(x=>options.SortField);
+        }
+
+        if(!options.HasFilters) return Task.FromResult(models.Paginate(options.PageIndex,options.PageSize));
 
         models = models.FilterByIdRange(options.GreaterThanOrEqualToID, options.LessThanOrEqualToID)
                         .FilterByModifiedDate(options.BeforeDate, options.AfterDate)

@@ -9,8 +9,9 @@ using Asp.Versioning;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
 using Gay.TCazier.Resume.API.Mappings.V1;
-using Gay.TCazier.Resume.BLL.Options.V1;
+//using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
+using Gay.TCazier.Resume.BLL.Options.V1;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Create;
 
@@ -57,6 +58,15 @@ public class CreateEducationInstitutionModelEndpoint : IEndpoints
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
             .WithTags(Tag);
+
+        //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        //{
+        //    singleEndpoint.AllowAnonymous();
+        //}
+        //else
+        //{
+        //    singleEndpoint.RequireAuthorization(AuthConstants.AdminUserPolicyName);
+        //}
     }
 
     #region Create
@@ -75,7 +85,7 @@ public class CreateEducationInstitutionModelEndpoint : IEndpoints
     /// <response code="400">Invalid information was provided and the request failed validation</response>
     /// <response code="500">Something went wrong or the database does not exist</response>
     private static async Task<IResult> CreateEducationInstitutionModelAsync(CreateEducationInstitutionModelRequest request,
-        IEducationInstitutionModelService service, IAddressModelService addressService, ICertificateModelService certificateService, IEducationDegreeModelService educationDegreeService, LinkGenerator linker, HttpContext http, CancellationToken token)
+        IEducationInstitutionModelService service, IAddressModelService addressService, LinkGenerator linker, HttpContext http, CancellationToken token)
     {
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";

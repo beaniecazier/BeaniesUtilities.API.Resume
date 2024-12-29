@@ -10,6 +10,7 @@ using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
+//using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Put;
@@ -51,7 +52,7 @@ public class UpdateAddressModelEndpoint : IEndpoints
         var singleEndpoint = app.MapPut($"{EndpointPrefix}/{{id}}", UpdateAddressModelAsync)
             .WithName("UpdateAddressModel")
             .Accepts<AddressModel>(ContentType)
-            .Produces<AddressModel>(StatusCodes.Status201Created)
+            .Produces<AddressModel>(StatusCodes.Status200OK)
             .Produces<IEnumerable<ValidationFailure>>(StatusCodes.Status400BadRequest)                                  // you gave bad info
             .Produces(StatusCodes.Status404NotFound)                                        // could not find result to update
             .Produces(StatusCodes.Status500InternalServerError)
@@ -64,6 +65,17 @@ public class UpdateAddressModelEndpoint : IEndpoints
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
             .WithTags(Tag);
+            
+        //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        //{
+        //    singleEndpoint.AllowAnonymous();
+        //    multipleEndpoint.AllowAnonymous();
+        //}
+        //else
+        //{
+        //    singleEndpoint.RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
+        //    multipleEndpoint.RequireAuthorization(AuthConstants.AdminUserPolicyName);
+        //}
     }
 
     /// <summary>
@@ -98,6 +110,7 @@ public class UpdateAddressModelEndpoint : IEndpoints
             Log.Error(((Error)oldModel).ToException(), "Server issue encountered while trying to get all Address Models from the database");
             return Results.Problem(detail: ((Error)oldModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
+        
 
         var newModel = changes.MapToModelFromUpdateRequest((AddressModel)oldModel!, username);
 

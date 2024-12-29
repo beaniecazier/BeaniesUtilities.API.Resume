@@ -10,6 +10,7 @@ using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
+//using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Put;
@@ -64,6 +65,17 @@ public class UpdateEducationInstitutionModelEndpoint : IEndpoints
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
             .WithTags(Tag);
+            
+        //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        //{
+        //    singleEndpoint.AllowAnonymous();
+        //    multipleEndpoint.AllowAnonymous();
+        //}
+        //else
+        //{
+        //    singleEndpoint.RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
+        //    multipleEndpoint.RequireAuthorization(AuthConstants.AdminUserPolicyName);
+        //}
     }
 
     /// <summary>
@@ -80,7 +92,7 @@ public class UpdateEducationInstitutionModelEndpoint : IEndpoints
     /// <response code="404">Id was not found in the database</response>
     /// <response code="500">Something went wrong or the database does not exist</response>
     private static async Task<IResult> UpdateEducationInstitutionModelAsync(UpdateEducationInstitutionModelRequest changes,
-        IEducationInstitutionModelService service, IAddressModelService addressService, ICertificateModelService certificateService, IEducationDegreeModelService educationDegreeService, LinkGenerator linker, HttpContext http, CancellationToken token)
+        IEducationInstitutionModelService service, IAddressModelService addressService, LinkGenerator linker, HttpContext http, CancellationToken token)
     {
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
