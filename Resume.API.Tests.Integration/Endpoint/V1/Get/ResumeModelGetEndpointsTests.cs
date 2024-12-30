@@ -95,7 +95,7 @@ public class ResumeModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllResumeModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<ResumeModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class ResumeModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllResumeModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<ResumeModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class ResumeModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllResumeModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<ResumeModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class ResumeModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetResumeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<ResumeModelsResponse>();
 
         // ASSERT

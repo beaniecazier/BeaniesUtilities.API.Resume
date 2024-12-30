@@ -95,7 +95,7 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllEducationInstitutionModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class EducationInstitutionModelGetEndpointsTests : IClassFixture<WebAppli
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationInstitutionModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<EducationInstitutionModelsResponse>();
 
         // ASSERT

@@ -12,6 +12,7 @@ using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 //using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Put;
 
@@ -83,6 +84,7 @@ public class UpdateProjectModelEndpoint : IEndpoints
     /// </summary>
     /// <param name="changes">The collection of changes to be applied to the newModel</param>
     /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="linker">The web linker</param>
     /// <param name="http">the http context</param>
     /// <param name="token">Cancelation token</param>
@@ -92,7 +94,8 @@ public class UpdateProjectModelEndpoint : IEndpoints
     /// <response code="404">Id was not found in the database</response>
     /// <response code="500">Something went wrong or the database does not exist</response>
     private static async Task<IResult> UpdateProjectModelAsync(UpdateProjectModelRequest changes,
-        IProjectModelService service, ITechTagModelService techTagService, LinkGenerator linker, HttpContext http, CancellationToken token)
+        IProjectModelService service, ITechTagModelService techTagService,
+        IOutputCacheStore outputCacheStore, LinkGenerator linker, HttpContext http, CancellationToken token)
     {
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
@@ -109,8 +112,7 @@ public class UpdateProjectModelEndpoint : IEndpoints
         {
             Log.Error(((Error)oldModel).ToException(), "Server issue encountered while trying to get all Project Models from the database");
             return Results.Problem(detail: ((Error)oldModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
-        }
-        
+        }      
         var requestedTechTagModels = await techTagService.GetAllAsync(new GetAllTechTagModelsOptions {SpecificIds = changes.TechTags}, token);
         if (requestedTechTagModels.IsFail)
         {
@@ -128,6 +130,7 @@ public class UpdateProjectModelEndpoint : IEndpoints
         }
 
         var result = await service.UpdateAsync(newModel, (ProjectModel)oldModel, token);
+        if (!result.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
         return result.Match(
             Succ =>
             {

@@ -95,7 +95,7 @@ public class CertificateModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllCertificateModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<CertificateModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class CertificateModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllCertificateModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<CertificateModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class CertificateModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllCertificateModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<CertificateModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class CertificateModelGetEndpointsTests : IClassFixture<WebApplicationFac
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetCertificateModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<CertificateModelsResponse>();
 
         // ASSERT

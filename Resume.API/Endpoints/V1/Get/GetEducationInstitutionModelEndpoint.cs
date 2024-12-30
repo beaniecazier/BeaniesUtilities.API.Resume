@@ -1,7 +1,9 @@
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
-using Serilog;
+using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
+using Gay.TCazier.Resume.Contracts.Responses.V1;
 using Gay.TCazier.Resume.API.Mappings.V1;
+using Serilog;
 using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
 //using Gay.TCazier.Resume.API.Auth;
@@ -49,14 +51,25 @@ public class GetEducationInstitutionModelEndpoint : IEndpoints
             .HasApiVersion(1.0)
             .CacheOutput(Tag)
             .WithTags(Tag);
-            
+
+        var multipleEndpoint = app.MapGet(EndpointPrefix, GetAllEducationInstitutionModelsAsync)
+            .WithName("GetAllEducationInstitutionModels")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status500InternalServerError)
+            .WithApiVersionSet(APIVersioning.VersionSet)
+            .HasApiVersion(1.0)
+            .CacheOutput(Tag)
+            .WithTags(Tag);
+
         //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         //{
         //    singleEndpoint.AllowAnonymous();
+        //    multipleEndpoint.AllowAnonymous();
         //}
         //else
         //{
         //    singleEndpoint.RequireAuthorization(AuthConstants.TrustedMemberPolicyName);
+        //    multipleEndpoint.RequireAuthorization(AuthConstants.AdminUserPolicyName);
         //}
     }
 
@@ -90,6 +103,57 @@ public class GetEducationInstitutionModelEndpoint : IEndpoints
                 }
                 Log.Error(ex, $"Server issue encountered while trying to get EducationInstitution Model with ID:{id} from the database");
                 return Results.Problem(detail: ex.ToString(), statusCode: StatusCodes.Status500InternalServerError);
+            });
+    }
+
+    /// <summary>
+    /// Retrieve all EducationInstitution Models from the database
+    /// </summary>
+    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="searchParams"></param>
+    /// <param name="token">Cancelation token</param>
+    /// <returns>A list of all EducationInstitution Models in the database</returns>
+    /// <response code="200">Get all successful</response>
+    /// <response code="500">Something went wrong or the database does not exist</response>
+    private static async Task<IResult> GetAllEducationInstitutionModelsAsync(IEducationInstitutionModelService service,
+        [AsParameters] GetAllEducationInstitutionModelsRequest searchParams,
+        HttpContext content,
+        CancellationToken token)
+    {
+        //string username = http.User.Identity!.Name??"fuck me....";
+        string username = "Tiabeanie";
+
+        //var userId = content.GetUserId();
+        var userId = 0;
+
+        Log.Information("Get All EducationInstitution Models endpoint called by {username}", @username);
+
+        var options = searchParams.MapToOptions().WithID(userId);
+        var validationResult = await service.ValidateGetAllModelOptions(options);
+        if (validationResult.Count() > 0)
+        {
+            foreach (var item in validationResult) Log.Error(item.ToString());
+            return Results.BadRequest(validationResult);
+        }
+
+        var entries = await service.GetAllAsync(options, token);
+        var total = await service.GetQueryTotal(options);
+        return entries.Match(
+            Succ =>
+            {
+                var responsesCollection = new EducationInstitutionModelsResponse()
+                {
+                    Items = Succ.Select(x => x.MapToResponseFromModel()),
+                    PageIndex = searchParams.PageIndex,
+                    PageSize = searchParams.PageSize,
+                    TotalNumberOfAvailableResponses = total,
+                };
+                return Results.Ok(responsesCollection);
+            },
+            Fail =>
+            {
+                Log.Error(Fail.ToException(), "Server issue encountered while trying to get all EducationInstitution Models from the database");
+                return Results.Problem(detail: Fail.ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
             });
     }
 }

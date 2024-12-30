@@ -95,7 +95,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPhoneNumberModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPhoneNumberModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPhoneNumberModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT

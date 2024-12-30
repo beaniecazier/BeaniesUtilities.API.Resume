@@ -95,7 +95,7 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPersonModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetPersonModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<PersonModelsResponse>();
 
         // ASSERT

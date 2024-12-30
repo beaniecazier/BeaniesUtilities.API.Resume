@@ -95,7 +95,7 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllEducationDegreeModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetEducationDegreeModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<EducationDegreeModelsResponse>();
 
         // ASSERT

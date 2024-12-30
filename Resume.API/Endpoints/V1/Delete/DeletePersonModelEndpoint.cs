@@ -5,6 +5,8 @@ using Serilog;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Delete;
 
@@ -73,12 +75,14 @@ public class DeletePersonModelEndpoint : IEndpoints
     /// </summary>
     /// <param name="id">The id of the Person Model to delete form the database</param>
     /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="token">Cancelation token</param>
     /// <returns>Returns no content on a successful delete</returns>
     /// <response code="200">Delete worked, returns the last surviving copy</response>
     /// <response code="404">Id was not found in the database</response>
     /// <response code="500">Something went wrong or the database does not exist</response>
-    private static async Task<IResult> DeleteAsync(int id, IPersonModelService service, CancellationToken token)
+    private static async Task<IResult> DeleteAsync(int id, IPersonModelService service,
+        IOutputCacheStore outputCacheStore, CancellationToken token)
     {
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
@@ -86,6 +90,7 @@ public class DeletePersonModelEndpoint : IEndpoints
         Log.Information("Delete Person Model endpoint called by {username}", @username);
 
         var entry = await service.DeleteAsync(id, token);
+        if (!entry.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
         return entry.Match(
             Succ =>
             {

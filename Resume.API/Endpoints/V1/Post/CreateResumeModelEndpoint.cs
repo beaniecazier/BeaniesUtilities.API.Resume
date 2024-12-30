@@ -12,6 +12,7 @@ using Gay.TCazier.Resume.API.Mappings.V1;
 //using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 using Gay.TCazier.Resume.BLL.Options.V1;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Create;
 
@@ -54,7 +55,6 @@ public class CreateResumeModelEndpoint : IEndpoints
             .Produces<ResumeModel>(StatusCodes.Status201Created)
             .Produces<IEnumerable<ValidationFailure>>(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status500InternalServerError)
-            //.RequireAuthorization(AuthConstants.TrustedMemberPolicyName)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
             .WithTags(Tag);
@@ -76,6 +76,7 @@ public class CreateResumeModelEndpoint : IEndpoints
     /// </summary>
     /// <param name="request">The parameters used to make the new Resume Model</param>
     /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="linker">The web linker</param>
     /// <param name="http">the http context</param>
     /// <param name="ctx">The database context</param>
@@ -85,7 +86,8 @@ public class CreateResumeModelEndpoint : IEndpoints
     /// <response code="400">Invalid information was provided and the request failed validation</response>
     /// <response code="500">Something went wrong or the database does not exist</response>
     private static async Task<IResult> CreateResumeModelAsync(CreateResumeModelRequest request,
-        IResumeModelService service, IEducationDegreeModelService educationDegreeService, ICertificateModelService certificateService, IWorkExperienceModelService workExperienceService, IProjectModelService projectService, IAddressModelService addressService, IPhoneNumberModelService phoneNumberService, LinkGenerator linker, HttpContext http, CancellationToken token)
+        IResumeModelService service, IEducationDegreeModelService educationDegreeService, ICertificateModelService certificateService, IWorkExperienceModelService workExperienceService, IProjectModelService projectService, IAddressModelService addressService, IPhoneNumberModelService phoneNumberService,
+        IOutputCacheStore outputCacheStore, LinkGenerator linker, HttpContext http, CancellationToken token)
     {
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
@@ -144,8 +146,9 @@ public class CreateResumeModelEndpoint : IEndpoints
             return Results.BadRequest(validationResult);
         }
 
-        //var created = await service.CreateAsync(model, token);
-        return (await service.CreateAsync(model, token)).Match(
+        var created = await service.CreateAsync(model, token);
+        if(!created.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
+        return created.Match(
             succ =>
             {
                 Log.Information("Resume Model Created with id {model.CommonIdentity}", @model.CommonIdentity);

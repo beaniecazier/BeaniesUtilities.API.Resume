@@ -95,7 +95,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT

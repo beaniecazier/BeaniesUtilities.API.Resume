@@ -95,7 +95,7 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
 
         // ASSERT
@@ -132,7 +132,7 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
 
         // ASSERT
@@ -169,7 +169,7 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllTechTagModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
 
         // ASSERT
@@ -185,7 +185,7 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAllTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{GetTechTagModelEndpoint.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<TechTagModelsResponse>();
 
         // ASSERT

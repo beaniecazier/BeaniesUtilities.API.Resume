@@ -166,3 +166,232 @@
 2024-12-29 13:59:05.806 -08:00 [INF] Application started. Press Ctrl+C to shut down.
 2024-12-29 13:59:05.807 -08:00 [INF] Hosting environment: Development
 2024-12-29 13:59:05.807 -08:00 [INF] Content root path: C:\Users\Tiabeanie\source\repos\MinimalAPIs\Resume.API\Resume.API
+2024-12-29 16:25:22.240 -08:00 [INF] Adding Address Model Service to the DI Container
+2024-12-29 16:25:22.259 -08:00 [INF] Adding Certificate Model Service to the DI Container
+2024-12-29 16:25:22.260 -08:00 [INF] Adding EducationDegree Model Service to the DI Container
+2024-12-29 16:25:22.261 -08:00 [INF] Adding EducationInstitution Model Service to the DI Container
+2024-12-29 16:25:22.261 -08:00 [INF] Adding Person Model Service to the DI Container
+2024-12-29 16:25:22.262 -08:00 [INF] Adding PhoneNumber Model Service to the DI Container
+2024-12-29 16:25:22.263 -08:00 [INF] Adding Project Model Service to the DI Container
+2024-12-29 16:25:22.263 -08:00 [INF] Adding Resume Model Service to the DI Container
+2024-12-29 16:25:22.264 -08:00 [INF] Adding TechTag Model Service to the DI Container
+2024-12-29 16:25:22.264 -08:00 [INF] Adding WorkExperience Model Service to the DI Container
+2024-12-29 16:25:22.281 -08:00 [FTL] 
+2024-12-29 16:25:22.412 -08:00 [INF] Now adding Address Model put endpoints
+2024-12-29 16:25:22.416 -08:00 [INF] Now adding Certificate Model put endpoints
+2024-12-29 16:25:22.417 -08:00 [INF] Now adding EducationDegree Model put endpoints
+2024-12-29 16:25:22.418 -08:00 [INF] Now adding EducationInstitution Model put endpoints
+2024-12-29 16:25:22.419 -08:00 [INF] Now adding Person Model put endpoints
+2024-12-29 16:25:22.419 -08:00 [INF] Now adding PhoneNumber Model put endpoints
+2024-12-29 16:25:22.420 -08:00 [INF] Now adding Project Model put endpoints
+2024-12-29 16:25:22.421 -08:00 [INF] Now adding Resume Model put endpoints
+2024-12-29 16:25:22.422 -08:00 [INF] Now adding TechTag Model put endpoints
+2024-12-29 16:25:22.422 -08:00 [INF] Now adding WorkExperience Model put endpoints
+2024-12-29 16:25:22.423 -08:00 [INF] Now adding Address Model post endpoints
+2024-12-29 16:25:22.424 -08:00 [INF] Now adding Certificate Model post endpoints
+2024-12-29 16:25:22.424 -08:00 [INF] Now adding EducationDegree Model post endpoints
+2024-12-29 16:25:22.425 -08:00 [INF] Now adding EducationInstitution Model post endpoints
+2024-12-29 16:25:22.426 -08:00 [INF] Now adding Person Model post endpoints
+2024-12-29 16:25:22.426 -08:00 [INF] Now adding PhoneNumber Model post endpoints
+2024-12-29 16:25:22.427 -08:00 [INF] Now adding Project Model post endpoints
+2024-12-29 16:25:22.428 -08:00 [INF] Now adding Resume Model post endpoints
+2024-12-29 16:25:22.429 -08:00 [INF] Now adding TechTag Model post endpoints
+2024-12-29 16:25:22.429 -08:00 [INF] Now adding WorkExperience Model post endpoints
+2024-12-29 16:25:33.131 -08:00 [INF] Now adding Address Model delete endpoints
+2024-12-29 16:25:33.132 -08:00 [INF] Now adding Certificate Model delete endpoints
+2024-12-29 16:25:33.133 -08:00 [INF] Now adding EducationDegree Model delete endpoints
+2024-12-29 16:25:33.134 -08:00 [INF] Now adding EducationInstitution Model delete endpoints
+2024-12-29 16:25:33.135 -08:00 [INF] Now adding Person Model delete endpoints
+2024-12-29 16:25:33.136 -08:00 [INF] Now adding PhoneNumber Model delete endpoints
+2024-12-29 16:25:33.136 -08:00 [INF] Now adding Project Model delete endpoints
+2024-12-29 16:25:33.137 -08:00 [INF] Now adding Resume Model delete endpoints
+2024-12-29 16:25:33.138 -08:00 [INF] Now adding TechTag Model delete endpoints
+2024-12-29 16:25:33.139 -08:00 [INF] Now adding WorkExperience Model delete endpoints
+2024-12-29 16:25:33.330 -08:00 [INF] Now listening on: https://localhost:7005
+2024-12-29 16:25:33.332 -08:00 [INF] Now listening on: http://localhost:5097
+2024-12-29 16:25:33.358 -08:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-12-29 16:25:33.358 -08:00 [INF] Hosting environment: Development
+2024-12-29 16:25:33.359 -08:00 [INF] Content root path: C:\Users\Tiabeanie\source\repos\MinimalAPIs\Resume.API\Resume.API
+2024-12-29 16:25:33.956 -08:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Duplicate endpoint name 'GetAllAddressModels' found on 'HTTP: GET v1/Certificates => GetAllAddressModelsAsync' and 'HTTP: GET v1/Addresses => GetAllAddressModelsAsync'. Endpoint names must be globally unique.
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher.CreateMatcher(IReadOnlyList`1 endpoints)
+   at Microsoft.AspNetCore.Routing.DataSourceDependentCache`1.Initialize()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher..ctor(EndpointDataSource dataSource, Lifetime lifetime, Func`1 matcherBuilderFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DfaMatcherFactory.CreateMatcher(EndpointDataSource dataSource)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.InitializeCoreAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.<Invoke>g__AwaitMatcher|10_0(EndpointRoutingMiddleware middleware, HttpContext httpContext, Task`1 matcherTask)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2024-12-29 16:25:34.147 -08:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Duplicate endpoint name 'GetAllAddressModels' found on 'HTTP: GET v1/Certificates => GetAllAddressModelsAsync' and 'HTTP: GET v1/Addresses => GetAllAddressModelsAsync'. Endpoint names must be globally unique.
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher.CreateMatcher(IReadOnlyList`1 endpoints)
+   at Microsoft.AspNetCore.Routing.DataSourceDependentCache`1.Initialize()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher..ctor(EndpointDataSource dataSource, Lifetime lifetime, Func`1 matcherBuilderFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DfaMatcherFactory.CreateMatcher(EndpointDataSource dataSource)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.InitializeCoreAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.<Invoke>g__AwaitMatcher|10_0(EndpointRoutingMiddleware middleware, HttpContext httpContext, Task`1 matcherTask)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2024-12-29 16:26:58.767 -08:00 [INF] Adding Address Model Service to the DI Container
+2024-12-29 16:26:58.786 -08:00 [INF] Adding Certificate Model Service to the DI Container
+2024-12-29 16:26:58.787 -08:00 [INF] Adding EducationDegree Model Service to the DI Container
+2024-12-29 16:26:58.787 -08:00 [INF] Adding EducationInstitution Model Service to the DI Container
+2024-12-29 16:26:58.788 -08:00 [INF] Adding Person Model Service to the DI Container
+2024-12-29 16:26:58.788 -08:00 [INF] Adding PhoneNumber Model Service to the DI Container
+2024-12-29 16:26:58.789 -08:00 [INF] Adding Project Model Service to the DI Container
+2024-12-29 16:26:58.789 -08:00 [INF] Adding Resume Model Service to the DI Container
+2024-12-29 16:26:58.790 -08:00 [INF] Adding TechTag Model Service to the DI Container
+2024-12-29 16:26:58.791 -08:00 [INF] Adding WorkExperience Model Service to the DI Container
+2024-12-29 16:26:58.800 -08:00 [FTL] 
+2024-12-29 16:26:58.885 -08:00 [INF] Now adding Address Model put endpoints
+2024-12-29 16:26:58.889 -08:00 [INF] Now adding Certificate Model put endpoints
+2024-12-29 16:26:58.889 -08:00 [INF] Now adding EducationDegree Model put endpoints
+2024-12-29 16:26:58.890 -08:00 [INF] Now adding EducationInstitution Model put endpoints
+2024-12-29 16:26:58.891 -08:00 [INF] Now adding Person Model put endpoints
+2024-12-29 16:26:58.891 -08:00 [INF] Now adding PhoneNumber Model put endpoints
+2024-12-29 16:26:58.892 -08:00 [INF] Now adding Project Model put endpoints
+2024-12-29 16:26:58.893 -08:00 [INF] Now adding Resume Model put endpoints
+2024-12-29 16:26:58.894 -08:00 [INF] Now adding TechTag Model put endpoints
+2024-12-29 16:26:58.894 -08:00 [INF] Now adding WorkExperience Model put endpoints
+2024-12-29 16:26:58.895 -08:00 [INF] Now adding Address Model post endpoints
+2024-12-29 16:26:58.896 -08:00 [INF] Now adding Certificate Model post endpoints
+2024-12-29 16:26:58.897 -08:00 [INF] Now adding EducationDegree Model post endpoints
+2024-12-29 16:26:58.898 -08:00 [INF] Now adding EducationInstitution Model post endpoints
+2024-12-29 16:26:58.898 -08:00 [INF] Now adding Person Model post endpoints
+2024-12-29 16:26:58.899 -08:00 [INF] Now adding PhoneNumber Model post endpoints
+2024-12-29 16:26:58.900 -08:00 [INF] Now adding Project Model post endpoints
+2024-12-29 16:26:58.900 -08:00 [INF] Now adding Resume Model post endpoints
+2024-12-29 16:26:58.901 -08:00 [INF] Now adding TechTag Model post endpoints
+2024-12-29 16:26:58.902 -08:00 [INF] Now adding WorkExperience Model post endpoints
+2024-12-29 16:26:58.905 -08:00 [INF] Now adding Address Model delete endpoints
+2024-12-29 16:26:58.905 -08:00 [INF] Now adding Certificate Model delete endpoints
+2024-12-29 16:26:58.906 -08:00 [INF] Now adding EducationDegree Model delete endpoints
+2024-12-29 16:26:58.907 -08:00 [INF] Now adding EducationInstitution Model delete endpoints
+2024-12-29 16:26:58.908 -08:00 [INF] Now adding Person Model delete endpoints
+2024-12-29 16:26:58.908 -08:00 [INF] Now adding PhoneNumber Model delete endpoints
+2024-12-29 16:26:58.909 -08:00 [INF] Now adding Project Model delete endpoints
+2024-12-29 16:26:58.910 -08:00 [INF] Now adding Resume Model delete endpoints
+2024-12-29 16:26:58.911 -08:00 [INF] Now adding TechTag Model delete endpoints
+2024-12-29 16:26:58.912 -08:00 [INF] Now adding WorkExperience Model delete endpoints
+2024-12-29 16:26:59.112 -08:00 [INF] Now listening on: https://localhost:7005
+2024-12-29 16:26:59.114 -08:00 [INF] Now listening on: http://localhost:5097
+2024-12-29 16:26:59.139 -08:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-12-29 16:26:59.140 -08:00 [INF] Hosting environment: Development
+2024-12-29 16:26:59.141 -08:00 [INF] Content root path: C:\Users\Tiabeanie\source\repos\MinimalAPIs\Resume.API\Resume.API
+2024-12-29 16:27:00.258 -08:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Duplicate endpoint name 'GetAllAddressModels' found on 'HTTP: GET v1/Certificates => GetAllAddressModelsAsync' and 'HTTP: GET v1/Addresses => GetAllAddressModelsAsync'. Endpoint names must be globally unique.
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher.CreateMatcher(IReadOnlyList`1 endpoints)
+   at Microsoft.AspNetCore.Routing.DataSourceDependentCache`1.Initialize()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher..ctor(EndpointDataSource dataSource, Lifetime lifetime, Func`1 matcherBuilderFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DfaMatcherFactory.CreateMatcher(EndpointDataSource dataSource)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.InitializeCoreAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.<Invoke>g__AwaitMatcher|10_0(EndpointRoutingMiddleware middleware, HttpContext httpContext, Task`1 matcherTask)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2024-12-29 16:27:00.459 -08:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Duplicate endpoint name 'GetAllAddressModels' found on 'HTTP: GET v1/Certificates => GetAllAddressModelsAsync' and 'HTTP: GET v1/Addresses => GetAllAddressModelsAsync'. Endpoint names must be globally unique.
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher.CreateMatcher(IReadOnlyList`1 endpoints)
+   at Microsoft.AspNetCore.Routing.DataSourceDependentCache`1.Initialize()
+   at System.Threading.LazyInitializer.EnsureInitializedCore[T](T& target, Boolean& initialized, Object& syncLock, Func`1 valueFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DataSourceDependentMatcher..ctor(EndpointDataSource dataSource, Lifetime lifetime, Func`1 matcherBuilderFactory)
+   at Microsoft.AspNetCore.Routing.Matching.DfaMatcherFactory.CreateMatcher(EndpointDataSource dataSource)
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.InitializeCoreAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.<Invoke>g__AwaitMatcher|10_0(EndpointRoutingMiddleware middleware, HttpContext httpContext, Task`1 matcherTask)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2024-12-29 16:28:39.405 -08:00 [INF] Adding Address Model Service to the DI Container
+2024-12-29 16:28:39.424 -08:00 [INF] Adding Certificate Model Service to the DI Container
+2024-12-29 16:28:39.425 -08:00 [INF] Adding EducationDegree Model Service to the DI Container
+2024-12-29 16:28:39.426 -08:00 [INF] Adding EducationInstitution Model Service to the DI Container
+2024-12-29 16:28:39.426 -08:00 [INF] Adding Person Model Service to the DI Container
+2024-12-29 16:28:39.427 -08:00 [INF] Adding PhoneNumber Model Service to the DI Container
+2024-12-29 16:28:39.427 -08:00 [INF] Adding Project Model Service to the DI Container
+2024-12-29 16:28:39.428 -08:00 [INF] Adding Resume Model Service to the DI Container
+2024-12-29 16:28:39.428 -08:00 [INF] Adding TechTag Model Service to the DI Container
+2024-12-29 16:28:39.429 -08:00 [INF] Adding WorkExperience Model Service to the DI Container
+2024-12-29 16:28:39.445 -08:00 [FTL] 
+2024-12-29 16:28:39.580 -08:00 [INF] Now adding Address Model put endpoints
+2024-12-29 16:28:39.583 -08:00 [INF] Now adding Certificate Model put endpoints
+2024-12-29 16:28:39.584 -08:00 [INF] Now adding EducationDegree Model put endpoints
+2024-12-29 16:28:39.585 -08:00 [INF] Now adding EducationInstitution Model put endpoints
+2024-12-29 16:28:39.586 -08:00 [INF] Now adding Person Model put endpoints
+2024-12-29 16:28:39.587 -08:00 [INF] Now adding PhoneNumber Model put endpoints
+2024-12-29 16:28:39.587 -08:00 [INF] Now adding Project Model put endpoints
+2024-12-29 16:28:39.588 -08:00 [INF] Now adding Resume Model put endpoints
+2024-12-29 16:28:39.589 -08:00 [INF] Now adding TechTag Model put endpoints
+2024-12-29 16:28:39.590 -08:00 [INF] Now adding WorkExperience Model put endpoints
+2024-12-29 16:28:39.590 -08:00 [INF] Now adding Address Model post endpoints
+2024-12-29 16:28:39.591 -08:00 [INF] Now adding Certificate Model post endpoints
+2024-12-29 16:28:39.592 -08:00 [INF] Now adding EducationDegree Model post endpoints
+2024-12-29 16:28:39.593 -08:00 [INF] Now adding EducationInstitution Model post endpoints
+2024-12-29 16:28:39.593 -08:00 [INF] Now adding Person Model post endpoints
+2024-12-29 16:28:39.594 -08:00 [INF] Now adding PhoneNumber Model post endpoints
+2024-12-29 16:28:39.595 -08:00 [INF] Now adding Project Model post endpoints
+2024-12-29 16:28:39.595 -08:00 [INF] Now adding Resume Model post endpoints
+2024-12-29 16:28:39.596 -08:00 [INF] Now adding TechTag Model post endpoints
+2024-12-29 16:28:39.597 -08:00 [INF] Now adding WorkExperience Model post endpoints
+2024-12-29 16:28:39.599 -08:00 [INF] Now adding Address Model delete endpoints
+2024-12-29 16:28:39.600 -08:00 [INF] Now adding Certificate Model delete endpoints
+2024-12-29 16:28:39.601 -08:00 [INF] Now adding EducationDegree Model delete endpoints
+2024-12-29 16:28:39.602 -08:00 [INF] Now adding EducationInstitution Model delete endpoints
+2024-12-29 16:28:39.602 -08:00 [INF] Now adding Person Model delete endpoints
+2024-12-29 16:28:39.603 -08:00 [INF] Now adding PhoneNumber Model delete endpoints
+2024-12-29 16:28:39.604 -08:00 [INF] Now adding Project Model delete endpoints
+2024-12-29 16:28:39.605 -08:00 [INF] Now adding Resume Model delete endpoints
+2024-12-29 16:28:39.605 -08:00 [INF] Now adding TechTag Model delete endpoints
+2024-12-29 16:28:39.606 -08:00 [INF] Now adding WorkExperience Model delete endpoints
+2024-12-29 16:28:39.793 -08:00 [INF] Now listening on: https://localhost:7005
+2024-12-29 16:28:39.795 -08:00 [INF] Now listening on: http://localhost:5097
+2024-12-29 16:28:39.820 -08:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-12-29 16:28:39.821 -08:00 [INF] Hosting environment: Development
+2024-12-29 16:28:39.821 -08:00 [INF] Content root path: C:\Users\Tiabeanie\source\repos\MinimalAPIs\Resume.API\Resume.API
+2024-12-29 16:29:03.597 -08:00 [INF] Adding Address Model Service to the DI Container
+2024-12-29 16:29:03.616 -08:00 [INF] Adding Certificate Model Service to the DI Container
+2024-12-29 16:29:03.616 -08:00 [INF] Adding EducationDegree Model Service to the DI Container
+2024-12-29 16:29:03.617 -08:00 [INF] Adding EducationInstitution Model Service to the DI Container
+2024-12-29 16:29:03.618 -08:00 [INF] Adding Person Model Service to the DI Container
+2024-12-29 16:29:03.618 -08:00 [INF] Adding PhoneNumber Model Service to the DI Container
+2024-12-29 16:29:03.619 -08:00 [INF] Adding Project Model Service to the DI Container
+2024-12-29 16:29:03.619 -08:00 [INF] Adding Resume Model Service to the DI Container
+2024-12-29 16:29:03.620 -08:00 [INF] Adding TechTag Model Service to the DI Container
+2024-12-29 16:29:03.621 -08:00 [INF] Adding WorkExperience Model Service to the DI Container
+2024-12-29 16:29:03.631 -08:00 [FTL] 
+2024-12-29 16:29:03.735 -08:00 [INF] Now adding Address Model put endpoints
+2024-12-29 16:29:03.739 -08:00 [INF] Now adding Certificate Model put endpoints
+2024-12-29 16:29:03.739 -08:00 [INF] Now adding EducationDegree Model put endpoints
+2024-12-29 16:29:03.740 -08:00 [INF] Now adding EducationInstitution Model put endpoints
+2024-12-29 16:29:03.741 -08:00 [INF] Now adding Person Model put endpoints
+2024-12-29 16:29:03.742 -08:00 [INF] Now adding PhoneNumber Model put endpoints
+2024-12-29 16:29:03.743 -08:00 [INF] Now adding Project Model put endpoints
+2024-12-29 16:29:03.744 -08:00 [INF] Now adding Resume Model put endpoints
+2024-12-29 16:29:03.745 -08:00 [INF] Now adding TechTag Model put endpoints
+2024-12-29 16:29:03.745 -08:00 [INF] Now adding WorkExperience Model put endpoints
+2024-12-29 16:29:03.746 -08:00 [INF] Now adding Address Model post endpoints
+2024-12-29 16:29:03.747 -08:00 [INF] Now adding Certificate Model post endpoints
+2024-12-29 16:29:03.748 -08:00 [INF] Now adding EducationDegree Model post endpoints
+2024-12-29 16:29:03.749 -08:00 [INF] Now adding EducationInstitution Model post endpoints
+2024-12-29 16:29:03.750 -08:00 [INF] Now adding Person Model post endpoints
+2024-12-29 16:29:03.751 -08:00 [INF] Now adding PhoneNumber Model post endpoints
+2024-12-29 16:29:03.751 -08:00 [INF] Now adding Project Model post endpoints
+2024-12-29 16:29:03.752 -08:00 [INF] Now adding Resume Model post endpoints
+2024-12-29 16:29:03.753 -08:00 [INF] Now adding TechTag Model post endpoints
+2024-12-29 16:29:03.754 -08:00 [INF] Now adding WorkExperience Model post endpoints
+2024-12-29 16:29:03.756 -08:00 [INF] Now adding Address Model delete endpoints
+2024-12-29 16:29:03.757 -08:00 [INF] Now adding Certificate Model delete endpoints
+2024-12-29 16:29:03.758 -08:00 [INF] Now adding EducationDegree Model delete endpoints
+2024-12-29 16:29:03.759 -08:00 [INF] Now adding EducationInstitution Model delete endpoints
+2024-12-29 16:29:03.759 -08:00 [INF] Now adding Person Model delete endpoints
+2024-12-29 16:29:03.760 -08:00 [INF] Now adding PhoneNumber Model delete endpoints
+2024-12-29 16:29:03.761 -08:00 [INF] Now adding Project Model delete endpoints
+2024-12-29 16:29:03.762 -08:00 [INF] Now adding Resume Model delete endpoints
+2024-12-29 16:29:03.762 -08:00 [INF] Now adding TechTag Model delete endpoints
+2024-12-29 16:29:03.763 -08:00 [INF] Now adding WorkExperience Model delete endpoints
+2024-12-29 16:29:03.967 -08:00 [INF] Now listening on: https://localhost:7005
+2024-12-29 16:29:03.969 -08:00 [INF] Now listening on: http://localhost:5097
+2024-12-29 16:29:03.993 -08:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-12-29 16:29:03.994 -08:00 [INF] Hosting environment: Development
+2024-12-29 16:29:03.994 -08:00 [INF] Content root path: C:\Users\Tiabeanie\source\repos\MinimalAPIs\Resume.API\Resume.API
+2024-12-29 16:29:34.418 -08:00 [INF] Get All Address Models endpoint called by Tiabeanie
