@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Swagger;
 using Gay.TCazier.Resume.API.Versioning;
 using Gay.TCazier.Resume.BLL;
 using Gay.TCazier.Resume.BLL.CommandLine;
+using Gay.TCazier.Resume.BLL.Contexts;
 using Serilog;
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -24,6 +25,12 @@ internal class Program
 
         var builder = WebApplication.CreateBuilder(args);
         var app = builder.AddApplicationServices(defaultApiVersion);
+
+        ////DIRTY HACK, we WILL come back to fix this
+        //var scope = app.Services.CreateScope();
+        //var context = scope.ServiceProvider.GetRequiredService<ResumeContext>();
+        //context.Database.EnsureDeleted();
+        //context.Database.EnsureCreated();
 
         app.CreateApiVersionSet(versions);
 

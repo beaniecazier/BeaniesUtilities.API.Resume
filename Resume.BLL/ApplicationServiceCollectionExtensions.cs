@@ -20,43 +20,43 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         Log.Information("Adding Address Model Service to the DI Container");
-        services.AddSingleton<IAddressModelRepository, AddressModelInMemRepository>();
+        services.AddSingleton<IAddressModelRepository, AddressModelSQLServerRepository>();
         services.AddSingleton<IAddressModelService, AddressModelService>();
 
         Log.Information("Adding Certificate Model Service to the DI Container");
-        services.AddSingleton<ICertificateModelRepository, CertificateModelInMemRepository>();
+        services.AddSingleton<ICertificateModelRepository, CertificateModelSQLServerRepository>();
         services.AddSingleton<ICertificateModelService, CertificateModelService>();
 
         Log.Information("Adding EducationDegree Model Service to the DI Container");
-        services.AddSingleton<IEducationDegreeModelRepository, EducationDegreeModelInMemRepository>();
+        services.AddSingleton<IEducationDegreeModelRepository, EducationDegreeModelSQLServerRepository>();
         services.AddSingleton<IEducationDegreeModelService, EducationDegreeModelService>();
 
         Log.Information("Adding EducationInstitution Model Service to the DI Container");
-        services.AddSingleton<IEducationInstitutionModelRepository, EducationInstitutionModelInMemRepository>();
+        services.AddSingleton<IEducationInstitutionModelRepository, EducationInstitutionModelSQLServerRepository>();
         services.AddSingleton<IEducationInstitutionModelService, EducationInstitutionModelService>();
 
         Log.Information("Adding Person Model Service to the DI Container");
-        services.AddSingleton<IPersonModelRepository, PersonModelInMemRepository>();
+        services.AddSingleton<IPersonModelRepository, PersonModelSQLServerRepository>();
         services.AddSingleton<IPersonModelService, PersonModelService>();
 
         Log.Information("Adding PhoneNumber Model Service to the DI Container");
-        services.AddSingleton<IPhoneNumberModelRepository, PhoneNumberModelInMemRepository>();
+        services.AddSingleton<IPhoneNumberModelRepository, PhoneNumberModelSQLServerRepository>();
         services.AddSingleton<IPhoneNumberModelService, PhoneNumberModelService>();
 
         Log.Information("Adding Project Model Service to the DI Container");
-        services.AddSingleton<IProjectModelRepository, ProjectModelInMemRepository>();
+        services.AddSingleton<IProjectModelRepository, ProjectModelSQLServerRepository>();
         services.AddSingleton<IProjectModelService, ProjectModelService>();
 
         Log.Information("Adding Resume Model Service to the DI Container");
-        services.AddSingleton<IResumeModelRepository, ResumeModelInMemRepository>();
+        services.AddSingleton<IResumeModelRepository, ResumeModelSQLServerRepository>();
         services.AddSingleton<IResumeModelService, ResumeModelService>();
 
         Log.Information("Adding TechTag Model Service to the DI Container");
-        services.AddSingleton<ITechTagModelRepository, TechTagModelInMemRepository>();
+        services.AddSingleton<ITechTagModelRepository, TechTagModelSQLServerRepository>();
         services.AddSingleton<ITechTagModelService, TechTagModelService>();
 
         Log.Information("Adding WorkExperience Model Service to the DI Container");
-        services.AddSingleton<IWorkExperienceModelRepository, WorkExperienceModelInMemRepository>();
+        services.AddSingleton<IWorkExperienceModelRepository, WorkExperienceModelSQLServerRepository>();
         services.AddSingleton<IWorkExperienceModelService, WorkExperienceModelService>();
 
         services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
@@ -65,10 +65,12 @@ public static class ApplicationServiceCollectionExtensions
 
     public static IServiceCollection AddDatabase(this IServiceCollection services, ConfigurationManager config)
     {
-        var connStr = config.GetConnectionString("Dev");
+        //var reumeConfig = config.GetRequiredSection("Resume").GetValue<string>("ConnectionString");
+        //var connStr = config.GetConnectionString("Resume:ConnectionString");
+        var connStr = config.GetRequiredSection("Resume").GetValue<string>("ConnectionString");
         if (string.IsNullOrWhiteSpace(connStr))
         {
-            Log.Fatal("");
+            Log.Fatal("Connection String was null");
             return services;
         }
 

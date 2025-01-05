@@ -43,12 +43,12 @@ public class EducationDegreeModelGetEndpointsTests : IClassFixture<WebApplicatio
 
         var create = await httpClient.PostAsJsonAsync(CreateEducationDegreeModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<EducationDegreeModel>();
-        _createdEducationDegreeModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<EducationDegreeModelResponse>();
+        _createdEducationDegreeModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetEducationDegreeModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<EducationDegreeModel>();
+        var result = await httpClient.GetAsync($"{GetEducationDegreeModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<EducationDegreeModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

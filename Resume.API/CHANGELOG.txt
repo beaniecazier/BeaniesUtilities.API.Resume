@@ -1,0 +1,3 @@
+add efcore code to communicate with the sqlserver
+changed all tests to commicate only in requests and responses
+updated the method that new common ids are generated to use a ticket system

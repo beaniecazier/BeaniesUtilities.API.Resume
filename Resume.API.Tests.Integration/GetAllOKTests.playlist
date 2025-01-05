@@ -13,27 +13,108 @@
                   <Property Name="Class" Value="AddressModelGetEndpointsTests" />
                   <Rule Match="Any">
                     <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsAllModelsAscending_WhenModelsExist" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsAllModelsAscending_WhenModelsExist" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsAllModelsDescending_WhenModelsExist" />
-                      <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsAllModelsDescending_WhenModelsExist" />
-                      </Rule>
-                    </Rule>
-                    <Rule Match="All">
                       <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
                       <Rule Match="Any">
                         <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
                       </Rule>
                     </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="CertificateModelGetEndpointsTests" />
+                  <Rule Match="Any">
                     <Rule Match="All">
-                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsOK_WhenNoModelsExist" />
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.CertificateModelGetEndpointsTests.GetAllCertificateModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
                       <Rule Match="Any">
-                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.AddressModelGetEndpointsTests.GetAllAddressModels_ReturnsOK_WhenNoModelsExist" />
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.CertificateModelGetEndpointsTests.GetAllCertificateModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EducationDegreeModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.EducationDegreeModelGetEndpointsTests.GetAllEducationDegreeModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.EducationDegreeModelGetEndpointsTests.GetAllEducationDegreeModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="EducationInstitutionModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.EducationInstitutionModelGetEndpointsTests.GetAllEducationInstitutionModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.EducationInstitutionModelGetEndpointsTests.GetAllEducationInstitutionModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="PersonModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.PersonModelGetEndpointsTests.GetAllPersonModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.PersonModelGetEndpointsTests.GetAllPersonModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="PhoneNumberModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.PhoneNumberModelGetEndpointsTests.GetAllPhoneNumberModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.PhoneNumberModelGetEndpointsTests.GetAllPhoneNumberModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ProjectModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.ProjectModelGetEndpointsTests.GetAllProjectModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.ProjectModelGetEndpointsTests.GetAllProjectModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="ResumeModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.ResumeModelGetEndpointsTests.GetAllResumeModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.ResumeModelGetEndpointsTests.GetAllResumeModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="TechTagModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.TechTagModelGetEndpointsTests.GetAllTechTagModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.TechTagModelGetEndpointsTests.GetAllTechTagModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+                <Rule Match="All">
+                  <Property Name="Class" Value="WorkExperienceModelGetEndpointsTests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.WorkExperienceModelGetEndpointsTests.GetAllWorkExperienceModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="Resume.API.Tests.Integration.Endpoint.V1.Get.WorkExperienceModelGetEndpointsTests.GetAllWorkExperienceModels_ReturnsAllModelsUnsorted_WhenModelsExist" />
                       </Rule>
                     </Rule>
                   </Rule>

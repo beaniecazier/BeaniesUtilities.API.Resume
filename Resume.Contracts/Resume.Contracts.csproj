@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="APIUtilities" Version="1.0.0-alpha-1.0.4" />
-    <PackageReference Include="Resume.Models" Version="1.0.0-alpha-1.1.4" />
+    <ProjectReference Include="..\..\..\BeaniesUtilities\APIUtilities\APIUtilities.csproj" />
+    <ProjectReference Include="..\..\..\BeaniesUtilities\Models\Resume\Resume.Models.csproj" />
   </ItemGroup>
 
 </Project>

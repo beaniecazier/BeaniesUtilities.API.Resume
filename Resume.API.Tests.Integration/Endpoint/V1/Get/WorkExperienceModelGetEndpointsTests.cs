@@ -43,12 +43,12 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
 
         var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModel>();
-        _createdWorkExperienceModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
+        _createdWorkExperienceModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<WorkExperienceModel>();
+        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

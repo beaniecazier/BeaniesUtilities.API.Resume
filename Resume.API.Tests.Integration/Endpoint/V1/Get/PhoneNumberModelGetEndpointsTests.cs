@@ -43,12 +43,12 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
 
         var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<PhoneNumberModel>();
-        _createdPhoneNumberModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
+        _createdPhoneNumberModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<PhoneNumberModel>();
+        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

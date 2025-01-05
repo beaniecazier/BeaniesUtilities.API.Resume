@@ -43,12 +43,12 @@ public class ProjectModelGetEndpointsTests : IClassFixture<WebApplicationFactory
 
         var create = await httpClient.PostAsJsonAsync(CreateProjectModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<ProjectModel>();
-        _createdProjectModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<ProjectModelResponse>();
+        _createdProjectModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetProjectModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<ProjectModel>();
+        var result = await httpClient.GetAsync($"{GetProjectModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<ProjectModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

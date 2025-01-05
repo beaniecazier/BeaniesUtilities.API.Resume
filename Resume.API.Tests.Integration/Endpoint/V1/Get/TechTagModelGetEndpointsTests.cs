@@ -43,12 +43,12 @@ public class TechTagModelGetEndpointsTests : IClassFixture<WebApplicationFactory
 
         var create = await httpClient.PostAsJsonAsync(CreateTechTagModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<TechTagModel>();
-        _createdTechTagModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<TechTagModelResponse>();
+        _createdTechTagModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetTechTagModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<TechTagModel>();
+        var result = await httpClient.GetAsync($"{GetTechTagModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<TechTagModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

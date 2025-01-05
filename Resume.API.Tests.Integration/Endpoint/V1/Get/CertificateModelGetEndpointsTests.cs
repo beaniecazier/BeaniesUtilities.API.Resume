@@ -43,12 +43,12 @@ public class CertificateModelGetEndpointsTests : IClassFixture<WebApplicationFac
 
         var create = await httpClient.PostAsJsonAsync(CreateCertificateModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<CertificateModel>();
-        _createdCertificateModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<CertificateModelResponse>();
+        _createdCertificateModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetCertificateModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<CertificateModel>();
+        var result = await httpClient.GetAsync($"{GetCertificateModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<CertificateModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

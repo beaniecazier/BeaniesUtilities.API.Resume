@@ -92,7 +92,8 @@ internal class ModelPropertyGenerator
     internal static string CreateValidString()
     {
         var faker = new Faker("en");
-        return faker.Random.String();
+        //return faker.Random.String(25,'A', 'z');
+        return faker.Company.CompanyName();
     }
 
     internal static SByte CreateValidSByteValue()

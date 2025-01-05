@@ -43,12 +43,12 @@ public class PersonModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
 
         var create = await httpClient.PostAsJsonAsync(CreatePersonModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<PersonModel>();
-        _createdPersonModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<PersonModelResponse>();
+        _createdPersonModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetPersonModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<PersonModel>();
+        var result = await httpClient.GetAsync($"{GetPersonModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<PersonModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

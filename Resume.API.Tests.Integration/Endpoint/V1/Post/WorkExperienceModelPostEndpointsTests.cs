@@ -5,6 +5,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Create;
 using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using Gay.TCazier.Resume.API.Endpoints.V1.Delete;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
+using Gay.TCazier.Resume.Contracts.Responses.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 
@@ -45,13 +46,13 @@ public class WorkExperienceModelPostEndpointsTests : IClassFixture<WebApplicatio
         var result = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
         var url = result.Headers.Location.AbsolutePath;
         var get = await httpClient.GetAsync(url);
-        var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModel>();
-        _createdWorkExperienceModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
+        _createdWorkExperienceModels.Add(createdModel.Id);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
         createdModel.Should().BeEquivalentTo(createdModel);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetWorkExperienceModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{GetWorkExperienceModelEndpoint.EndpointPrefix}/{createdModel.Id}");
     }
 
     //[Fact]

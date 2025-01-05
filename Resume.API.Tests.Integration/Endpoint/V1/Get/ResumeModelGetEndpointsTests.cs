@@ -43,12 +43,12 @@ public class ResumeModelGetEndpointsTests : IClassFixture<WebApplicationFactory<
 
         var create = await httpClient.PostAsJsonAsync(CreateResumeModelEndpoint.EndpointPrefix, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
-        var createdModel = await get.Content.ReadFromJsonAsync<ResumeModel>();
-        _createdResumeModels.Add(createdModel.CommonIdentity);
+        var createdModel = await get.Content.ReadFromJsonAsync<ResumeModelResponse>();
+        _createdResumeModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetResumeModelEndpoint.EndpointPrefix}/{createdModel.CommonIdentity}");
-        var foundModel = await result.Content.ReadFromJsonAsync<ResumeModel>();
+        var result = await httpClient.GetAsync($"{GetResumeModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var foundModel = await result.Content.ReadFromJsonAsync<ResumeModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);

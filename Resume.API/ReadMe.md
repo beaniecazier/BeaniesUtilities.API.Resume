@@ -7,10 +7,12 @@
 - [ ] Testing
 - [x] Add in the remaining models and endpoints
 - [x] Searching,filtering and querying
-- [ ] Sorting
+- [x] Sorting
 - [ ] ReadMe
-- [ ] Database Migration && SQL Server
-- [ ] Output and Response Cacheing
+- [ ] Database Migration
+- [x] SQL Server
+- [x] Output and Response Cacheing
 - [ ] Health Checks
 - [x] Paging And Pagination
 - [ ] adding string data should trim white space
+- [x] Fix pseudo race condition in common id generation
