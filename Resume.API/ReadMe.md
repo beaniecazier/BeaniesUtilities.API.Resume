@@ -1,18 +1,19 @@
-﻿# REMAINING TODO ITEMS
-- [ ] Flush out logging
-- [ ] Commandline parsing
-- [ ] Implement better swagger versioning
-- [ ] Validation
+# REMAINING TODO ITEMS
+- [\] Flush out logging
+- [\] Commandline parsing
+- [\] Implement better swagger versioning
+- [\] Validation
 - [ ] Auhterization and Authentication
-- [ ] Testing
+- [\] Testing
 - [x] Add in the remaining models and endpoints
 - [x] Searching,filtering and querying
 - [x] Sorting
-- [ ] ReadMe
+- [\] ReadMe
 - [ ] Database Migration
 - [x] SQL Server
 - [x] Output and Response Cacheing
-- [ ] Health Checks
+- [x] Health Checks (ready, liveness, startup)
 - [x] Paging And Pagination
 - [ ] adding string data should trim white space
 - [x] Fix pseudo race condition in common id generation
+- [ ] update model to include a contacts/address book/calendars and events/ phone numbers having a type like home work or cell

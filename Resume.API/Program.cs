@@ -1,6 +1,8 @@
 ﻿using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
 using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
+using Gay.TCazier.Resume.API;
+using Gay.TCazier.Resume.API.BackgroundServices;
 using Gay.TCazier.Resume.API.Health;
 using Gay.TCazier.Resume.API.OutputCache;
 using Gay.TCazier.Resume.API.Swagger;
@@ -52,7 +54,7 @@ internal class Program
         //app.UseAuthentication();
         //app.UseAuthorization();
 
-        app.UseEndpoints<Program>();
+        app.UseEndpoints<IAPIMarker>();
 
         app.Run();
 
@@ -73,6 +75,8 @@ public static class ProgramExtensions
 
         //builder.Services.AddSecurity(config);
 
+        builder.Services.AddHostedService<StartupBackgroundService>();
+
         builder.Services.AddApiVersioningSettings(defaultApiVersion);
 
         builder.Services.AddOutputAndResponseCacheing();
@@ -85,7 +89,7 @@ public static class ProgramExtensions
 
         builder.Services.AddDatabase(config);
 
-        builder.Services.AddEndpoints<Program>(config);
+        builder.Services.AddEndpoints<IAPIMarker>(config);
 
         return builder.Build();
     }

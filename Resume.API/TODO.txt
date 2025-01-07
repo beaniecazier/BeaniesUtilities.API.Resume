@@ -1,4 +1,9 @@
-﻿# Done
+﻿# Notes On Current State
+efcore does the initial get?? with the deleted/hidden filter so the GetAll tests seem to fail even when the filter 8s ignored and we allow these fuelds
+check if we really are allowing hidden and deleted
+how do we handle a common id when all models associated with it have been deleted? soft deleted?
+
+# Done
 *move secret info to secret places - moves to user secrets, dont know if issues will arise from this using for now
 create the update extension method for each model type
 license
