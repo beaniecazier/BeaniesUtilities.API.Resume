@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
 using Gay.TCazier.DatabaseParser.Endpoints.Extensions;
+using Gay.TCazier.Resume.API.Health;
 using Gay.TCazier.Resume.API.OutputCache;
 using Gay.TCazier.Resume.API.Swagger;
 using Gay.TCazier.Resume.API.Versioning;
@@ -76,7 +77,7 @@ public static class ProgramExtensions
 
         builder.Services.AddOutputAndResponseCacheing();
 
-        //builder.Services.AddHealthCheckServices();
+        builder.Services.AddHealthCheckServices();
 
         builder.Services.ConfigureAndAddSwagger(config);
 
