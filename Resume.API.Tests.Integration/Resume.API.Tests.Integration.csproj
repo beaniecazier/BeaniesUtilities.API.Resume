@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Resume.API\Resume.API.csproj" />
+    <ProjectReference Include="..\API\Resume.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>
