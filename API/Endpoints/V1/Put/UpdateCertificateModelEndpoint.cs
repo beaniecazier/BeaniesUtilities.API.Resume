@@ -95,6 +95,12 @@ public class UpdateCertificateModelEndpoint : IEndpoints
 
         Log.Information("Update Certificate Model Endpoint called by {username}", @username);
 
+        if (id != changes.Id)
+        {
+            Log.Error("Mismatch in changes request");
+            return Results.BadRequest("Mismatch in changes request");
+        }
+
         var oldModel = await service.GetByIDAsync(changes.Id, token);
         if (oldModel.IsFail && ((Exception)((Error)oldModel).Exception).GetType() == typeof(NullReferenceException))
         {
@@ -113,7 +119,7 @@ public class UpdateCertificateModelEndpoint : IEndpoints
             return Results.Problem(detail: ((Error)requestedEducationInstitutionModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        var newModel = changes.MapToModelFromUpdateRequest((CertificateModel)oldModel!, username, (EducationInstitutionModel)requestedEducationInstitutionModel);
+        var newModel = changes.MapToModelFromUpdateRequest(username, (EducationInstitutionModel)requestedEducationInstitutionModel);
 
         var validationResult = await service.ValidateModelForUpdate(newModel);
         if (validationResult.Count() > 0)

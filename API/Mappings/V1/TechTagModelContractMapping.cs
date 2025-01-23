@@ -22,14 +22,13 @@ public static class TechTagModelContractMapping
         };
     }
 
-    public static TechTagModel MapToModelFromUpdateRequest(this UpdateTechTagModelRequest request, TechTagModel model,
-        string username)
+    public static TechTagModel MapToModelFromUpdateRequest(this UpdateTechTagModelRequest request, string username)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new TechTagModel(request.Id, name, username, request.Notes)
         {
-			URL = string.IsNullOrWhiteSpace(request.URL) ? model.URL : request.URL,
-			Description = string.IsNullOrWhiteSpace(request.Description) ? model.Description : request.Description,
+			URL = request.URL,
+			Description = request.Description,
         };
     }
 

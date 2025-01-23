@@ -24,16 +24,15 @@ public static class EducationDegreeModelContractMapping
         };
     }
 
-    public static EducationDegreeModel MapToModelFromUpdateRequest(this UpdateEducationDegreeModelRequest request, EducationDegreeModel model,
-        string username, EducationInstitutionModel institution)
+    public static EducationDegreeModel MapToModelFromUpdateRequest(this UpdateEducationDegreeModelRequest request, string username, EducationInstitutionModel institution)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new EducationDegreeModel(request.Id, name, username, request.Notes)
         {
-			GPA = request.GPA is null ? model.GPA : request.GPA.Value,
-			StartDate = request.StartDate is null ? model.StartDate : request.StartDate.Value,
-			EndDate = request.EndDate is null ? model.EndDate : request.EndDate.Value,
-			Institution = request.Institution is null ? model.Institution : institution,
+			GPA = request.GPA.Value,
+			StartDate = request.StartDate.Value,
+			EndDate = request.EndDate.Value,
+			Institution = institution,
         };
     }
 

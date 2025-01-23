@@ -26,18 +26,17 @@ public static class WorkExperienceModelContractMapping
         };
     }
 
-    public static WorkExperienceModel MapToModelFromUpdateRequest(this UpdateWorkExperienceModelRequest request, WorkExperienceModel model,
-        string username, List<TechTagModel> techUsedes)
+    public static WorkExperienceModel MapToModelFromUpdateRequest(this UpdateWorkExperienceModelRequest request, string username, List<TechTagModel> techUsedes)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new WorkExperienceModel(request.Id, name, username, request.Notes)
         {
-			StartDate = request.StartDate is null ? model.StartDate : request.StartDate.Value,
-			EndDate = request.EndDate is null ? model.EndDate : request.EndDate.Value,
-			Company = string.IsNullOrWhiteSpace(request.Company) ? model.Company : request.Company,
-			Description = string.IsNullOrWhiteSpace(request.Description) ? model.Description : request.Description,
-			Responsibilities = request.Responsibilities.Count() <= 0 ? model.Responsibilities : request.Responsibilities,
-			TechUsed = request.TechUsed.Count() <= 0 ? model.TechUsed : techUsedes,
+			StartDate = request.StartDate.Value,
+			EndDate = request.EndDate.Value,
+			Company = request.Company,
+			Description = request.Description,
+			Responsibilities = request.Responsibilities,
+			TechUsed = techUsedes,
         };
     }
 

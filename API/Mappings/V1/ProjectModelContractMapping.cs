@@ -26,18 +26,17 @@ public static class ProjectModelContractMapping
         };
     }
 
-    public static ProjectModel MapToModelFromUpdateRequest(this UpdateProjectModelRequest request, ProjectModel model,
-        string username, List<TechTagModel> techTagses)
+    public static ProjectModel MapToModelFromUpdateRequest(this UpdateProjectModelRequest request, string username, List<TechTagModel> techTagses)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new ProjectModel(request.Id, name, username, request.Notes)
         {
-			Description = string.IsNullOrWhiteSpace(request.Description) ? model.Description : request.Description,
-			Version = string.IsNullOrWhiteSpace(request.Version) ? model.Version : request.Version,
-			ProjectUrl = string.IsNullOrWhiteSpace(request.ProjectUrl) ? model.ProjectUrl : request.ProjectUrl,
-			StartDate = request.StartDate is null ? model.StartDate : request.StartDate.Value,
-			CompletionDate = request.CompletionDate is null ? model.CompletionDate : request.CompletionDate.Value,
-			TechTags = request.TechTags.Count() <= 0 ? model.TechTags : techTagses,
+			Description = request.Description,
+			Version = request.Version,
+			ProjectUrl = request.ProjectUrl,
+			StartDate = request.StartDate.Value,
+			CompletionDate = request.CompletionDate.Value,
+			TechTags = techTagses,
         };
     }
 

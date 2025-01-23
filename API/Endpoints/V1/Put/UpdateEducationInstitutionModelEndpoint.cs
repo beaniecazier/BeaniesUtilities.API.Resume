@@ -95,6 +95,12 @@ public class UpdateEducationInstitutionModelEndpoint : IEndpoints
 
         Log.Information("Update EducationInstitution Model Endpoint called by {username}", @username);
 
+        if (id != changes.Id)
+        {
+            Log.Error("Mismatch in changes request");
+            return Results.BadRequest("Mismatch in changes request");
+        }
+
         var oldModel = await service.GetByIDAsync(changes.Id, token);
         if (oldModel.IsFail && ((Exception)((Error)oldModel).Exception).GetType() == typeof(NullReferenceException))
         {
@@ -113,7 +119,7 @@ public class UpdateEducationInstitutionModelEndpoint : IEndpoints
             return Results.Problem(detail: ((Error)requestedAddressModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        var newModel = changes.MapToModelFromUpdateRequest((EducationInstitutionModel)oldModel!, username, (AddressModel)requestedAddressModel);
+        var newModel = changes.MapToModelFromUpdateRequest(username, (AddressModel)requestedAddressModel);
 
         var validationResult = await service.ValidateModelForUpdate(newModel);
         if (validationResult.Count() > 0)

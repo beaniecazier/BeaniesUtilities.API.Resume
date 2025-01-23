@@ -95,6 +95,12 @@ public class UpdateProjectModelEndpoint : IEndpoints
 
         Log.Information("Update Project Model Endpoint called by {username}", @username);
 
+        if (id != changes.Id)
+        {
+            Log.Error("Mismatch in changes request");
+            return Results.BadRequest("Mismatch in changes request");
+        }
+
         var oldModel = await service.GetByIDAsync(changes.Id, token);
         if (oldModel.IsFail && ((Exception)((Error)oldModel).Exception).GetType() == typeof(NullReferenceException))
         {
@@ -113,7 +119,7 @@ public class UpdateProjectModelEndpoint : IEndpoints
             return Results.Problem(detail: ((Error)requestedTechTagModels).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }
 
-        var newModel = changes.MapToModelFromUpdateRequest((ProjectModel)oldModel!, username, (List<TechTagModel>)requestedTechTagModels);
+        var newModel = changes.MapToModelFromUpdateRequest(username, (List<TechTagModel>)requestedTechTagModels);
 
         var validationResult = await service.ValidateModelForUpdate(newModel);
         if (validationResult.Count() > 0)

@@ -26,18 +26,17 @@ public static class PersonModelContractMapping
         };
     }
 
-    public static PersonModel MapToModelFromUpdateRequest(this UpdatePersonModelRequest request, PersonModel model,
-        string username, List<AddressModel> addresseses, List<PhoneNumberModel> phoneNumberses)
+    public static PersonModel MapToModelFromUpdateRequest(this UpdatePersonModelRequest request, string username, List<AddressModel> addresseses, List<PhoneNumberModel> phoneNumberses)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new PersonModel(request.Id, name, username, request.Notes)
         {
-			PreferedName = string.IsNullOrWhiteSpace(request.PreferedName) ? model.PreferedName : request.PreferedName,
-			Pronouns = request.Pronouns.Count() <= 0 ? model.Pronouns : request.Pronouns,
-			Emails = request.Emails.Count() <= 0 ? model.Emails : request.Emails,
-			Socials = request.Socials.Count() <= 0 ? model.Socials : request.Socials,
-			Addresses = request.Addresses.Count() <= 0 ? model.Addresses : addresseses,
-			PhoneNumbers = request.PhoneNumbers.Count() <= 0 ? model.PhoneNumbers : phoneNumberses,
+			PreferedName = request.PreferedName,
+			Pronouns = request.Pronouns,
+			Emails = request.Emails,
+			Socials = request.Socials,
+			Addresses = addresseses,
+			PhoneNumbers = phoneNumberses,
         };
     }
 

@@ -31,23 +31,22 @@ public static class ResumeModelContractMapping
         };
     }
 
-    public static ResumeModel MapToModelFromUpdateRequest(this UpdateResumeModelRequest request, ResumeModel model,
-        string username, List<EducationDegreeModel> degreeses, List<CertificateModel> certificateses, List<WorkExperienceModel> workExperiences, List<ProjectModel> projectses, List<AddressModel> addresseses, List<PhoneNumberModel> phoneNumberses)
+    public static ResumeModel MapToModelFromUpdateRequest(this UpdateResumeModelRequest request, string username, List<EducationDegreeModel> degreeses, List<CertificateModel> certificateses, List<WorkExperienceModel> workExperiences, List<ProjectModel> projectses, List<AddressModel> addresseses, List<PhoneNumberModel> phoneNumberses)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new ResumeModel(request.Id, name, username, request.Notes)
         {
-			HeroStatement = string.IsNullOrWhiteSpace(request.HeroStatement) ? model.HeroStatement : request.HeroStatement,
-			Degrees = request.Degrees.Count() <= 0 ? model.Degrees : degreeses,
-			Certificates = request.Certificates.Count() <= 0 ? model.Certificates : certificateses,
-			WorkExperience = request.WorkExperience.Count() <= 0 ? model.WorkExperience : workExperiences,
-			Projects = request.Projects.Count() <= 0 ? model.Projects : projectses,
-			PreferedName = string.IsNullOrWhiteSpace(request.PreferedName) ? model.PreferedName : request.PreferedName,
-			Pronouns = request.Pronouns.Count() <= 0 ? model.Pronouns : request.Pronouns,
-			Emails = request.Emails.Count() <= 0 ? model.Emails : request.Emails,
-			Socials = request.Socials.Count() <= 0 ? model.Socials : request.Socials,
-			Addresses = request.Addresses.Count() <= 0 ? model.Addresses : addresseses,
-			PhoneNumbers = request.PhoneNumbers.Count() <= 0 ? model.PhoneNumbers : phoneNumberses,
+			HeroStatement = request.HeroStatement,
+			Degrees = degreeses,
+			Certificates = certificateses,
+			WorkExperience = workExperiences,
+			Projects = projectses,
+			PreferedName = request.PreferedName,
+			Pronouns = request.Pronouns,
+			Emails = request.Emails,
+			Socials = request.Socials,
+			Addresses = addresseses,
+			PhoneNumbers = phoneNumberses,
         };
     }
 

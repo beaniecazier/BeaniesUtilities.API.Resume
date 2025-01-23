@@ -95,6 +95,12 @@ public class UpdatePhoneNumberModelEndpoint : IEndpoints
 
         Log.Information("Update PhoneNumber Model Endpoint called by {username}", @username);
 
+        if (id != changes.Id)
+        {
+            Log.Error("Mismatch in changes request");
+            return Results.BadRequest("Mismatch in changes request");
+        }
+
         var oldModel = await service.GetByIDAsync(changes.Id, token);
         if (oldModel.IsFail && ((Exception)((Error)oldModel).Exception).GetType() == typeof(NullReferenceException))
         {
@@ -107,7 +113,7 @@ public class UpdatePhoneNumberModelEndpoint : IEndpoints
             return Results.Problem(detail: ((Error)oldModel).ToException().ToString(), statusCode: StatusCodes.Status500InternalServerError);
         }      
 
-        var newModel = changes.MapToModelFromUpdateRequest((PhoneNumberModel)oldModel!, username);
+        var newModel = changes.MapToModelFromUpdateRequest(username);
 
         var validationResult = await service.ValidateModelForUpdate(newModel);
         if (validationResult.Count() > 0)

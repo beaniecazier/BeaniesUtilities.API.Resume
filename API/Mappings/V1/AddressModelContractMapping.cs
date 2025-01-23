@@ -34,26 +34,25 @@ public static class AddressModelContractMapping
         };
     }
 
-    public static AddressModel MapToModelFromUpdateRequest(this UpdateAddressModelRequest request, AddressModel model,
-        string username)
+    public static AddressModel MapToModelFromUpdateRequest(this UpdateAddressModelRequest request, string username)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new AddressModel(request.Id, name, username, request.Notes)
         {
-			HouseNumber = request.HouseNumber is null ? model.HouseNumber : request.HouseNumber.Value,
-			StreetName = string.IsNullOrWhiteSpace(request.StreetName) ? model.StreetName : request.StreetName,
-			StreetType = string.IsNullOrWhiteSpace(request.StreetType) ? model.StreetType : request.StreetType,
-			City = string.IsNullOrWhiteSpace(request.City) ? model.City : request.City,
-			Region = string.IsNullOrWhiteSpace(request.Region) ? model.Region : request.Region,
-			State = string.IsNullOrWhiteSpace(request.State) ? model.State : request.State,
-			Country = string.IsNullOrWhiteSpace(request.Country) ? model.Country : request.Country,
-			PostalCode = request.PostalCode is null ? model.PostalCode : request.PostalCode.Value,
-			Zip4 = request.Zip4 is null ? model.Zip4 : request.Zip4.Value,
-			CrossStreetName = string.IsNullOrWhiteSpace(request.CrossStreetName) ? model.CrossStreetName : request.CrossStreetName,
-			PrefixDirection = string.IsNullOrWhiteSpace(request.PrefixDirection) ? model.PrefixDirection : request.PrefixDirection,
-			PrefixType = string.IsNullOrWhiteSpace(request.PrefixType) ? model.PrefixType : request.PrefixType,
-			SuffixDirection = string.IsNullOrWhiteSpace(request.SuffixDirection) ? model.SuffixDirection : request.SuffixDirection,
-			SuffixType = string.IsNullOrWhiteSpace(request.SuffixType) ? model.SuffixType : request.SuffixType,
+			HouseNumber = request.HouseNumber.Value,
+			StreetName = request.StreetName,
+			StreetType = request.StreetType,
+			City = request.City,
+			Region = request.Region,
+			State = request.State,
+			Country = request.Country,
+			PostalCode = request.PostalCode.Value,
+			Zip4 = request.Zip4.Value,
+			CrossStreetName = request.CrossStreetName,
+			PrefixDirection = request.PrefixDirection,
+			PrefixType = request.PrefixType,
+			SuffixDirection = request.SuffixDirection,
+			SuffixType = request.SuffixType,
         };
     }
 

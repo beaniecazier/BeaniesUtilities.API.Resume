@@ -26,18 +26,17 @@ public static class CertificateModelContractMapping
         };
     }
 
-    public static CertificateModel MapToModelFromUpdateRequest(this UpdateCertificateModelRequest request, CertificateModel model,
-        string username, EducationInstitutionModel issuer)
+    public static CertificateModel MapToModelFromUpdateRequest(this UpdateCertificateModelRequest request, string username, EducationInstitutionModel issuer)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new CertificateModel(request.Id, name, username, request.Notes)
         {
-			IssueDate = request.IssueDate is null ? model.IssueDate : request.IssueDate.Value,
-			Link = string.IsNullOrWhiteSpace(request.Link) ? model.Link : request.Link,
-			PdfFileName = string.IsNullOrWhiteSpace(request.PdfFileName) ? model.PdfFileName : request.PdfFileName,
-			Issuer = request.Issuer is null ? model.Issuer : issuer,
-			CertificateID = string.IsNullOrWhiteSpace(request.CertificateID) ? model.CertificateID : request.CertificateID,
-			ExpirationDate = request.ExpirationDate is null ? model.ExpirationDate : request.ExpirationDate.Value,
+			IssueDate = request.IssueDate.Value,
+			Link = request.Link,
+			PdfFileName = request.PdfFileName,
+			Issuer = issuer,
+			CertificateID = request.CertificateID,
+			ExpirationDate = request.ExpirationDate.Value,
         };
     }
 

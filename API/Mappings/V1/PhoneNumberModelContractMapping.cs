@@ -24,16 +24,15 @@ public static class PhoneNumberModelContractMapping
         };
     }
 
-    public static PhoneNumberModel MapToModelFromUpdateRequest(this UpdatePhoneNumberModelRequest request, PhoneNumberModel model,
-        string username)
+    public static PhoneNumberModel MapToModelFromUpdateRequest(this UpdatePhoneNumberModelRequest request, string username)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new PhoneNumberModel(request.Id, name, username, request.Notes)
         {
-			CountryCode = request.CountryCode is null ? model.CountryCode : request.CountryCode.Value,
-			AreaCode = request.AreaCode is null ? model.AreaCode : request.AreaCode.Value,
-			TelephonePrefix = request.TelephonePrefix is null ? model.TelephonePrefix : request.TelephonePrefix.Value,
-			LineNumber = request.LineNumber is null ? model.LineNumber : request.LineNumber.Value,
+			CountryCode = request.CountryCode.Value,
+			AreaCode = request.AreaCode.Value,
+			TelephonePrefix = request.TelephonePrefix.Value,
+			LineNumber = request.LineNumber.Value,
         };
     }
 

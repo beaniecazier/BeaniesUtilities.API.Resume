@@ -22,14 +22,13 @@ public static class EducationInstitutionModelContractMapping
         };
     }
 
-    public static EducationInstitutionModel MapToModelFromUpdateRequest(this UpdateEducationInstitutionModelRequest request, EducationInstitutionModel model,
-        string username, AddressModel address)
+    public static EducationInstitutionModel MapToModelFromUpdateRequest(this UpdateEducationInstitutionModelRequest request, string username, AddressModel address)
     {
-        string name = request.Name is null ? model.Name : request.Name;
+        string name = request.Name;
         return new EducationInstitutionModel(request.Id, name, username, request.Notes)
         {
-			Website = string.IsNullOrWhiteSpace(request.Website) ? model.Website : request.Website,
-			Address = request.Address is null ? model.Address : address,
+			Website = request.Website,
+			Address = address,
         };
     }
 
