@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using System.Net;
 using FluentAssertions;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Delete;
 
@@ -25,7 +26,7 @@ public class EducationDegreeModelDeleteEndpointsTest : IClassFixture<WebApplicat
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdEducationDegreeModels.Select(x => x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteEducationDegreeModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{EducationDegreeModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -40,13 +41,13 @@ public class EducationDegreeModelDeleteEndpointsTest : IClassFixture<WebApplicat
         var propRecord = await ModelGenerator.PopulateDatabaseForEducationDegreeModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateEducationDegreeModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateEducationDegreeModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(EducationDegreeModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<EducationDegreeModelResponse>();
         _createdEducationDegreeModels.Add(createdResponse);
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteEducationDegreeModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+        var result = await httpClient.DeleteAsync($"{EducationDegreeModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +60,7 @@ public class EducationDegreeModelDeleteEndpointsTest : IClassFixture<WebApplicat
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteEducationDegreeModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.DeleteAsync($"{EducationDegreeModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

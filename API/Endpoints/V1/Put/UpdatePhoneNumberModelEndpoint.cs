@@ -10,6 +10,7 @@ using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 //using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.OutputCaching;
@@ -17,20 +18,12 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Put;
 
 /// <summary>
-/// The collection of endpoints for the PhoneNumber Model in API
+/// The collection of Endpoints for the PhoneNumber Model in API
 /// </summary>
 [ApiVersion(1.0)]
 public class UpdatePhoneNumberModelEndpoint : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "PhoneNumbers";
-    private const string BaseRoute = "PhoneNumbers";
-    private const string APIVersion = "v1";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string EndpointPrefix => $"{APIVersion}/{BaseRoute}";
 
     /// <summary>
     /// Add the PhoneNumber Model Service to the DI container
@@ -42,30 +35,30 @@ public class UpdatePhoneNumberModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Map all PhoneNumber Model endpoints with correct settings
+    /// Map all PhoneNumber Model Endpoints with correct settings
     /// </summary>
     /// <param name="app"></param>
     public static void DefineEndpoints(IEndpointRouteBuilder app)
     {
 
         // Update Endpoints
-        Log.Information("Now adding PhoneNumber Model put endpoints");
-        var singleEndpoint = app.MapPut($"{EndpointPrefix}/{{id}}", UpdatePhoneNumberModelAsync)
+        Log.Information("Now adding PhoneNumber Model put Endpoints");
+        var singleEndpoint = app.MapPut(PhoneNumberModelEndpoints.Put, UpdatePhoneNumberModelAsync)
             .WithName("UpdatePhoneNumberModel")
-            .Accepts<PhoneNumberModel>(ContentType)
-            .Produces<PhoneNumberModel>(StatusCodes.Status200OK)
+            .Accepts<UpdatePhoneNumberModelRequest>(ContentType)
+            .Produces(StatusCodes.Status200OK)
             .Produces<IEnumerable<ValidationFailure>>(StatusCodes.Status400BadRequest)                                  // you gave bad info
             .Produces(StatusCodes.Status404NotFound)                                        // could not find result to update
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
-            .WithTags(Tag);
+            .WithTags(PhoneNumberModelEndpoints.Tag);
 
-        var multipleEndpoint = app.MapPut(EndpointPrefix, PutModelCollectionAsync)
-            .Produces(StatusCodes.Status405MethodNotAllowed)
-            .WithApiVersionSet(APIVersioning.VersionSet)
-            .HasApiVersion(1.0)
-            .WithTags(Tag);
+        //var multipleEndpoint = app.MapPut(PhoneNumberModelEndpoints.EndpointPrefix, PutModelCollectionAsync)
+        //    .Produces(StatusCodes.Status405MethodNotAllowed)
+        //    .WithApiVersionSet(APIVersioning.VersionSet)
+        //    .HasApiVersion(1.0)
+        //    .WithTags(PhoneNumberModelEndpoints.Tag);
             
         //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         //{
@@ -83,7 +76,7 @@ public class UpdatePhoneNumberModelEndpoint : IEndpoints
     /// Search for and remove a specific PhoneNumber Model result from the database
     /// </summary>
     /// <param name="changes">The collection of changes to be applied to the newModel</param>
-    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="service">The service class the serves this Endpoint for database operations</param>
     /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="linker">The web linker</param>
     /// <param name="http">the http context</param>
@@ -93,19 +86,19 @@ public class UpdatePhoneNumberModelEndpoint : IEndpoints
     /// <response code="400">Something went wrong or the database does not exist</response>
     /// <response code="404">Id was not found in the database</response>
     /// <response code="500">Something went wrong or the database does not exist</response>
-    private static async Task<IResult> UpdatePhoneNumberModelAsync(UpdatePhoneNumberModelRequest changes,
+    private static async Task<IResult> UpdatePhoneNumberModelAsync(int id, UpdatePhoneNumberModelRequest changes,
         IPhoneNumberModelService service,
         IOutputCacheStore outputCacheStore, LinkGenerator linker, HttpContext http, CancellationToken token)
     {
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
 
-        Log.Information("Update PhoneNumber Model endpoint called by {username}", @username);
+        Log.Information("Update PhoneNumber Model Endpoint called by {username}", @username);
 
         var oldModel = await service.GetByIDAsync(changes.Id, token);
         if (oldModel.IsFail && ((Exception)((Error)oldModel).Exception).GetType() == typeof(NullReferenceException))
         {
-            Log.Error("Address Model with ID:{id} does not exist", @changes.Id);
+            Log.Error("PhoneNumber Model with ID:{id} does not exist", @changes.Id);
             return Results.NotFound();
         }
         if (oldModel.IsFail)
@@ -124,7 +117,7 @@ public class UpdatePhoneNumberModelEndpoint : IEndpoints
         }
 
         var result = await service.UpdateAsync(newModel, (PhoneNumberModel)oldModel, token);
-        if (!result.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
+        if (!result.IsFail) await outputCacheStore.EvictByTagAsync(PhoneNumberModelEndpoints.Tag, token);
         return result.Match(
             Succ =>
             {
@@ -137,7 +130,7 @@ public class UpdatePhoneNumberModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Not allowed collction put endpoint
+    /// Not allowed collction put Endpoint
     /// </summary>
     /// <returns>405 Method not allowed</returns>
     /// <response code="405">I dont know how you got here, but hun, F*** off, this aint allowed</response>

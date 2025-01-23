@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using System.Net;
 using FluentAssertions;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Delete;
 
@@ -25,7 +26,7 @@ public class PhoneNumberModelDeleteEndpointsTest : IClassFixture<WebApplicationF
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdPhoneNumberModels.Select(x => x.Id))
         {
-            await httpClient.DeleteAsync($"{DeletePhoneNumberModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -40,13 +41,13 @@ public class PhoneNumberModelDeleteEndpointsTest : IClassFixture<WebApplicationF
         var propRecord = await ModelGenerator.PopulateDatabaseForPhoneNumberModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreatePhoneNumberModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
         _createdPhoneNumberModels.Add(createdResponse);
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeletePhoneNumberModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+        var result = await httpClient.DeleteAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +60,7 @@ public class PhoneNumberModelDeleteEndpointsTest : IClassFixture<WebApplicationF
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeletePhoneNumberModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.DeleteAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

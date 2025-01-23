@@ -5,6 +5,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Create;
 using Gay.TCazier.Resume.API.Endpoints.V1.Delete;
 using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 
@@ -26,7 +27,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdAddressModels)
         {
-            await httpClient.DeleteAsync($"{DeleteAddressModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{AddressModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -41,13 +42,13 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         var modelRecord = await ModelGenerator.PopulateDatabaseForAddressModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateAddressModelRequest(modelRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(AddressModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdModel = await get.Content.ReadFromJsonAsync<AddressModelResponse>();
         _createdAddressModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetAddressModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var result = await httpClient.GetAsync($"{AddressModelEndpoints.EndpointPrefix}/{createdModel.Id}");
         var foundModel = await result.Content.ReadFromJsonAsync<AddressModelResponse>();
 
         // ASSERT
@@ -62,7 +63,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetAddressModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.GetAsync($"{AddressModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -84,7 +85,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         {
             var modelRequest = ModelGenerator.GenerateNewCreateAddressModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(AddressModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<AddressModelResponse>();
             _createdAddressModels.Add(createdModel.Id);
@@ -93,9 +94,9 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         var control = new AddressModelsResponse() { Items = list, PageIndex = pageNumberForTest, PageSize = pageSize, TotalNumberOfAvailableResponses = numberOfModelsToMake };
 
         // ACT
-        var getAllRequest = ModelGenerator.GenerateNewGetAllAddressModelRequest(pageNumberForTest, pageSize, allowDeleted:true, allowHidden: true);
+        var getAllRequest = ModelGenerator.GenerateNewGetAllAddressModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAddressModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{AddressModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<AddressModelsResponse>();
 
         // ASSERT
@@ -120,7 +121,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         {
             var modelRequest = ModelGenerator.GenerateNewCreateAddressModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(AddressModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<AddressModelResponse>();
             _createdAddressModels.Add(createdModel.Id);
@@ -132,7 +133,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllAddressModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAddressModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{AddressModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<AddressModelsResponse>();
 
         // ASSERT
@@ -157,7 +158,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         {
             var modelRequest = ModelGenerator.GenerateNewCreateAddressModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(AddressModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<AddressModelResponse>();
             _createdAddressModels.Add(createdModel.Id);
@@ -169,7 +170,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllAddressModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetAddressModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{AddressModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<AddressModelsResponse>();
 
         // ASSERT
@@ -185,7 +186,7 @@ public class AddressModelGetEndpointsTests : IClassFixture<WebApplicationFactory
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetAddressModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{AddressModelEndpoints.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<AddressModelsResponse>();
 
         // ASSERT

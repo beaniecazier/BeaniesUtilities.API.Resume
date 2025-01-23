@@ -5,6 +5,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Create;
 using Gay.TCazier.Resume.API.Endpoints.V1.Delete;
 using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 
@@ -26,7 +27,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdWorkExperienceModels)
         {
-            await httpClient.DeleteAsync($"{DeleteWorkExperienceModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -41,13 +42,13 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         var modelRecord = await ModelGenerator.PopulateDatabaseForWorkExperienceModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(modelRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
         _createdWorkExperienceModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var result = await httpClient.GetAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{createdModel.Id}");
         var foundModel = await result.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
 
         // ASSERT
@@ -62,7 +63,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.GetAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -84,7 +85,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         {
             var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
             _createdWorkExperienceModels.Add(createdModel.Id);
@@ -95,7 +96,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
@@ -120,7 +121,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         {
             var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
             _createdWorkExperienceModels.Add(createdModel.Id);
@@ -132,7 +133,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
@@ -157,7 +158,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         {
             var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
             _createdWorkExperienceModels.Add(createdModel.Id);
@@ -169,7 +170,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllWorkExperienceModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT
@@ -185,7 +186,7 @@ public class WorkExperienceModelGetEndpointsTests : IClassFixture<WebApplication
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<WorkExperienceModelsResponse>();
 
         // ASSERT

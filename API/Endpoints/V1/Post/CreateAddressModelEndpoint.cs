@@ -12,25 +12,18 @@ using Gay.TCazier.Resume.API.Mappings.V1;
 //using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 using Gay.TCazier.Resume.BLL.Options.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Create;
 
 /// <summary>
-/// The collection of endpoints for the Address Model in API
+/// The collection of Endpoints for the Address Model in API
 /// </summary>
 [ApiVersion(1.0)]
 public class CreateAddressModelEndpoint : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Addresses";
-    private const string BaseRoute = "Addresses";
-    private const string APIVersion = "v1";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string EndpointPrefix => $"{APIVersion}/{BaseRoute}";
 
     /// <summary>
     /// Add the Address Model Service to the DI container
@@ -42,14 +35,14 @@ public class CreateAddressModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Map all Address Model endpoints with correct settings
+    /// Map all Address Model Endpoints with correct settings
     /// </summary>
     /// <param name="app"></param>
     public static void DefineEndpoints(IEndpointRouteBuilder app)
     {
         // Create Endpoints
-        Log.Information("Now adding Address Model post endpoints");
-        var singleEndpoint = app.MapPost(EndpointPrefix, CreateAddressModelAsync)
+        Log.Information("Now adding Address Model post Endpoints");
+        var singleEndpoint = app.MapPost(AddressModelEndpoints.Post, CreateAddressModelAsync)
             .WithName("CreateAddress")
             .Accepts<AddressModel>(ContentType)
             .Produces<AddressModel>(StatusCodes.Status201Created)
@@ -57,7 +50,7 @@ public class CreateAddressModelEndpoint : IEndpoints
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
-            .WithTags(Tag);
+            .WithTags(AddressModelEndpoints.Tag);
 
         //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         //{
@@ -75,7 +68,7 @@ public class CreateAddressModelEndpoint : IEndpoints
     /// Create a new Address Model
     /// </summary>
     /// <param name="request">The parameters used to make the new Address Model</param>
-    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="service">The service class the serves this Endpoint for database operations</param>
     /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="linker">The web linker</param>
     /// <param name="http">the http context</param>
@@ -92,7 +85,7 @@ public class CreateAddressModelEndpoint : IEndpoints
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
 
-        Log.Information("Create Address Model endpoint called by {username}", @username);
+        Log.Information("Create Address Model Endpoint called by {username}", @username);
 
         int id = await service.GetNextAvailableId();
         
@@ -106,7 +99,7 @@ public class CreateAddressModelEndpoint : IEndpoints
         }
 
         var created = await service.CreateAsync(model, token);
-        if(!created.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
+        if(!created.IsFail) await outputCacheStore.EvictByTagAsync(AddressModelEndpoints.Tag, token);
         return created.Match(
             succ =>
             {

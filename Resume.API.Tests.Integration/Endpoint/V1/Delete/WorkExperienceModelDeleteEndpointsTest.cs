@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using System.Net;
 using FluentAssertions;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Delete;
 
@@ -25,7 +26,7 @@ public class WorkExperienceModelDeleteEndpointsTest : IClassFixture<WebApplicati
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdWorkExperienceModels.Select(x => x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteWorkExperienceModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -40,13 +41,13 @@ public class WorkExperienceModelDeleteEndpointsTest : IClassFixture<WebApplicati
         var propRecord = await ModelGenerator.PopulateDatabaseForWorkExperienceModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
         _createdWorkExperienceModels.Add(createdResponse);
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteWorkExperienceModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+        var result = await httpClient.DeleteAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +60,7 @@ public class WorkExperienceModelDeleteEndpointsTest : IClassFixture<WebApplicati
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteWorkExperienceModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.DeleteAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

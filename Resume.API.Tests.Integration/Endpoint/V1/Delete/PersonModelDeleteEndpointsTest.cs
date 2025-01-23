@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using System.Net;
 using FluentAssertions;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Delete;
 
@@ -25,7 +26,7 @@ public class PersonModelDeleteEndpointsTest : IClassFixture<WebApplicationFactor
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdPersonModels.Select(x => x.Id))
         {
-            await httpClient.DeleteAsync($"{DeletePersonModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{PersonModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -40,13 +41,13 @@ public class PersonModelDeleteEndpointsTest : IClassFixture<WebApplicationFactor
         var propRecord = await ModelGenerator.PopulateDatabaseForPersonModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreatePersonModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreatePersonModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(PersonModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<PersonModelResponse>();
         _createdPersonModels.Add(createdResponse);
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeletePersonModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+        var result = await httpClient.DeleteAsync($"{PersonModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +60,7 @@ public class PersonModelDeleteEndpointsTest : IClassFixture<WebApplicationFactor
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeletePersonModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.DeleteAsync($"{PersonModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

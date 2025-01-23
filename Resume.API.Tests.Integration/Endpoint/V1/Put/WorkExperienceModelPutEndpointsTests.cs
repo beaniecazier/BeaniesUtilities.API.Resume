@@ -8,6 +8,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Put;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Resume.API.Tests.Integration.Mappings.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
@@ -31,7 +32,7 @@ public class WorkExperienceModelPutEndpointsTests : IClassFixture<WebApplication
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdWorkExperienceModels.Select(x=>x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteWorkExperienceModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -46,20 +47,20 @@ public class WorkExperienceModelPutEndpointsTests : IClassFixture<WebApplication
         var propRecord = await ModelGenerator.PopulateDatabaseForWorkExperienceModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
         _createdWorkExperienceModels.Add(createdResponse);
 
         // ACT
         UpdateWorkExperienceModelRequest updateRequest = createdResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateWorkExperienceModelEndpoint.EndpointPrefix}/{createdResponse.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{createdResponse.Id}", updateRequest);
         get = await httpClient.GetAsync(result.Headers.Location.AbsolutePath);
         var updatedModel = await get.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetWorkExperienceModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{WorkExperienceModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
 
         updatedModel.Id.Should().Be(createdResponse.Id);
         updatedModel.Name.Should().NotBe(createdResponse.Name);
@@ -79,20 +80,20 @@ public class WorkExperienceModelPutEndpointsTests : IClassFixture<WebApplication
     //    //uhasdfgohjaoidfj
     //    var modelRequest = ModelGenerator.GenerateNewCreateWorkExperienceModelRequest();
 
-    //    var create = await httpClient.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, modelRequest);
+    //    var create = await httpClient.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, modelRequest);
     //    var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
     //    var createdResponse = await create.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
     //    _createdWorkExperienceModels.Add(createdResponse);
 
     //    // ACT
     //    UpdateWorkExperienceModelRequest updateRequest = ModelGenerator.GenerateNewUpdateWorkExperienceModelRequest(createdResponse);
-    //    var result = await httpClient.GetAsync($"{GetWorkExperienceModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+    //    var result = await httpClient.GetAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
     //    var updatedModel = await result.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
 
     //    // ASSERT
     //    result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     //    updatedModel.Should().BeEquivalentTo(castModel);
-    //    result.Headers.Location.Should().Be($"{GetWorkExperienceModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+    //    result.Headers.Location.Should().Be($"{WorkExperienceModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
     //}
 
     [Fact]
@@ -108,7 +109,7 @@ public class WorkExperienceModelPutEndpointsTests : IClassFixture<WebApplication
 
         // ACT
         UpdateWorkExperienceModelRequest updateRequest = fakedResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateWorkExperienceModelEndpoint.EndpointPrefix}/{updateRequest.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{WorkExperienceModelEndpoints.EndpointPrefix}/{updateRequest.Id}", updateRequest);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

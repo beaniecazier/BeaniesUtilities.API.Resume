@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using System.Net;
 using FluentAssertions;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Delete;
 
@@ -25,7 +26,7 @@ public class EducationInstitutionModelDeleteEndpointsTest : IClassFixture<WebApp
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdEducationInstitutionModels.Select(x => x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteEducationInstitutionModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -40,13 +41,13 @@ public class EducationInstitutionModelDeleteEndpointsTest : IClassFixture<WebApp
         var propRecord = await ModelGenerator.PopulateDatabaseForEducationInstitutionModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateEducationInstitutionModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateEducationInstitutionModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(EducationInstitutionModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
         _createdEducationInstitutionModels.Add(createdResponse);
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteEducationInstitutionModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+        var result = await httpClient.DeleteAsync($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +60,7 @@ public class EducationInstitutionModelDeleteEndpointsTest : IClassFixture<WebApp
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteEducationInstitutionModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.DeleteAsync($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

@@ -8,6 +8,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Put;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Resume.API.Tests.Integration.Mappings.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
@@ -31,7 +32,7 @@ public class EducationInstitutionModelPutEndpointsTests : IClassFixture<WebAppli
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdEducationInstitutionModels.Select(x=>x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteEducationInstitutionModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -46,20 +47,20 @@ public class EducationInstitutionModelPutEndpointsTests : IClassFixture<WebAppli
         var propRecord = await ModelGenerator.PopulateDatabaseForEducationInstitutionModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateEducationInstitutionModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateEducationInstitutionModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(EducationInstitutionModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
         _createdEducationInstitutionModels.Add(createdResponse);
 
         // ACT
         UpdateEducationInstitutionModelRequest updateRequest = createdResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateEducationInstitutionModelEndpoint.EndpointPrefix}/{createdResponse.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{createdResponse.Id}", updateRequest);
         get = await httpClient.GetAsync(result.Headers.Location.AbsolutePath);
         var updatedModel = await get.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetEducationInstitutionModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{EducationInstitutionModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
 
         updatedModel.Id.Should().Be(createdResponse.Id);
         updatedModel.Name.Should().NotBe(createdResponse.Name);
@@ -75,20 +76,20 @@ public class EducationInstitutionModelPutEndpointsTests : IClassFixture<WebAppli
     //    //uhasdfgohjaoidfj
     //    var modelRequest = ModelGenerator.GenerateNewCreateEducationInstitutionModelRequest();
 
-    //    var create = await httpClient.PostAsJsonAsync(CreateEducationInstitutionModelEndpoint.EndpointPrefix, modelRequest);
+    //    var create = await httpClient.PostAsJsonAsync(EducationInstitutionModelEndpoints.Post, modelRequest);
     //    var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
     //    var createdResponse = await create.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
     //    _createdEducationInstitutionModels.Add(createdResponse);
 
     //    // ACT
     //    UpdateEducationInstitutionModelRequest updateRequest = ModelGenerator.GenerateNewUpdateEducationInstitutionModelRequest(createdResponse);
-    //    var result = await httpClient.GetAsync($"{GetEducationInstitutionModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+    //    var result = await httpClient.GetAsync($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
     //    var updatedModel = await result.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
 
     //    // ASSERT
     //    result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     //    updatedModel.Should().BeEquivalentTo(castModel);
-    //    result.Headers.Location.Should().Be($"{GetEducationInstitutionModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+    //    result.Headers.Location.Should().Be($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
     //}
 
     [Fact]
@@ -104,7 +105,7 @@ public class EducationInstitutionModelPutEndpointsTests : IClassFixture<WebAppli
 
         // ACT
         UpdateEducationInstitutionModelRequest updateRequest = fakedResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateEducationInstitutionModelEndpoint.EndpointPrefix}/{updateRequest.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{EducationInstitutionModelEndpoints.EndpointPrefix}/{updateRequest.Id}", updateRequest);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

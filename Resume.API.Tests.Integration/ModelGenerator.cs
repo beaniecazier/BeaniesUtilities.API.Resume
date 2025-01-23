@@ -2,6 +2,7 @@
 using Bogus;
 using Bogus.DataSets;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
@@ -437,7 +438,7 @@ public class ModelGenerator
     {
         var issuerRecord = await PopulateDatabaseForEducationInstitutionModelTest(client);
         var issuerRequest = GenerateNewCreateEducationInstitutionModelRequest(issuerRecord);
-        var issuerResult = await client.PostAsJsonAsync(CreateEducationInstitutionModelEndpoint.EndpointPrefix, issuerRequest);
+        var issuerResult = await client.PostAsJsonAsync(EducationInstitutionModelEndpoints.Post, issuerRequest);
         var issuerGet = await client.GetAsync(issuerResult.Headers.Location.AbsolutePath);
         var issuerResponse = await issuerGet.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
         var issuerId = issuerResponse.Id;
@@ -452,7 +453,7 @@ public class ModelGenerator
     {
         var instituteRecord = await PopulateDatabaseForEducationInstitutionModelTest(client);
         var institutionRequest = GenerateNewCreateEducationInstitutionModelRequest(instituteRecord);
-        var institutionResult = await client.PostAsJsonAsync(CreateEducationInstitutionModelEndpoint.EndpointPrefix, institutionRequest);
+        var institutionResult = await client.PostAsJsonAsync(EducationInstitutionModelEndpoints.Post, institutionRequest);
         var institutionGet = await client.GetAsync(institutionResult.Headers.Location.AbsolutePath);
         var institutionResponse = await institutionGet.Content.ReadFromJsonAsync<EducationInstitutionModelResponse>();
         var institutionId = institutionResponse.Id;
@@ -467,7 +468,7 @@ public class ModelGenerator
     {
         var addressRecord = await PopulateDatabaseForAddressModelTest(client);
         var addressRequest = GenerateNewCreateAddressModelRequest(addressRecord);
-        var addressResult = await client.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, addressRequest);
+        var addressResult = await client.PostAsJsonAsync(AddressModelEndpoints.Post, addressRequest);
         var addressGet = await client.GetAsync(addressResult.Headers.Location.AbsolutePath);
         var addressResponse = await addressGet.Content.ReadFromJsonAsync<AddressModelResponse>();
         var addressId = addressResponse.Id;
@@ -482,7 +483,7 @@ public class ModelGenerator
     {
         var addressRecord = await PopulateDatabaseForAddressModelTest(client);
         var addressRequest = GenerateNewCreateAddressModelRequest(addressRecord);
-        var addressResult = await client.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, addressRequest);
+        var addressResult = await client.PostAsJsonAsync(AddressModelEndpoints.Post, addressRequest);
         var addressGet = await client.GetAsync(addressResult.Headers.Location.AbsolutePath);
         var addressResponse = await addressGet.Content.ReadFromJsonAsync<AddressModelResponse>();
         var addressId = addressResponse.Id;
@@ -490,7 +491,7 @@ public class ModelGenerator
 
         var phoneNumberRecord = await PopulateDatabaseForPhoneNumberModelTest(client);
         var phoneNumberModelRequest = GenerateNewCreatePhoneNumberModelRequest(phoneNumberRecord);
-        var phoneNumberModelResult = await client.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, phoneNumberModelRequest);
+        var phoneNumberModelResult = await client.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, phoneNumberModelRequest);
         var phoneNumberGet = await client.GetAsync(phoneNumberModelResult.Headers.Location.AbsolutePath);
         var phoneNumberResponse = await phoneNumberGet.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
         var phoneNumberModelId = phoneNumberResponse.Id;
@@ -514,7 +515,7 @@ public class ModelGenerator
     {
         var techTagRecord = await PopulateDatabaseForTechTagModelTest(client);
         var techTagModelRequest = GenerateNewCreateTechTagModelRequest(techTagRecord);
-        var techTagModelResult = await client.PostAsJsonAsync(CreateTechTagModelEndpoint.EndpointPrefix, techTagModelRequest);
+        var techTagModelResult = await client.PostAsJsonAsync(TechTagModelEndpoints.Post, techTagModelRequest);
         var techTagGet = await client.GetAsync(techTagModelResult.Headers.Location.AbsolutePath);
         var techTagResponse = await techTagGet.Content.ReadFromJsonAsync<TechTagModelResponse>();
         var techTagModelId = techTagResponse.Id;
@@ -530,7 +531,7 @@ public class ModelGenerator
     {
         var educationDegreeRecord = await PopulateDatabaseForEducationDegreeModelTest(client);
         var educationDegreeModelRequest = GenerateNewCreateEducationDegreeModelRequest(educationDegreeRecord);
-        var educationDegreeModelResult = await client.PostAsJsonAsync(CreateEducationDegreeModelEndpoint.EndpointPrefix, educationDegreeModelRequest);
+        var educationDegreeModelResult = await client.PostAsJsonAsync(EducationDegreeModelEndpoints.Post, educationDegreeModelRequest);
         var degrgeeGet = await client.GetAsync(educationDegreeModelResult.Headers.Location.AbsolutePath);
         var degreeResponse = await degrgeeGet.Content.ReadFromJsonAsync<EducationDegreeModelResponse>();
         var educationDegreeModelId = degreeResponse.Id;
@@ -538,7 +539,7 @@ public class ModelGenerator
 
         var certificateRecord = await PopulateDatabaseForCertificateModelTest(client);
         var certificateModelRequest = GenerateNewCreateCertificateModelRequest(certificateRecord);
-        var certificateModelResult = await client.PostAsJsonAsync(CreateCertificateModelEndpoint.EndpointPrefix, certificateModelRequest);
+        var certificateModelResult = await client.PostAsJsonAsync(CertificateModelEndpoints.Post, certificateModelRequest);
         var certificateGet = await client.GetAsync(certificateModelResult.Headers.Location.AbsolutePath);
         var certificateResponse = await certificateGet.Content.ReadFromJsonAsync<CertificateModelResponse>();
         var certificateModelId = certificateResponse.Id;
@@ -546,7 +547,7 @@ public class ModelGenerator
 
         var workExperienceRecord = await PopulateDatabaseForWorkExperienceModelTest(client);
         var workExperienceModelRequest = GenerateNewCreateWorkExperienceModelRequest(workExperienceRecord);
-        var workExperienceModelResult = await client.PostAsJsonAsync(CreateWorkExperienceModelEndpoint.EndpointPrefix, workExperienceModelRequest);
+        var workExperienceModelResult = await client.PostAsJsonAsync(WorkExperienceModelEndpoints.Post, workExperienceModelRequest);
         var workExperienceGet = await client.GetAsync(workExperienceModelResult.Headers.Location.AbsolutePath);
         var workExperienceResponse = await workExperienceGet.Content.ReadFromJsonAsync<WorkExperienceModelResponse>();
         var workExperienceModelId = workExperienceResponse.Id;
@@ -554,7 +555,7 @@ public class ModelGenerator
 
         var projectRecord = await PopulateDatabaseForProjectModelTest(client);
         var projectModelRequest = GenerateNewCreateProjectModelRequest(projectRecord);
-        var projectModelResult = await client.PostAsJsonAsync(CreateProjectModelEndpoint.EndpointPrefix, projectModelRequest);
+        var projectModelResult = await client.PostAsJsonAsync(ProjectModelEndpoints.Post, projectModelRequest);
         var projectGet = await client.GetAsync(projectModelResult.Headers.Location.AbsolutePath);
         var projectResponse = await projectGet.Content.ReadFromJsonAsync<ProjectModelResponse>();
         var projectModelId = projectResponse.Id;
@@ -562,7 +563,7 @@ public class ModelGenerator
 
         var addressRecord = await PopulateDatabaseForAddressModelTest(client);
         var addressRequest = GenerateNewCreateAddressModelRequest(addressRecord);
-        var addressResult = await client.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, addressRequest);
+        var addressResult = await client.PostAsJsonAsync(AddressModelEndpoints.Post, addressRequest);
         var addressGet = await client.GetAsync(addressResult.Headers.Location.AbsolutePath);
         var addressResponse = await addressGet.Content.ReadFromJsonAsync<AddressModelResponse>();
         var addressId = addressResponse.Id;
@@ -570,7 +571,7 @@ public class ModelGenerator
 
         var phoneNumberRecord = await PopulateDatabaseForPhoneNumberModelTest(client);
         var phoneNumberModelRequest = GenerateNewCreatePhoneNumberModelRequest(phoneNumberRecord);
-        var phoneNumberModelResult = await client.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, phoneNumberModelRequest);
+        var phoneNumberModelResult = await client.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, phoneNumberModelRequest);
         var phoneNumberGet = await client.GetAsync(phoneNumberModelResult.Headers.Location.AbsolutePath);
         var phoneNumberResponse = await phoneNumberGet.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
         var phoneNumberModelId = phoneNumberResponse.Id;
@@ -598,7 +599,7 @@ public class ModelGenerator
     {
         var techTagRecord = await PopulateDatabaseForTechTagModelTest(client);
         var techTagModelRequest = GenerateNewCreateTechTagModelRequest(techTagRecord);
-        var techTagModelResult = await client.PostAsJsonAsync(CreateTechTagModelEndpoint.EndpointPrefix, techTagModelRequest);
+        var techTagModelResult = await client.PostAsJsonAsync(TechTagModelEndpoints.Post, techTagModelRequest);
         var techTagGet = await client.GetAsync(techTagModelResult.Headers.Location.AbsolutePath);
         var techTagResponse = await techTagGet.Content.ReadFromJsonAsync<TechTagModelResponse>();
         var techTagModelId = techTagResponse.Id;

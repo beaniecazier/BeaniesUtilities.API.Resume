@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using System.Net;
 using FluentAssertions;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Delete;
 
@@ -25,7 +26,7 @@ public class AddressModelDeleteEndpointsTest : IClassFixture<WebApplicationFacto
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdAddressModels.Select(x => x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteAddressModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{AddressModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -40,13 +41,13 @@ public class AddressModelDeleteEndpointsTest : IClassFixture<WebApplicationFacto
         var propRecord = await ModelGenerator.PopulateDatabaseForAddressModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateAddressModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateAddressModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(AddressModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<AddressModelResponse>();
         _createdAddressModels.Add(createdResponse);
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteAddressModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+        var result = await httpClient.DeleteAsync($"{AddressModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +60,7 @@ public class AddressModelDeleteEndpointsTest : IClassFixture<WebApplicationFacto
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteAddressModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.DeleteAsync($"{AddressModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

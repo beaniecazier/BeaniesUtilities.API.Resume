@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using Gay.TCazier.Resume.API.Endpoints.V1.Delete;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 
@@ -27,7 +28,7 @@ public class TechTagModelPostEndpointsTests : IClassFixture<WebApplicationFactor
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdTechTagModels)
         {
-            await httpClient.DeleteAsync($"{DeleteTechTagModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{TechTagModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -43,7 +44,7 @@ public class TechTagModelPostEndpointsTests : IClassFixture<WebApplicationFactor
         var modelRequest = ModelGenerator.GenerateNewCreateTechTagModelRequest(modelRecord);
 
         // ACT
-        var result = await httpClient.PostAsJsonAsync(CreateTechTagModelEndpoint.EndpointPrefix, modelRequest);
+        var result = await httpClient.PostAsJsonAsync(TechTagModelEndpoints.Post, modelRequest);
         var url = result.Headers.Location.AbsolutePath;
         var get = await httpClient.GetAsync(url);
         var createdModel = await get.Content.ReadFromJsonAsync<TechTagModelResponse>();
@@ -52,7 +53,7 @@ public class TechTagModelPostEndpointsTests : IClassFixture<WebApplicationFactor
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
         createdModel.Should().BeEquivalentTo(createdModel);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetTechTagModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{TechTagModelEndpoints.EndpointPrefix}/{createdModel.Id}");
     }
 
     //[Fact]
@@ -65,7 +66,7 @@ public class TechTagModelPostEndpointsTests : IClassFixture<WebApplicationFactor
     //    modelRequest.HouseNumber = null;
 
     //    // ACT
-    //    var result = await httpClient.PostAsJsonAsync(CreateTechTagModelEndpoint.EndpointPrefix, modelRequest);
+    //    var result = await httpClient.PostAsJsonAsync(TechTagModelEndpoints.Post, modelRequest);
     //    var errors = await result.Content.ReadFromJsonAsync<IEnumerable<ValidationFailure>>();
     //    var error = errors!.Single();
 

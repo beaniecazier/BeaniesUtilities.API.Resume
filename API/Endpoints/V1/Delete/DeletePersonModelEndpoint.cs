@@ -1,30 +1,22 @@
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 //using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
-using Serilog;
 using Gay.TCazier.Resume.API.Mappings.V1;
-using Asp.Versioning;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using BeaniesUtilities.APIUtilities.Endpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Serilog;
+using Asp.Versioning;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Delete;
 
 /// <summary>
-/// The collection of endpoints for the Person Model in API
+/// The collection of Endpoints for the Person Model in API
 /// </summary>
 [ApiVersion(1.0)]
 public class DeletePersonModelEndpoint : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "People";
-    private const string BaseRoute = "People";
-    private const string APIVersion = "v1";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string EndpointPrefix => $"{APIVersion}/{BaseRoute}";
 
     /// <summary>
     /// Add the Person Model Service to the DI container
@@ -36,27 +28,27 @@ public class DeletePersonModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Map all Person Model endpoints with correct settings
+    /// Map all Person Model Endpoints with correct settings
     /// </summary>
     /// <param name="app"></param>
     public static void DefineEndpoints(IEndpointRouteBuilder app)
     {
         // Delete Endpoints
-        Log.Information("Now adding Person Model delete endpoints");
-        var singleEndpoint = app.MapDelete($"{EndpointPrefix}/{{id}}", DeleteAsync)
+        Log.Information("Now adding Person Model Delete Endpoints");
+        var singleEndpoint = app.MapDelete(PersonModelEndpoints.Delete, DeleteAsync)
             .WithName("DeletePersonModel")
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)                                        // could not find result to delete
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
-            .WithTags(Tag);
+            .WithTags(PersonModelEndpoints.Tag);
 
-        var multipleEndpoint = app.MapDelete(EndpointPrefix, DeleteAllModelCollection)
-            .Produces(StatusCodes.Status405MethodNotAllowed)
-            .WithApiVersionSet(APIVersioning.VersionSet)
-            .HasApiVersion(1.0)
-            .WithTags(Tag);
+        //var multipleEndpoint = app.MapDelete(PersonModelEndpoints.EndpointPrefix, DeleteAllModelCollection)
+        //    .Produces(StatusCodes.Status405MethodNotAllowed)
+        //    .WithApiVersionSet(APIVersioning.VersionSet)
+        //    .HasApiVersion(1.0)
+        //    .WithTags(PersonModelEndpoints.Tag);
             
         //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         //{
@@ -74,7 +66,7 @@ public class DeletePersonModelEndpoint : IEndpoints
     /// Delete an Person Model by its id along with all of its history
     /// </summary>
     /// <param name="id">The id of the Person Model to delete form the database</param>
-    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="service">The service class the serves this Endpoint for database operations</param>
     /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="token">Cancelation token</param>
     /// <returns>Returns no content on a successful delete</returns>
@@ -87,10 +79,10 @@ public class DeletePersonModelEndpoint : IEndpoints
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
 
-        Log.Information("Delete Person Model endpoint called by {username}", @username);
+        Log.Information("Delete Person Model Endpoint called by {username}", @username);
 
         var entry = await service.DeleteAsync(id, token);
-        if (!entry.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
+        if (!entry.IsFail) await outputCacheStore.EvictByTagAsync(PersonModelEndpoints.Tag, token);
         return entry.Match(
             Succ =>
             {
@@ -112,7 +104,7 @@ public class DeletePersonModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Not allowed collection delete endpoint
+    /// Not allowed Collection Delete Endpoint
     /// </summary>
     /// <returns>405 Method not allowed</returns>
     /// <response code="405">I dont know how you got here, but hun, F*** off, this aint allowed</response>

@@ -5,6 +5,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Create;
 using Gay.TCazier.Resume.API.Endpoints.V1.Delete;
 using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 
@@ -26,7 +27,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdPhoneNumberModels)
         {
-            await httpClient.DeleteAsync($"{DeletePhoneNumberModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -41,13 +42,13 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         var modelRecord = await ModelGenerator.PopulateDatabaseForPhoneNumberModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreatePhoneNumberModelRequest(modelRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdModel = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
         _createdPhoneNumberModels.Add(createdModel.Id);
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}/{createdModel.Id}");
+        var result = await httpClient.GetAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{createdModel.Id}");
         var foundModel = await result.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
 
         // ASSERT
@@ -62,7 +63,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.GetAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -84,7 +85,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         {
             var modelRequest = ModelGenerator.GenerateNewCreatePhoneNumberModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
             _createdPhoneNumberModels.Add(createdModel.Id);
@@ -95,7 +96,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPhoneNumberModelRequest(pageNumberForTest, pageSize);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT
@@ -120,7 +121,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         {
             var modelRequest = ModelGenerator.GenerateNewCreatePhoneNumberModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
             _createdPhoneNumberModels.Add(createdModel.Id);
@@ -132,7 +133,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPhoneNumberModelRequest(pageNumberForTest, pageSize, sortBy:sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT
@@ -157,7 +158,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         {
             var modelRequest = ModelGenerator.GenerateNewCreatePhoneNumberModelRequest(modelRecord);
 
-            var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
+            var create = await httpClient.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, modelRequest);
             var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
             var createdModel = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
             _createdPhoneNumberModels.Add(createdModel.Id);
@@ -169,7 +170,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
         // ACT
         var getAllRequest = ModelGenerator.GenerateNewGetAllPhoneNumberModelRequest(pageNumberForTest, pageSize, sortBy: sortTerm);
         string searchTerms = getAllRequest.ToSearchTermsString();
-        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}?{searchTerms}");
         var check = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT
@@ -185,7 +186,7 @@ public class PhoneNumberModelGetEndpointsTests : IClassFixture<WebApplicationFac
 
         // ACT
         string searchTerms = "PageIndex=0&PageSize=10";
-        var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}?{searchTerms}");
+        var result = await httpClient.GetAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}?{searchTerms}");
         var returnedModels = await result.Content.ReadFromJsonAsync<PhoneNumberModelsResponse>();
 
         // ASSERT

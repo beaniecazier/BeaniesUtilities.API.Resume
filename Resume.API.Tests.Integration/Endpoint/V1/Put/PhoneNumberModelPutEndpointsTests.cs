@@ -8,6 +8,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Put;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Resume.API.Tests.Integration.Mappings.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
@@ -31,7 +32,7 @@ public class PhoneNumberModelPutEndpointsTests : IClassFixture<WebApplicationFac
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdPhoneNumberModels.Select(x=>x.Id))
         {
-            await httpClient.DeleteAsync($"{DeletePhoneNumberModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -46,20 +47,20 @@ public class PhoneNumberModelPutEndpointsTests : IClassFixture<WebApplicationFac
         var propRecord = await ModelGenerator.PopulateDatabaseForPhoneNumberModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreatePhoneNumberModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
         _createdPhoneNumberModels.Add(createdResponse);
 
         // ACT
         UpdatePhoneNumberModelRequest updateRequest = createdResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdatePhoneNumberModelEndpoint.EndpointPrefix}/{createdResponse.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{createdResponse.Id}", updateRequest);
         get = await httpClient.GetAsync(result.Headers.Location.AbsolutePath);
         var updatedModel = await get.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetPhoneNumberModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{PhoneNumberModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
 
         updatedModel.Id.Should().Be(createdResponse.Id);
         updatedModel.Name.Should().NotBe(createdResponse.Name);
@@ -77,20 +78,20 @@ public class PhoneNumberModelPutEndpointsTests : IClassFixture<WebApplicationFac
     //    //uhasdfgohjaoidfj
     //    var modelRequest = ModelGenerator.GenerateNewCreatePhoneNumberModelRequest();
 
-    //    var create = await httpClient.PostAsJsonAsync(CreatePhoneNumberModelEndpoint.EndpointPrefix, modelRequest);
+    //    var create = await httpClient.PostAsJsonAsync(PhoneNumberModelEndpoints.Post, modelRequest);
     //    var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
     //    var createdResponse = await create.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
     //    _createdPhoneNumberModels.Add(createdResponse);
 
     //    // ACT
     //    UpdatePhoneNumberModelRequest updateRequest = ModelGenerator.GenerateNewUpdatePhoneNumberModelRequest(createdResponse);
-    //    var result = await httpClient.GetAsync($"{GetPhoneNumberModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+    //    var result = await httpClient.GetAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
     //    var updatedModel = await result.Content.ReadFromJsonAsync<PhoneNumberModelResponse>();
 
     //    // ASSERT
     //    result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     //    updatedModel.Should().BeEquivalentTo(castModel);
-    //    result.Headers.Location.Should().Be($"{GetPhoneNumberModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+    //    result.Headers.Location.Should().Be($"{PhoneNumberModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
     //}
 
     [Fact]
@@ -106,7 +107,7 @@ public class PhoneNumberModelPutEndpointsTests : IClassFixture<WebApplicationFac
 
         // ACT
         UpdatePhoneNumberModelRequest updateRequest = fakedResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdatePhoneNumberModelEndpoint.EndpointPrefix}/{updateRequest.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{PhoneNumberModelEndpoints.EndpointPrefix}/{updateRequest.Id}", updateRequest);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

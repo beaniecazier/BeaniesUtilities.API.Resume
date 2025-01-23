@@ -8,6 +8,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Put;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Resume.API.Tests.Integration.Mappings.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
@@ -31,7 +32,7 @@ public class ResumeModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdResumeModels.Select(x=>x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteResumeModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{ResumeModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -46,20 +47,20 @@ public class ResumeModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
         var propRecord = await ModelGenerator.PopulateDatabaseForResumeModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateResumeModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateResumeModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(ResumeModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<ResumeModelResponse>();
         _createdResumeModels.Add(createdResponse);
 
         // ACT
         UpdateResumeModelRequest updateRequest = createdResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateResumeModelEndpoint.EndpointPrefix}/{createdResponse.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{ResumeModelEndpoints.EndpointPrefix}/{createdResponse.Id}", updateRequest);
         get = await httpClient.GetAsync(result.Headers.Location.AbsolutePath);
         var updatedModel = await get.Content.ReadFromJsonAsync<ResumeModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetResumeModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{ResumeModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
 
         updatedModel.Id.Should().Be(createdResponse.Id);
         updatedModel.Name.Should().NotBe(createdResponse.Name);
@@ -84,20 +85,20 @@ public class ResumeModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
     //    //uhasdfgohjaoidfj
     //    var modelRequest = ModelGenerator.GenerateNewCreateResumeModelRequest();
 
-    //    var create = await httpClient.PostAsJsonAsync(CreateResumeModelEndpoint.EndpointPrefix, modelRequest);
+    //    var create = await httpClient.PostAsJsonAsync(ResumeModelEndpoints.Post, modelRequest);
     //    var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
     //    var createdResponse = await create.Content.ReadFromJsonAsync<ResumeModelResponse>();
     //    _createdResumeModels.Add(createdResponse);
 
     //    // ACT
     //    UpdateResumeModelRequest updateRequest = ModelGenerator.GenerateNewUpdateResumeModelRequest(createdResponse);
-    //    var result = await httpClient.GetAsync($"{GetResumeModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+    //    var result = await httpClient.GetAsync($"{ResumeModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
     //    var updatedModel = await result.Content.ReadFromJsonAsync<ResumeModelResponse>();
 
     //    // ASSERT
     //    result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     //    updatedModel.Should().BeEquivalentTo(castModel);
-    //    result.Headers.Location.Should().Be($"{GetResumeModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+    //    result.Headers.Location.Should().Be($"{ResumeModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
     //}
 
     [Fact]
@@ -113,7 +114,7 @@ public class ResumeModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
 
         // ACT
         UpdateResumeModelRequest updateRequest = fakedResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateResumeModelEndpoint.EndpointPrefix}/{updateRequest.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{ResumeModelEndpoints.EndpointPrefix}/{updateRequest.Id}", updateRequest);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

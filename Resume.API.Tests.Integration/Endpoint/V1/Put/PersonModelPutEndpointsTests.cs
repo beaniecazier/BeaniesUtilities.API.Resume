@@ -8,6 +8,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Put;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Resume.API.Tests.Integration.Mappings.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
@@ -31,7 +32,7 @@ public class PersonModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdPersonModels.Select(x=>x.Id))
         {
-            await httpClient.DeleteAsync($"{DeletePersonModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{PersonModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -46,20 +47,20 @@ public class PersonModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
         var propRecord = await ModelGenerator.PopulateDatabaseForPersonModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreatePersonModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreatePersonModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(PersonModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<PersonModelResponse>();
         _createdPersonModels.Add(createdResponse);
 
         // ACT
         UpdatePersonModelRequest updateRequest = createdResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdatePersonModelEndpoint.EndpointPrefix}/{createdResponse.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{PersonModelEndpoints.EndpointPrefix}/{createdResponse.Id}", updateRequest);
         get = await httpClient.GetAsync(result.Headers.Location.AbsolutePath);
         var updatedModel = await get.Content.ReadFromJsonAsync<PersonModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetPersonModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{PersonModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
 
         updatedModel.Id.Should().Be(createdResponse.Id);
         updatedModel.Name.Should().NotBe(createdResponse.Name);
@@ -79,20 +80,20 @@ public class PersonModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
     //    //uhasdfgohjaoidfj
     //    var modelRequest = ModelGenerator.GenerateNewCreatePersonModelRequest();
 
-    //    var create = await httpClient.PostAsJsonAsync(CreatePersonModelEndpoint.EndpointPrefix, modelRequest);
+    //    var create = await httpClient.PostAsJsonAsync(PersonModelEndpoints.Post, modelRequest);
     //    var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
     //    var createdResponse = await create.Content.ReadFromJsonAsync<PersonModelResponse>();
     //    _createdPersonModels.Add(createdResponse);
 
     //    // ACT
     //    UpdatePersonModelRequest updateRequest = ModelGenerator.GenerateNewUpdatePersonModelRequest(createdResponse);
-    //    var result = await httpClient.GetAsync($"{GetPersonModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+    //    var result = await httpClient.GetAsync($"{PersonModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
     //    var updatedModel = await result.Content.ReadFromJsonAsync<PersonModelResponse>();
 
     //    // ASSERT
     //    result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     //    updatedModel.Should().BeEquivalentTo(castModel);
-    //    result.Headers.Location.Should().Be($"{GetPersonModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+    //    result.Headers.Location.Should().Be($"{PersonModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
     //}
 
     [Fact]
@@ -108,7 +109,7 @@ public class PersonModelPutEndpointsTests : IClassFixture<WebApplicationFactory<
 
         // ACT
         UpdatePersonModelRequest updateRequest = fakedResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdatePersonModelEndpoint.EndpointPrefix}/{updateRequest.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{PersonModelEndpoints.EndpointPrefix}/{updateRequest.Id}", updateRequest);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

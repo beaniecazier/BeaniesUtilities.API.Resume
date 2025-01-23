@@ -3,6 +3,7 @@ using Gay.TCazier.Resume.BLL.Services.Interfaces;
 using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
 using Gay.TCazier.Resume.API.Mappings.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Serilog;
 using Asp.Versioning;
 using BeaniesUtilities.APIUtilities.Endpoints;
@@ -11,20 +12,12 @@ using BeaniesUtilities.APIUtilities.Endpoints;
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Get;
 
 /// <summary>
-/// The collection of endpoints for the EducationInstitution Model in API
+/// The collection of Endpoints for the EducationInstitution Model in API
 /// </summary>
 [ApiVersion(1.0)]
 public class GetEducationInstitutionModelEndpoint : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "EducationInstitutions";
-    private const string BaseRoute = "EducationInstitutions";
-    private const string APIVersion = "v1";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string EndpointPrefix => $"{APIVersion}/{BaseRoute}";
 
     /// <summary>
     /// Add the EducationInstitution Model Service to the DI container
@@ -36,30 +29,30 @@ public class GetEducationInstitutionModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Map all EducationInstitution Model endpoints with correct settings
+    /// Map all EducationInstitution Model Endpoints with correct settings
     /// </summary>
     /// <param name="app"></param>
     public static void DefineEndpoints(IEndpointRouteBuilder app)
     {
         // Read Endpoints
-        var singleEndpoint = app.MapGet($"{EndpointPrefix}/{{id}}", GetEducationInstitutionModelByIDAsync)
+        var singleEndpoint = app.MapGet(EducationInstitutionModelEndpoints.GetById, GetEducationInstitutionModelByIDAsync)
             .WithName("GetEducationInstitutionModelByID")
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)                                        // could not find result to update
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
-            .CacheOutput(Tag)
-            .WithTags(Tag);
+            .CacheOutput(EducationInstitutionModelEndpoints.Tag)
+            .WithTags(EducationInstitutionModelEndpoints.Tag);
 
-        var multipleEndpoint = app.MapGet(EndpointPrefix, GetAllEducationInstitutionModelsAsync)
+        var multipleEndpoint = app.MapGet(EducationInstitutionModelEndpoints.GetAll, GetAllEducationInstitutionModelsAsync)
             .WithName("GetAllEducationInstitutionModels")
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
-            .CacheOutput(Tag)
-            .WithTags(Tag);
+            .CacheOutput(EducationInstitutionModelEndpoints.Tag)
+            .WithTags(EducationInstitutionModelEndpoints.Tag);
 
         //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         //{
@@ -77,7 +70,7 @@ public class GetEducationInstitutionModelEndpoint : IEndpoints
     /// Query the database by id for the most up to date copy of a newModel
     /// </summary>
     /// <param name="id">The newModel id used to query the database</param>
-    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="service">The service class the serves this Endpoint for database operations</param>
     /// <param name="token">Cancelation token</param>
     /// <returns>The searched newModel</returns>
     /// <response code="200">Get successful</response>
@@ -88,7 +81,7 @@ public class GetEducationInstitutionModelEndpoint : IEndpoints
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
 
-        Log.Information("Get EducationInstitution Model endpoint called with id by {username}", @username);
+        Log.Information("Get EducationInstitution Model Endpoint called with id by {username}", @username);
 
         var entry = await service.GetByIDAsync(id, token);
         return entry.Match(
@@ -109,7 +102,7 @@ public class GetEducationInstitutionModelEndpoint : IEndpoints
     /// <summary>
     /// Retrieve all EducationInstitution Models from the database
     /// </summary>
-    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="service">The service class the serves this Endpoint for database operations</param>
     /// <param name="searchParams"></param>
     /// <param name="token">Cancelation token</param>
     /// <returns>A list of all EducationInstitution Models in the database</returns>
@@ -126,7 +119,7 @@ public class GetEducationInstitutionModelEndpoint : IEndpoints
         //var userId = content.GetUserId();
         var userId = 0;
 
-        Log.Information("Get All EducationInstitution Models endpoint called by {username}", @username);
+        Log.Information("Get All EducationInstitution Models Endpoint called by {username}", @username);
 
         var options = searchParams.MapToOptions().WithID(userId);
         var validationResult = await service.ValidateGetAllModelOptions(options);

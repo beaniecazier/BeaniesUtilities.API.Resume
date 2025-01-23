@@ -6,6 +6,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Get;
 using System.Net;
 using FluentAssertions;
 using Gay.TCazier.Resume.API.Endpoints.V1.Create;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Delete;
 
@@ -25,7 +26,7 @@ public class ResumeModelDeleteEndpointsTest : IClassFixture<WebApplicationFactor
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdResumeModels.Select(x => x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteResumeModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{ResumeModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -40,13 +41,13 @@ public class ResumeModelDeleteEndpointsTest : IClassFixture<WebApplicationFactor
         var propRecord = await ModelGenerator.PopulateDatabaseForResumeModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateResumeModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateResumeModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(ResumeModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<ResumeModelResponse>();
         _createdResumeModels.Add(createdResponse);
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteResumeModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+        var result = await httpClient.DeleteAsync($"{ResumeModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -59,7 +60,7 @@ public class ResumeModelDeleteEndpointsTest : IClassFixture<WebApplicationFactor
         var httpClient = _factory.CreateClient();
 
         // ACT
-        var result = await httpClient.DeleteAsync($"{DeleteResumeModelEndpoint.EndpointPrefix}/{-1000000}");
+        var result = await httpClient.DeleteAsync($"{ResumeModelEndpoints.EndpointPrefix}/{-1000000}");
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

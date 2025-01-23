@@ -12,25 +12,18 @@ using Gay.TCazier.Resume.API.Mappings.V1;
 //using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Create;
 using Gay.TCazier.Resume.BLL.Options.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Microsoft.AspNetCore.OutputCaching;
 
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Create;
 
 /// <summary>
-/// The collection of endpoints for the Certificate Model in API
+/// The collection of Endpoints for the Certificate Model in API
 /// </summary>
 [ApiVersion(1.0)]
 public class CreateCertificateModelEndpoint : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Certificates";
-    private const string BaseRoute = "Certificates";
-    private const string APIVersion = "v1";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string EndpointPrefix => $"{APIVersion}/{BaseRoute}";
 
     /// <summary>
     /// Add the Certificate Model Service to the DI container
@@ -42,14 +35,14 @@ public class CreateCertificateModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Map all Certificate Model endpoints with correct settings
+    /// Map all Certificate Model Endpoints with correct settings
     /// </summary>
     /// <param name="app"></param>
     public static void DefineEndpoints(IEndpointRouteBuilder app)
     {
         // Create Endpoints
-        Log.Information("Now adding Certificate Model post endpoints");
-        var singleEndpoint = app.MapPost(EndpointPrefix, CreateCertificateModelAsync)
+        Log.Information("Now adding Certificate Model post Endpoints");
+        var singleEndpoint = app.MapPost(CertificateModelEndpoints.Post, CreateCertificateModelAsync)
             .WithName("CreateCertificate")
             .Accepts<CertificateModel>(ContentType)
             .Produces<CertificateModel>(StatusCodes.Status201Created)
@@ -57,7 +50,7 @@ public class CreateCertificateModelEndpoint : IEndpoints
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
-            .WithTags(Tag);
+            .WithTags(CertificateModelEndpoints.Tag);
 
         //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         //{
@@ -75,7 +68,7 @@ public class CreateCertificateModelEndpoint : IEndpoints
     /// Create a new Certificate Model
     /// </summary>
     /// <param name="request">The parameters used to make the new Certificate Model</param>
-    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="service">The service class the serves this Endpoint for database operations</param>
     /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="linker">The web linker</param>
     /// <param name="http">the http context</param>
@@ -92,7 +85,7 @@ public class CreateCertificateModelEndpoint : IEndpoints
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
 
-        Log.Information("Create Certificate Model endpoint called by {username}", @username);
+        Log.Information("Create Certificate Model Endpoint called by {username}", @username);
 
         int id = await service.GetNextAvailableId();
         
@@ -112,7 +105,7 @@ public class CreateCertificateModelEndpoint : IEndpoints
         }
 
         var created = await service.CreateAsync(model, token);
-        if(!created.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
+        if(!created.IsFail) await outputCacheStore.EvictByTagAsync(CertificateModelEndpoints.Tag, token);
         return created.Match(
             succ =>
             {

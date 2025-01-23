@@ -8,11 +8,11 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Put;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Resume.API.Tests.Integration.Mappings.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Json;
-using Gay.TCazier.Resume.Contracts.Requests.V1;
 
 namespace Resume.API.Tests.Integration.Endpoint.V1.Put;
 
@@ -32,7 +32,7 @@ public class CertificateModelPutEndpointsTests : IClassFixture<WebApplicationFac
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdCertificateModels.Select(x=>x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteCertificateModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{CertificateModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -47,20 +47,20 @@ public class CertificateModelPutEndpointsTests : IClassFixture<WebApplicationFac
         var propRecord = await ModelGenerator.PopulateDatabaseForCertificateModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateCertificateModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateCertificateModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(CertificateModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<CertificateModelResponse>();
         _createdCertificateModels.Add(createdResponse);
 
         // ACT
         UpdateCertificateModelRequest updateRequest = createdResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateCertificateModelEndpoint.EndpointPrefix}/{createdResponse.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{CertificateModelEndpoints.EndpointPrefix}/{createdResponse.Id}", updateRequest);
         get = await httpClient.GetAsync(result.Headers.Location.AbsolutePath);
         var updatedModel = await get.Content.ReadFromJsonAsync<CertificateModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetCertificateModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{CertificateModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
 
         updatedModel.Id.Should().Be(createdResponse.Id);
         updatedModel.Name.Should().NotBe(createdResponse.Name);
@@ -80,20 +80,20 @@ public class CertificateModelPutEndpointsTests : IClassFixture<WebApplicationFac
     //    //uhasdfgohjaoidfj
     //    var modelRequest = ModelGenerator.GenerateNewCreateCertificateModelRequest();
 
-    //    var create = await httpClient.PostAsJsonAsync(CreateCertificateModelEndpoint.EndpointPrefix, modelRequest);
+    //    var create = await httpClient.PostAsJsonAsync(CertificateModelEndpoints.Post, modelRequest);
     //    var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
     //    var createdResponse = await create.Content.ReadFromJsonAsync<CertificateModelResponse>();
     //    _createdCertificateModels.Add(createdResponse);
 
     //    // ACT
     //    UpdateCertificateModelRequest updateRequest = ModelGenerator.GenerateNewUpdateCertificateModelRequest(createdResponse);
-    //    var result = await httpClient.GetAsync($"{GetCertificateModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+    //    var result = await httpClient.GetAsync($"{CertificateModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
     //    var updatedModel = await result.Content.ReadFromJsonAsync<CertificateModelResponse>();
 
     //    // ASSERT
     //    result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     //    updatedModel.Should().BeEquivalentTo(castModel);
-    //    result.Headers.Location.Should().Be($"{GetCertificateModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+    //    result.Headers.Location.Should().Be($"{CertificateModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
     //}
 
     [Fact]
@@ -109,7 +109,7 @@ public class CertificateModelPutEndpointsTests : IClassFixture<WebApplicationFac
 
         // ACT
         UpdateCertificateModelRequest updateRequest = fakedResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateCertificateModelEndpoint.EndpointPrefix}/{updateRequest.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{CertificateModelEndpoints.EndpointPrefix}/{updateRequest.Id}", updateRequest);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

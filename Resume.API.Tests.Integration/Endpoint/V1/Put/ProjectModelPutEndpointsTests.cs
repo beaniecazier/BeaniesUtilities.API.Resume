@@ -8,6 +8,7 @@ using Gay.TCazier.Resume.API.Endpoints.V1.Put;
 using Gay.TCazier.Resume.API.Mappings.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.Contracts.Responses.V1;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Resume.API.Tests.Integration.Mappings.V1;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
@@ -31,7 +32,7 @@ public class ProjectModelPutEndpointsTests : IClassFixture<WebApplicationFactory
         var httpClient = _factory.CreateClient();
         foreach (int id in _createdProjectModels.Select(x=>x.Id))
         {
-            await httpClient.DeleteAsync($"{DeleteProjectModelEndpoint.EndpointPrefix}/{id}");
+            await httpClient.DeleteAsync($"{ProjectModelEndpoints.EndpointPrefix}/{id}");
         }
     }
 
@@ -46,20 +47,20 @@ public class ProjectModelPutEndpointsTests : IClassFixture<WebApplicationFactory
         var propRecord = await ModelGenerator.PopulateDatabaseForProjectModelTest(httpClient);
         var modelRequest = ModelGenerator.GenerateNewCreateProjectModelRequest(propRecord);
 
-        var create = await httpClient.PostAsJsonAsync(CreateProjectModelEndpoint.EndpointPrefix, modelRequest);
+        var create = await httpClient.PostAsJsonAsync(ProjectModelEndpoints.Post, modelRequest);
         var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
         var createdResponse = await get.Content.ReadFromJsonAsync<ProjectModelResponse>();
         _createdProjectModels.Add(createdResponse);
 
         // ACT
         UpdateProjectModelRequest updateRequest = createdResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateProjectModelEndpoint.EndpointPrefix}/{createdResponse.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{ProjectModelEndpoints.EndpointPrefix}/{createdResponse.Id}", updateRequest);
         get = await httpClient.GetAsync(result.Headers.Location.AbsolutePath);
         var updatedModel = await get.Content.ReadFromJsonAsync<ProjectModelResponse>();
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.Created);
-        result.Headers.Location.AbsolutePath.Should().Be($"/{GetProjectModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+        result.Headers.Location.AbsolutePath.Should().Be($"/{ProjectModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
 
         updatedModel.Id.Should().Be(createdResponse.Id);
         updatedModel.Name.Should().NotBe(createdResponse.Name);
@@ -79,20 +80,20 @@ public class ProjectModelPutEndpointsTests : IClassFixture<WebApplicationFactory
     //    //uhasdfgohjaoidfj
     //    var modelRequest = ModelGenerator.GenerateNewCreateProjectModelRequest();
 
-    //    var create = await httpClient.PostAsJsonAsync(CreateProjectModelEndpoint.EndpointPrefix, modelRequest);
+    //    var create = await httpClient.PostAsJsonAsync(ProjectModelEndpoints.Post, modelRequest);
     //    var get = await httpClient.GetAsync(create.Headers.Location.AbsolutePath);
     //    var createdResponse = await create.Content.ReadFromJsonAsync<ProjectModelResponse>();
     //    _createdProjectModels.Add(createdResponse);
 
     //    // ACT
     //    UpdateProjectModelRequest updateRequest = ModelGenerator.GenerateNewUpdateProjectModelRequest(createdResponse);
-    //    var result = await httpClient.GetAsync($"{GetProjectModelEndpoint.EndpointPrefix}/{createdResponse.Id}");
+    //    var result = await httpClient.GetAsync($"{ProjectModelEndpoints.EndpointPrefix}/{createdResponse.Id}");
     //    var updatedModel = await result.Content.ReadFromJsonAsync<ProjectModelResponse>();
 
     //    // ASSERT
     //    result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     //    updatedModel.Should().BeEquivalentTo(castModel);
-    //    result.Headers.Location.Should().Be($"{GetProjectModelEndpoint.EndpointPrefix}/{updatedModel.Id}");
+    //    result.Headers.Location.Should().Be($"{ProjectModelEndpoints.EndpointPrefix}/{updatedModel.Id}");
     //}
 
     [Fact]
@@ -108,7 +109,7 @@ public class ProjectModelPutEndpointsTests : IClassFixture<WebApplicationFactory
 
         // ACT
         UpdateProjectModelRequest updateRequest = fakedResponse.MapToUpdateRequest();
-        var result = await httpClient.PutAsJsonAsync($"{UpdateProjectModelEndpoint.EndpointPrefix}/{updateRequest.Id}", updateRequest);
+        var result = await httpClient.PutAsJsonAsync($"{ProjectModelEndpoints.EndpointPrefix}/{updateRequest.Id}", updateRequest);
 
         // ASSERT
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);

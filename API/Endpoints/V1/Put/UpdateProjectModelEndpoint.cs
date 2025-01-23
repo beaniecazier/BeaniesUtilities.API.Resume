@@ -10,6 +10,7 @@ using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 using Gay.TCazier.Resume.Contracts.Requests.V1.Update;
 using Gay.TCazier.Resume.BLL.Options.V1;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 //using Gay.TCazier.Resume.API.Auth;
 using Gay.TCazier.Resume.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.OutputCaching;
@@ -17,20 +18,12 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace Gay.TCazier.Resume.API.Endpoints.V1.Put;
 
 /// <summary>
-/// The collection of endpoints for the Project Model in API
+/// The collection of Endpoints for the Project Model in API
 /// </summary>
 [ApiVersion(1.0)]
 public class UpdateProjectModelEndpoint : IEndpoints
 {
     private const string ContentType = "application/json";
-    private const string Tag = "Projects";
-    private const string BaseRoute = "Projects";
-    private const string APIVersion = "v1";
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string EndpointPrefix => $"{APIVersion}/{BaseRoute}";
 
     /// <summary>
     /// Add the Project Model Service to the DI container
@@ -42,30 +35,30 @@ public class UpdateProjectModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Map all Project Model endpoints with correct settings
+    /// Map all Project Model Endpoints with correct settings
     /// </summary>
     /// <param name="app"></param>
     public static void DefineEndpoints(IEndpointRouteBuilder app)
     {
 
         // Update Endpoints
-        Log.Information("Now adding Project Model put endpoints");
-        var singleEndpoint = app.MapPut($"{EndpointPrefix}/{{id}}", UpdateProjectModelAsync)
+        Log.Information("Now adding Project Model put Endpoints");
+        var singleEndpoint = app.MapPut(ProjectModelEndpoints.Put, UpdateProjectModelAsync)
             .WithName("UpdateProjectModel")
-            .Accepts<ProjectModel>(ContentType)
-            .Produces<ProjectModel>(StatusCodes.Status200OK)
+            .Accepts<UpdateProjectModelRequest>(ContentType)
+            .Produces(StatusCodes.Status200OK)
             .Produces<IEnumerable<ValidationFailure>>(StatusCodes.Status400BadRequest)                                  // you gave bad info
             .Produces(StatusCodes.Status404NotFound)                                        // could not find result to update
             .Produces(StatusCodes.Status500InternalServerError)
             .WithApiVersionSet(APIVersioning.VersionSet)
             .HasApiVersion(1.0)
-            .WithTags(Tag);
+            .WithTags(ProjectModelEndpoints.Tag);
 
-        var multipleEndpoint = app.MapPut(EndpointPrefix, PutModelCollectionAsync)
-            .Produces(StatusCodes.Status405MethodNotAllowed)
-            .WithApiVersionSet(APIVersioning.VersionSet)
-            .HasApiVersion(1.0)
-            .WithTags(Tag);
+        //var multipleEndpoint = app.MapPut(ProjectModelEndpoints.EndpointPrefix, PutModelCollectionAsync)
+        //    .Produces(StatusCodes.Status405MethodNotAllowed)
+        //    .WithApiVersionSet(APIVersioning.VersionSet)
+        //    .HasApiVersion(1.0)
+        //    .WithTags(ProjectModelEndpoints.Tag);
             
         //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
         //{
@@ -83,7 +76,7 @@ public class UpdateProjectModelEndpoint : IEndpoints
     /// Search for and remove a specific Project Model result from the database
     /// </summary>
     /// <param name="changes">The collection of changes to be applied to the newModel</param>
-    /// <param name="service">The service class the serves this endpoint for database operations</param>
+    /// <param name="service">The service class the serves this Endpoint for database operations</param>
     /// <param name="outputCacheStore">Access to the Output Cache</param>
     /// <param name="linker">The web linker</param>
     /// <param name="http">the http context</param>
@@ -93,19 +86,19 @@ public class UpdateProjectModelEndpoint : IEndpoints
     /// <response code="400">Something went wrong or the database does not exist</response>
     /// <response code="404">Id was not found in the database</response>
     /// <response code="500">Something went wrong or the database does not exist</response>
-    private static async Task<IResult> UpdateProjectModelAsync(UpdateProjectModelRequest changes,
+    private static async Task<IResult> UpdateProjectModelAsync(int id, UpdateProjectModelRequest changes,
         IProjectModelService service, ITechTagModelService techTagService,
         IOutputCacheStore outputCacheStore, LinkGenerator linker, HttpContext http, CancellationToken token)
     {
         //string username = http.User.Identity!.Name??"fuck me....";
         string username = "Tiabeanie";
 
-        Log.Information("Update Project Model endpoint called by {username}", @username);
+        Log.Information("Update Project Model Endpoint called by {username}", @username);
 
         var oldModel = await service.GetByIDAsync(changes.Id, token);
         if (oldModel.IsFail && ((Exception)((Error)oldModel).Exception).GetType() == typeof(NullReferenceException))
         {
-            Log.Error("Address Model with ID:{id} does not exist", @changes.Id);
+            Log.Error("Project Model with ID:{id} does not exist", @changes.Id);
             return Results.NotFound();
         }
         if (oldModel.IsFail)
@@ -130,7 +123,7 @@ public class UpdateProjectModelEndpoint : IEndpoints
         }
 
         var result = await service.UpdateAsync(newModel, (ProjectModel)oldModel, token);
-        if (!result.IsFail) await outputCacheStore.EvictByTagAsync(EndpointPrefix, token);
+        if (!result.IsFail) await outputCacheStore.EvictByTagAsync(ProjectModelEndpoints.Tag, token);
         return result.Match(
             Succ =>
             {
@@ -143,7 +136,7 @@ public class UpdateProjectModelEndpoint : IEndpoints
     }
 
     /// <summary>
-    /// Not allowed collction put endpoint
+    /// Not allowed collction put Endpoint
     /// </summary>
     /// <returns>405 Method not allowed</returns>
     /// <response code="405">I dont know how you got here, but hun, F*** off, this aint allowed</response>
