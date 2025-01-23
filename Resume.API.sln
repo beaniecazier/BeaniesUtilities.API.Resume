@@ -5,10 +5,6 @@ VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.API.Tests.Integration", "Resume.API.Tests.Integration\Resume.API.Tests.Integration.csproj", "{AF159925-68D1-42AA-9566-76E7C2BA6BE3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.BLL", "BLL\Resume.BLL\Resume.BLL.csproj", "{294DBC45-1D58-4925-A92C-1F57061BB4E3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.Contracts", "Contracts\Resume.Contracts\Resume.Contracts.csproj", "{DB04169D-F66C-4BE6-8734-6A16F8187627}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Resume.API", "API\Resume.API.csproj", "{D2881B2E-4639-43C6-964F-38B5FF7AC1DF}"
 EndProject
 Global
@@ -21,14 +17,6 @@ Global
 		{AF159925-68D1-42AA-9566-76E7C2BA6BE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF159925-68D1-42AA-9566-76E7C2BA6BE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF159925-68D1-42AA-9566-76E7C2BA6BE3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{294DBC45-1D58-4925-A92C-1F57061BB4E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{294DBC45-1D58-4925-A92C-1F57061BB4E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{294DBC45-1D58-4925-A92C-1F57061BB4E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{294DBC45-1D58-4925-A92C-1F57061BB4E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DB04169D-F66C-4BE6-8734-6A16F8187627}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB04169D-F66C-4BE6-8734-6A16F8187627}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB04169D-F66C-4BE6-8734-6A16F8187627}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB04169D-F66C-4BE6-8734-6A16F8187627}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D2881B2E-4639-43C6-964F-38B5FF7AC1DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2881B2E-4639-43C6-964F-38B5FF7AC1DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2881B2E-4639-43C6-964F-38B5FF7AC1DF}.Release|Any CPU.ActiveCfg = Release|Any CPU

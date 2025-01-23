@@ -1,6 +1,7 @@
 ﻿using BeaniesUtilities.APIUtilities.Endpoints;
 using Gay.TCazier.DatabaseParser.Endpoints.Interfaces;
 using Gay.TCazier.Resume.API.Health;
+using Gay.TCazier.Resume.BLL.CommandLine;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -15,8 +16,8 @@ public class StartupCheckEndpoint : IEndpoints, IHealthCheck
     private const string _apiVersion = "v1";
     private const double _versionNumber = 1.0;
 
-    private const int _port = 5001;
-    private static readonly string _hostAddress = "*";
+    private static int _port = 5002;
+    private static string _hostAddress = "*";
 
     /// <summary>
     /// 
@@ -32,6 +33,12 @@ public class StartupCheckEndpoint : IEndpoints, IHealthCheck
     /// 
     /// </summary>
     public bool StartupCompleted { get; set; } = false;
+
+    public StartupCheckEndpoint(CMDOptions options)
+    {
+        _port = options.StartupCheckPort;
+        //_hostAddress = options.HealthChecksHostAddress;
+    }
 
     /// <summary>
     /// Add the Address Model Service to the DI container

@@ -10,6 +10,11 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     private readonly IApiVersionDescriptionProvider _provider;
     private readonly IHostEnvironment _environment;
 
+    public static string ContactName = "Unassigned Value";
+    public static string ContactURL = "Unassigned Value";
+    public static string ContactEmail = "Unassigned Value";
+    public static string TermsOfServiceURL = "Unassigned Value";
+
     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider, IHostEnvironment environment)
     {
         _provider = provider;
@@ -29,16 +34,16 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
                     Description = "Resume API Version Documentation",
                     Contact = new OpenApiContact
                     {
-                        Name = "Tiabeanie Cazier",
-                        Url = new Uri("https://tcazier.gay/contact"),
-                        Email = "beanieroxiicazier@gmail.com",
+                        Name = ContactEmail,
+                        Url = new Uri(ContactURL),
+                        Email = ContactEmail,
                     },
                     License = new OpenApiLicense
                     {
                         Name = "MIT License",
                         Url = new Uri("https://mit-license.org/")
                     },
-                    TermsOfService = new Uri("https://tcazier.gay/terms"),
+                    TermsOfService = new Uri(TermsOfServiceURL),
                 });
         }
     }

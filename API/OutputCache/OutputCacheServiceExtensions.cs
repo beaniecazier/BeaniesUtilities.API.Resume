@@ -1,11 +1,12 @@
 ﻿using Gay.TCazier.Resume.API.Endpoints.V1.Get;
+using Gay.TCazier.Resume.Contracts.Endpoints.V1;
 using Gay.TCazier.Resume.Contracts.Requests.V1.GetAll;
 
 namespace Gay.TCazier.Resume.API.OutputCache;
 
 public static class OutputCacheServiceExtensions
 {
-    public const int OutputCacheExpirationInMinutes = 1;
+    public static int OutputCacheExpirationInMinutes = 1;
 
     public static IServiceCollection AddOutputAndResponseCacheing(this IServiceCollection services)
     {
@@ -14,85 +15,84 @@ public static class OutputCacheServiceExtensions
         {
             x.AddBasePolicy(c => c.Cache());
 
-            x.AddPolicy(GetAddressModelEndpoint.EndpointPrefix, c =>
-            {
-                string[] queries = typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray();
-                c.Cache()
-                    .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(queries)
-                    .Tag(GetAddressModelEndpoint.EndpointPrefix);
-            });
-
-            x.AddPolicy(GetCertificateModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(AddressModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
                     .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetCertificateModelEndpoint.EndpointPrefix);
+                    .Tag(AddressModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetEducationDegreeModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(CertificateModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetEducationDegreeModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllCertificateModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(CertificateModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetEducationInstitutionModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(EducationDegreeModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetEducationInstitutionModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllEducationDegreeModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(EducationDegreeModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetPersonModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(EducationInstitutionModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetPersonModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllEducationInstitutionModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(EducationInstitutionModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetPhoneNumberModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(PersonModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetPhoneNumberModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllPersonModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(PersonModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetProjectModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(PhoneNumberModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetProjectModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllPhoneNumberModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(PhoneNumberModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetResumeModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(ProjectModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetResumeModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllProjectModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(ProjectModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetTechTagModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(ResumeModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetTechTagModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllResumeModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(ResumeModelEndpoints.Tag);
             });
 
-            x.AddPolicy(GetWorkExperienceModelEndpoint.EndpointPrefix, c =>
+            x.AddPolicy(TechTagModelEndpoints.Tag, c =>
             {
                 c.Cache()
                     .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
-                    .SetVaryByQuery(typeof(GetAllAddressModelsRequest).GetProperties().Select(p => p.Name).ToArray())
-                    .Tag(GetWorkExperienceModelEndpoint.EndpointPrefix);
+                    .SetVaryByQuery(typeof(GetAllTechTagModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(TechTagModelEndpoints.Tag);
+            });
+
+            x.AddPolicy(WorkExperienceModelEndpoints.Tag, c =>
+            {
+                c.Cache()
+                    .Expire(TimeSpan.FromMinutes(OutputCacheExpirationInMinutes))
+                    .SetVaryByQuery(typeof(GetAllWorkExperienceModelsRequest).GetProperties().Select(p => p.Name).ToArray())
+                    .Tag(WorkExperienceModelEndpoints.Tag);
             });
         });
         return services;

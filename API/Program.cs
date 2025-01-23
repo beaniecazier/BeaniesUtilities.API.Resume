@@ -18,7 +18,7 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        CommandLineApplicationExtension.ParseCommandLine(args);
+        var options = CommandLineApplicationExtension.ParseCommandLine(args);
 
         var defaultApiVersion = new ApiVersion(1, 0);
         List<ApiVersion> versions = new List<ApiVersion>()
@@ -27,7 +27,7 @@ internal class Program
         };
 
         var builder = WebApplication.CreateBuilder(args);
-        var app = builder.AddApplicationServices(defaultApiVersion);
+        var app = builder.AddApplicationServices(defaultApiVersion, options);
 
         ////DIRTY HACK, we WILL come back to fix this
         //var scope = app.Services.CreateScope();
@@ -65,9 +65,11 @@ internal class Program
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 public static class ProgramExtensions
 {
-    internal static WebApplication? AddApplicationServices(this WebApplicationBuilder? builder, ApiVersion defaultApiVersion)
+    internal static WebApplication? AddApplicationServices(this WebApplicationBuilder? builder, ApiVersion defaultApiVersion, CMDOptions options)
     {
         var config = builder!.Configuration;
+
+        builder.Services.AddSingleton(options);
 
         builder.AddLoggingWithSerilog(config);
 
